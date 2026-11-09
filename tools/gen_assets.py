@@ -77,41 +77,48 @@ def scout_parts():
 
 
 SPECIES = {
-    "bokoblin": dict(hunch=0.5, parts=[
-        P("body", None, (-4, 0, -2, 8, 12, 4), (0, 0, 0)),
+    "bokoblin": dict(hunch=0.55, parts=[
+        P("body", None, (-4, 0, -2, 8, 12, 4), (0, 3, 0)),
         P("belly", "body", (-4, 3, -5, 8, 8, 3), (0, 0, 0), c="belly"),
         P("loin", "body", (-4, 10, -2, 8, 4, 4), (0, 1, 0), c="cloth"),
-        P("head", None, (-5, -9, -5, 10, 9, 9), (0, 0, -1), f=["eyes"]),
-        P("snout", "head", (-2.5, -4, -8, 5, 4, 3), (0, 0, 0), c="skin2", f=["nostrils"]),
-        P("jaw", "head", (-1.5, 0, -6, 3, 1, 2), (0, -1, 0), c="skin2"),
-        P("horn", "head", (-1, -4, -1, 2, 4, 2), (0, -8, -2), (-0.35, 0, 0), c="horn"),
-        P("earL", "head", (0, -2, -0.5, 9, 4, 1), (5, -5, 0), (0, 0, -0.35), c="skin2"),
-        P("earR", "head", (-9, -2, -0.5, 9, 4, 1), (-5, -5, 0), (0, 0, 0.35), c="skin2"),
-    ] + biped_legs(5, 14, 5.5, 5, 10, 2.5, 12)),
-    "moblin": dict(hunch=0.38, parts=[
-        P("body", None, (-6, 0, -3, 12, 14, 6), (0, 0, 0)),
-        P("belly", "body", (-5, 6, -5, 10, 7, 2), (0, 0, 0), c="belly"),
-        P("loin", "body", (-6.5, 11, -3.5, 13, 5, 7), (0, 0, 0), c="cloth"),
-        P("head", None, (-5, -8, -5, 10, 8, 9), (0, 0, -1), f=["eyes"]),
-        P("snout", "head", (-3, -4, -9, 6, 4, 4), (0, 0, 0), c="skin2", f=["nostrils"]),
-        P("tuskL", "head", (0, -1, -1, 1, 4, 1), (2.5, -2, -9), (0.2, 0, 0), c="horn"),
-        P("tuskR", "head", (-1, -1, -1, 1, 4, 1), (-2.5, -2, -9), (0.2, 0, 0), c="horn"),
-        P("mane", "head", (-1, -3, -5, 2, 3, 9), (0, -8, 0), c="hair"),
-        P("earL", "head", (0, -2, -0.5, 3, 3, 1), (5, -6, 0), (0, 0, -0.5), c="skin2"),
-        P("earR", "head", (-3, -2, -0.5, 3, 3, 1), (-5, -6, 0), (0, 0, 0.5), c="skin2"),
-    ] + [
-        P("rightArm", None, (-5, -2, -3, 6, 14, 6), (-9, 2, 0), f=["hand"]),
-        P("leftArm", None, (-1, -2, -3, 6, 14, 6), (9, 2, 0), f=["hand"]),
-        P("rightLeg", None, (-3, 0, -3, 6, 10, 6), (-3.5, 14, 0), c="skin2"),
-        P("leftLeg", None, (-3, 0, -3, 6, 10, 6), (3.5, 14, 0), c="skin2"),
-    ]),
+        P("head", None, (-5, -9, -5, 10, 9, 9), (0, 3, -1), f=["eyes"]),
+        P("snout", "head", (-2.5, -4, -8, 5, 4, 3), (0, 0, 0), c="nose", f=["nostrils"]),
+        P("jaw", "head", (-2, 0, -7, 4, 1, 2), (0, -1, 0), c="nose"),
+        P("horn", "head", (-1, -5, -1, 2, 5, 2), (0, -8, -2), (-0.25, 0, 0), c="horn"),
+        P("earL", "head", (0, -2, -0.5, 10, 4, 1), (5, -5, 0), (0, 0, -0.2), c="skin2"),
+        P("earR", "head", (-10, -2, -0.5, 10, 4, 1), (-5, -5, 0), (0, 0, 0.2), c="skin2"),
+        P("wrapR", "rightArm", (-4.5, 7, -3, 6, 5, 6), (0, 0, 0), c="bandage", f=["stripes"]),
+        P("wrapL", "leftArm", (-1.5, 7, -3, 6, 5, 6), (0, 0, 0), c="bandage", f=["stripes"]),
+    ] + biped_legs(5, 14, 5.5, 5, 9, 2.5, 15, 5)),
+    "moblin": dict(hunch=0.5, parts=[
+        P("body", None, (-5, 0, -3, 10, 13, 6), (0, 0, 0)),
+        P("belly", "body", (-4, 5, -4, 8, 6, 1), (0, 0, 0), c="belly"),
+        P("loin", "body", (-5.5, 10, -3.5, 11, 5, 7), (0, 0, 0), c="cloth"),
+        P("head", None, (-4.5, -8, -5, 9, 8, 9), (0, 0, -1), f=["eyes"]),
+        P("snout", "head", (-2.5, -4, -10, 5, 4, 5), (0, 0, 0), c="nose", f=["nostrils"]),
+        P("tuskL", "head", (0, -2, -1, 1, 4, 1), (2, -2, -9), (0.2, 0, 0), c="horn"),
+        P("tuskR", "head", (-1, -2, -1, 1, 4, 1), (-2, -2, -9), (0.2, 0, 0), c="horn"),
+        P("mane", "head", (-1.5, -3, -5, 3, 3, 10), (0, -8, 0), c="hair"),
+        P("hornL", "head", (0, -6, -1, 2, 6, 2), (3, -8, -2), (0, 0, -0.35), c="horn"),
+        P("hornR", "head", (-2, -6, -1, 2, 6, 2), (-3, -8, -2), (0, 0, 0.35), c="horn"),
+        P("earL", "head", (0, -2, -0.5, 6, 3, 1), (4.5, -5, 0), (0, 0, -0.5), c="skin2"),
+        P("earR", "head", (-6, -2, -0.5, 6, 3, 1), (-4.5, -5, 0), (0, 0, 0.5), c="skin2"),
+        P("rightArm", None, (-4, -2, -2.5, 5, 17, 5), (-7.5, 2, 0), f=["hand"]),
+        P("leftArm", None, (-1, -2, -2.5, 5, 17, 5), (7.5, 2, 0), f=["hand"]),
+        P("wrapR", "rightArm", (-4.5, 8, -3, 6, 6, 6), (0, 0, 0), c="bandage", f=["stripes"]),
+        P("wrapL", "leftArm", (-1.5, 8, -3, 6, 6, 6), (0, 0, 0), c="bandage", f=["stripes"]),
+        P("rightLeg", None, (-2.5, 0, -2.5, 5, 11, 5), (-3, 13, 0), c="skin2"),
+        P("leftLeg", None, (-2.5, 0, -2.5, 5, 11, 5), (3, 13, 0), c="skin2")]),
     "lizalfos": dict(hunch=0.5, parts=[
         P("body", None, (-3.5, 0, -2, 7, 12, 4), (0, 0, 0)),
         P("belly", "body", (-2.5, 1, -2.5, 5, 10, 1), (0, 0, 0), c="belly"),
         P("spine", "body", (-0.5, 0, 0, 1, 11, 3), (0, 0, 2), c="horn"),
+        P("vest", "body", (-4, 1, -2.5, 8, 7, 5), (0, 0, 0), c="cloth"),
         P("head", None, (-3, -6, -3, 6, 6, 6), (0, 0, -1), f=["eyes_side"]),
         P("snout", "head", (-2, -3, -8, 4, 3, 5), (0, 0, 0), c="skin2", f=["nostrils"]),
         P("jaw", "head", (-1.5, 0, -7, 3, 1, 4), (0, -0.5, 0), c="belly"),
+        P("hornL", "head", (0, -1.5, -1, 2, 3, 8), (3, -5, 1), (0.1, 0.5, -0.2), c="horn"),
+        P("hornR", "head", (-2, -1.5, -1, 2, 3, 8), (-3, -5, 1), (0.1, -0.5, 0.2), c="horn"),
         P("frillL", "head", (0, -2, -0.5, 4, 4, 1), (3, -3, 2), (0, 0.5, -0.3), c="horn"),
         P("frillR", "head", (-4, -2, -0.5, 4, 4, 1), (-3, -3, 2), (0, -0.5, 0.3), c="horn"),
         P("tail1", "body", (-2, -2, 0, 4, 4, 6), (0, 10, 2), (0.15, 0, 0), c="skin2"),
@@ -131,16 +138,17 @@ SPECIES = {
         P("leftArm", None, (-1, -2, -3, 7, 16, 7), (10, 2, 0), f=["hand"]),
         P("rightLeg", None, (-3.5, 0, -3.5, 7, 8, 7), (-4, 16, 0), c="skin2"),
         P("leftLeg", None, (-3.5, 0, -3.5, 7, 8, 7), (4, 16, 0), c="skin2")]),
-    "talus": dict(hunch=0.25, parts=[
-        P("body", None, (-6, 0, -4, 12, 12, 8), (0, 0, 0), c="skin2"),
-        P("chest", "body", (-4, 2, -6, 8, 6, 2), (0, 0, 0), c="skin"),
-        P("ore", "body", (-2, -3, 1, 4, 5, 4), (0, 0, 0), c="horn"),
-        P("ore2", "body", (-1, 8, 4, 3, 4, 3), (2, 0, 0), c="horn"),
-        P("head", None, (-3, -6, -3, 6, 6, 6), (0, 1, -2), c="skin", f=["eyes"]),
-        P("rightArm", None, (-6, -2, -3, 7, 14, 6), (-9, 2, 0), c="skin", f=["hand"]),
-        P("leftArm", None, (-1, -2, -3, 7, 14, 6), (9, 2, 0), c="skin", f=["hand"]),
-        P("rightLeg", None, (-3, 0, -3, 6, 10, 6), (-3.5, 12, 0), c="skin2"),
-        P("leftLeg", None, (-3, 0, -3, 6, 10, 6), (3.5, 12, 0), c="skin2")]),
+    "talus": dict(hunch=0.3, parts=[
+        P("body", None, (-9, 0, -6, 18, 10, 12), (0, 6, 0), c="skin2"),
+        P("rock1", "body", (-6, -5, -4, 12, 5, 9), (0, 0, 0), c="skin"),
+        P("rock2", "body", (2, -8, -2, 6, 4, 6), (0, 0, 0), c="skin2"),
+        P("ore", "body", (-2, -9, 1, 4, 6, 4), (-2, 0, 2), c="horn"),
+        P("ore2", "body", (-1, 6, 5, 3, 5, 3), (3, 0, 0), c="horn"),
+        P("head", None, (-3, -3, -3, 6, 5, 6), (0, 6, -6), c="skin"),
+        P("rightArm", None, (-6, -2, -3, 7, 17, 6), (-12, 6, 0), c="skin", f=["hand"]),
+        P("leftArm", None, (-1, -2, -3, 7, 17, 6), (12, 6, 0), c="skin", f=["hand"]),
+        P("rightLeg", None, (-3, 0, -3, 6, 8, 6), (-5, 16, 0), c="skin2"),
+        P("leftLeg", None, (-3, 0, -3, 6, 8, 6), (5, 16, 0), c="skin2")]),
     "gibdo": dict(hunch=0.65, parts=[
         P("body", None, (-4, 0, -2, 8, 12, 4), (0, 0, 0)),
         P("wrap", "body", (-4.5, 2, -2.5, 9, 3, 5), (0, 0, 0), c="cloth"),
@@ -156,9 +164,11 @@ SPECIES = {
     "wizzrobe": dict(hunch=0.0, parts=[
         P("body", None, (-4, 0, -3, 8, 14, 6), (0, 8, 0), c="cloth"),
         P("hem", "body", (-5, 12, -4, 10, 3, 8), (0, 0, 0), c="cloth"),
-        P("head", None, (-4, -8, -4, 8, 8, 8), (0, 8, 0), f=["eyes"]),
-        P("brim", "head", (-6, -1, -6, 12, 1, 12), (0, -8, 0), c="hair"),
-        P("cone", "head", (-3, -6, -3, 6, 6, 6), (0, -9, 0), c="hair"),
+        P("trim", "body", (-4.5, 6, -3.5, 9, 2, 7), (0, 0, 0), c="hair"),
+        P("head", None, (-4, -8, -4, 8, 8, 8), (0, 8, 0), c="hair"),
+        P("face", "head", (-3, -6, -4.5, 6, 5, 1), (0, 0, 0), c="belly", f=["eyes"]),
+        P("cone", "head", (-3, -7, -3, 6, 7, 6), (0, -8, 0), c="hair"),
+        P("tip", "head", (-1.5, -5, -1.5, 3, 5, 3), (0, -15, 0), (0.3, 0, 0), c="hair"),
         P("rightArm", None, (-3, -2, -2, 4, 10, 4), (-6, 10, 0), c="cloth", f=["hand"]),
         P("leftArm", None, (-1, -2, -2, 4, 10, 4), (6, 10, 0), c="cloth", f=["hand"])]),
     "lynel": dict(hunch=0.0, parts=[
@@ -178,15 +188,17 @@ SPECIES = {
         P("backRightLeg", None, (-2, 0, -2, 4, 8, 4), (-3.5, 16, 12), c="skin2"),
         P("backLeftLeg", None, (-2, 0, -2, 4, 8, 4), (3.5, 16, 12), c="skin2")]),
     "chuchu": dict(hunch=0.0, parts=[
-        P("body", None, (-5, 0, -5, 10, 8, 10), (0, 16, 0), f=["eyes"]),
-        P("core", "body", (-2, -2, -2, 4, 2, 4), (0, 0, 0), c="horn")]),
+        P("body", None, (-5, 0, -5, 10, 8, 10), (0, 16, 0)),
+        P("core", "body", (-2, -2, -2, 4, 2, 4), (0, 0, 0), c="belly"),
+        P("eyeL", "body", (0, -4, -3, 4, 5, 4), (1, 0, -1), c="horn", f=["bigeye"]),
+        P("eyeR", "body", (-4, -4, -3, 4, 5, 4), (-1, 0, -1), c="horn", f=["bigeye"])]),
     "guardian": dict(hunch=0.0, parts=guardian_parts()),
     "keese": dict(hunch=0, parts=[
         P("body", None, (-3, -3, -3, 6, 6, 6), (0, 19, 0), f=["bigeye"]),
         P("earL", "body", (0, -3, -0.5, 2, 3, 1), (2, -3, -1), c="horn"),
         P("earR", "body", (-2, -3, -0.5, 2, 3, 1), (-2, -3, -1), c="horn"),
-        P("wingL", "body", (0, -0.5, -3, 11, 1, 7), (3, -1, 0), c="wing"),
-        P("wingR", "body", (-11, -0.5, -3, 11, 1, 7), (-3, -1, 0), c="wing"),
+        P("wingL", "body", (0, -0.5, -4, 16, 1, 10), (3, -1, 0), c="wing"),
+        P("wingR", "body", (-16, -0.5, -4, 16, 1, 10), (-3, -1, 0), c="wing"),
         P("footL", "body", (-0.5, 0, -0.5, 1, 3, 1), (1.5, 3, 0), c="horn"),
         P("footR", "body", (-0.5, 0, -0.5, 1, 3, 1), (-1.5, 3, 0), c="horn"),
     ]),
@@ -194,7 +206,7 @@ SPECIES = {
 
 # palette per species, per rank: key -> hex ; tuples listed in RANKS order
 def pal(skin, skin2, belly, cloth, horn, hair="#2a1f1a", wing="#201828", eye="#ffd23a"):
-    return dict(skin=skin, skin2=skin2, belly=belly, cloth=cloth, horn=horn, hair=hair, wing=wing, eye=eye, bone=skin2, joint=horn)
+    return dict(skin=skin, skin2=skin2, belly=belly, cloth=cloth, horn=horn, hair=hair, wing=wing, eye=eye, bone=skin2, joint=horn, nose="#e8a0a8", bandage="#ece8d8")
 
 
 PAL = {
@@ -356,6 +368,24 @@ PAL["gleeok"] = [drag("#a83a2a", "#7a2418", "#c84a30"), drag("#3a78b8", "#2a5688
 
 for _p in PAL["bokoblin"]: _p["eye"] = "#46c8ff"
 
+def setp(sid, i, **kw): PAL[sid][i].update(kw)
+# --- tuned against in-game compendium photos (rank 0 = the common look) ---
+PAL["keese"][0] = pal("#6a4a34", "#4a3224", "#8a6a4e", "#000000", "#5a3a28", wing="#7a5a40", eye="#ffd030")
+PAL["hinox"][0] = pal("#a24a3a", "#7c3428", "#c88068", "#5a4030", "#e8dcb8", "#ece8dc", eye="#ffe14a")
+PAL["talus"][0] = pal("#a8a090", "#858070", "#c4bcaa", "#000000", "#e8902a", eye="#ff7a2a")
+PAL["octorok"][0] = pal("#8a8a92", "#686870", "#c8c8d0", "#000000", "#e8dcb8", eye="#ffffff")
+PAL["octorok"][1] = pal("#3f78c8", "#2d5aa0", "#8fb6e6", "#000000", "#e8dcb8", eye="#ffffff")
+PAL["octorok"][2] = pal("#5a8a3a", "#406a28", "#98c070", "#000000", "#e8dcb8", eye="#ffffff")
+PAL["octorok"][3] = pal("#e8ecf0", "#c0c4c8", "#ffffff", "#000000", "#a0e0ff", eye="#303030")
+for i, (robe, hood, eye) in enumerate((("#e8dcc0", "#b83a2a", "#ff6a2a"), ("#e8e4d8", "#3a70c0", "#aaffff"), ("#e8e0b8", "#c8b020", "#ffff66"),
+                                     ("#d8d0e0", "#7a4aa8", "#ff66ff"), ("#f0e4b8", "#d8a838", "#ffffff"))):
+    PAL["wizzrobe"][i] = pal("#d9b48a", "#b08a62", "#241a1a", robe, "#e8dcb8", hair=hood, eye=eye)
+PAL["lynel"][0] = pal("#6a4a38", "#4a3226", "#8a6a50", "#4a3a30", "#e8dcb8", "#b02a20")
+PAL["chuchu"][0] = pal("#58b0f0", "#3a88c8", "#a8d8ff", "#000000", "#ff8a20", eye="#202020")
+PAL["moblin"][0] = pal("#9a3a30", "#722a22", "#d49a7a", "#5b4430", "#e8dcb8", "#3a2418")
+PAL["lizalfos"][0] = pal("#4a9a3a", "#357828", "#e0d08a", "#7a8a68", "#e8dcb8", eye="#ffd030")
+PAL["bokoblin"][0].update(skin="#e0522c", skin2="#b83a20", belly="#f0a070")
+
 TEX = 128
 
 
@@ -390,6 +420,9 @@ def paint_box(img, p, col, rng, palette):
                 n = rng.uniform(0.9, 1.08)
                 grad = 1.04 - 0.1 * (j / max(1, fh))  # darker toward bottom
                 px[fx + i, fy + j] = shade(col, s * n * grad) + (255,)
+        if "stripes" in p["f"]:
+            for j in range(0, fh, 3):
+                for i in range(fw): px[fx + i, fy + j] = shade(col, 0.72) + (255,)
         if "circuit" in p["f"]:
             glow = hexc(palette["horn"]) + (255,)
             for j in range(2, fh, 4):
@@ -429,11 +462,19 @@ def paint_box(img, p, col, rng, palette):
                     px[fx + i, fy + j] = shade(hexc(palette["skin2"]), s) + (255,)
 
 
+def order_parts(parts):
+    done, out = set(), []
+    while len(out) < len(parts):
+        for q in parts:
+            if q["n"] not in done and (q["p"] is None or q["p"] in done): out.append(q); done.add(q["n"])
+    return out
+
+
 def gen_species():
     os.makedirs(f"{A}/specs", exist_ok=True)
     os.makedirs(f"{A}/textures/entity", exist_ok=True)
     for sid, sp in SPECIES.items():
-        parts = [dict(q) for q in sp["parts"]]
+        parts = order_parts([dict(q) for q in sp["parts"]])
         pack(parts)
         json.dump(dict(tex=[TEX, TEX], hunch=sp["hunch"], parts=parts),
                   open(f"{A}/specs/{sid}.json", "w"), separators=(",", ":"))
