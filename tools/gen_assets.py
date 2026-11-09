@@ -1,0 +1,322 @@
+#!/usr/bin/env python3
+"""Single source of truth for creature models, textures, weapons, item textures, lang.
+Run: python3 tools/gen_assets.py   (writes into src/main/resources)"""
+import json, os, random, zlib
+from PIL import Image, ImageDraw
+
+MOD = "hyrulecreatures"
+RES = os.path.join(os.path.dirname(__file__), "..", "src", "main", "resources")
+A = os.path.join(RES, "assets", MOD)
+RANKS = ["red", "blue", "black", "silver", "gold"]
+RANK_JA = ["赤", "青", "黒", "銀", "金"]
+
+
+def hexc(s):
+    s = s.lstrip("#")
+    return tuple(int(s[i:i + 2], 16) for i in (0, 2, 4))
+
+
+def shade(c, f):
+    return tuple(max(0, min(255, int(v * f))) for v in c)
+
+
+def P(n, p, box, pose, rot=(0, 0, 0), c="skin", f=None):
+    return dict(n=n, p=p, box=list(box), pose=list(pose), rot=list(rot), c=c, f=f or [])
+
+
+# ---------------------------------------------------------------- species
+def biped_legs(arm_w, arm_h, arm_x, leg_w, leg_h, leg_x, leg_y, shoulder_y=2):
+    return [
+        P("rightArm", None, (-arm_w + 1, -2, -arm_w / 2, arm_w, arm_h, arm_w), (-arm_x, shoulder_y, 0), c="skin", f=["hand"]),
+        P("leftArm", None, (-1, -2, -arm_w / 2, arm_w, arm_h, arm_w), (arm_x, shoulder_y, 0), c="skin", f=["hand"]),
+        P("rightLeg", None, (-leg_w / 2, 0, -leg_w / 2, leg_w, leg_h, leg_w), (-leg_x, leg_y, 0), c="skin2"),
+        P("leftLeg", None, (-leg_w / 2, 0, -leg_w / 2, leg_w, leg_h, leg_w), (leg_x, leg_y, 0), c="skin2"),
+    ]
+
+
+SPECIES = {
+    "bokoblin": dict(hunch=0.12, parts=[
+        P("body", None, (-4, 0, -2, 8, 12, 4), (0, 0, 0)),
+        P("belly", "body", (-3, 5, -4, 6, 6, 2), (0, 0, 0), c="belly"),
+        P("loin", "body", (-4, 10, -2, 8, 4, 4), (0, 1, 0), c="cloth"),
+        P("head", None, (-4, -8, -4, 8, 8, 8), (0, 0, -1), f=["eyes"]),
+        P("snout", "head", (-2, -3, -7, 4, 3, 3), (0, 0, 0), c="skin2", f=["nostrils"]),
+        P("jaw", "head", (-1.5, 0, -6, 3, 1, 2), (0, -1, 0), c="skin2"),
+        P("horn", "head", (-1, -4, -1, 2, 4, 2), (0, -8, -2), (-0.35, 0, 0), c="horn"),
+        P("earL", "head", (0, -1, -0.5, 6, 2, 1), (4, -5, 0), (0, 0, -0.45), c="skin2"),
+        P("earR", "head", (-6, -1, -0.5, 6, 2, 1), (-4, -5, 0), (0, 0, 0.45), c="skin2"),
+    ] + biped_legs(4, 12, 5, 4, 10, 2, 12)),
+    "moblin": dict(hunch=0.1, parts=[
+        P("body", None, (-6, 0, -3, 12, 14, 6), (0, 0, 0)),
+        P("belly", "body", (-5, 6, -5, 10, 7, 2), (0, 0, 0), c="belly"),
+        P("loin", "body", (-6.5, 11, -3.5, 13, 5, 7), (0, 0, 0), c="cloth"),
+        P("head", None, (-5, -8, -5, 10, 8, 9), (0, 0, -1), f=["eyes"]),
+        P("snout", "head", (-3, -4, -9, 6, 4, 4), (0, 0, 0), c="skin2", f=["nostrils"]),
+        P("tuskL", "head", (0, -1, -1, 1, 4, 1), (2.5, -2, -9), (0.2, 0, 0), c="horn"),
+        P("tuskR", "head", (-1, -1, -1, 1, 4, 1), (-2.5, -2, -9), (0.2, 0, 0), c="horn"),
+        P("mane", "head", (-1, -3, -5, 2, 3, 9), (0, -8, 0), c="hair"),
+        P("earL", "head", (0, -2, -0.5, 3, 3, 1), (5, -6, 0), (0, 0, -0.5), c="skin2"),
+        P("earR", "head", (-3, -2, -0.5, 3, 3, 1), (-5, -6, 0), (0, 0, 0.5), c="skin2"),
+    ] + [
+        P("rightArm", None, (-5, -2, -3, 6, 14, 6), (-9, 2, 0), f=["hand"]),
+        P("leftArm", None, (-1, -2, -3, 6, 14, 6), (9, 2, 0), f=["hand"]),
+        P("rightLeg", None, (-3, 0, -3, 6, 10, 6), (-3.5, 14, 0), c="skin2"),
+        P("leftLeg", None, (-3, 0, -3, 6, 10, 6), (3.5, 14, 0), c="skin2"),
+    ]),
+    "lizalfos": dict(hunch=0.3, parts=[
+        P("body", None, (-3.5, 0, -2, 7, 12, 4), (0, 0, 0)),
+        P("belly", "body", (-2.5, 1, -2.5, 5, 10, 1), (0, 0, 0), c="belly"),
+        P("spine", "body", (-0.5, 0, 0, 1, 11, 3), (0, 0, 2), c="horn"),
+        P("head", None, (-3, -6, -3, 6, 6, 6), (0, 0, -1), f=["eyes_side"]),
+        P("snout", "head", (-2, -3, -8, 4, 3, 5), (0, 0, 0), c="skin2", f=["nostrils"]),
+        P("jaw", "head", (-1.5, 0, -7, 3, 1, 4), (0, -0.5, 0), c="belly"),
+        P("frillL", "head", (0, -2, -0.5, 4, 4, 1), (3, -3, 2), (0, 0.5, -0.3), c="horn"),
+        P("frillR", "head", (-4, -2, -0.5, 4, 4, 1), (-3, -3, 2), (0, -0.5, 0.3), c="horn"),
+        P("tail1", "body", (-2, -2, 0, 4, 4, 6), (0, 10, 2), (0.15, 0, 0), c="skin2"),
+        P("tail2", "tail1", (-1.5, -1.5, 0, 3, 3, 6), (0, 0, 6), c="skin2"),
+        P("tail3", "tail2", (-1, -1, 0, 2, 2, 6), (0, 0, 6), c="skin2"),
+    ] + biped_legs(3, 12, 4.5, 3, 12, 1.8, 12)),
+    "keese": dict(hunch=0, parts=[
+        P("body", None, (-3, -3, -3, 6, 6, 6), (0, 19, 0), f=["bigeye"]),
+        P("earL", "body", (0, -3, -0.5, 2, 3, 1), (2, -3, -1), c="horn"),
+        P("earR", "body", (-2, -3, -0.5, 2, 3, 1), (-2, -3, -1), c="horn"),
+        P("wingL", "body", (0, -0.5, -3, 11, 1, 7), (3, -1, 0), c="wing"),
+        P("wingR", "body", (-11, -0.5, -3, 11, 1, 7), (-3, -1, 0), c="wing"),
+        P("footL", "body", (-0.5, 0, -0.5, 1, 3, 1), (1.5, 3, 0), c="horn"),
+        P("footR", "body", (-0.5, 0, -0.5, 1, 3, 1), (-1.5, 3, 0), c="horn"),
+    ]),
+}
+
+# palette per species, per rank: key -> hex ; tuples listed in RANKS order
+def pal(skin, skin2, belly, cloth, horn, hair="#2a1f1a", wing="#201828", eye="#ffd23a"):
+    return dict(skin=skin, skin2=skin2, belly=belly, cloth=cloth, horn=horn, hair=hair, wing=wing, eye=eye)
+
+
+PAL = {
+    "bokoblin": [pal("#c8452f", "#a33322", "#e98a63", "#6b4a2b", "#e8dcb8"),
+                 pal("#3f78c8", "#2d5aa0", "#8fb6e6", "#6b4a2b", "#e8dcb8"),
+                 pal("#3a3547", "#27232f", "#6a6478", "#4a3a2b", "#c9c2a8"),
+                 pal("#b9bfc9", "#8e95a3", "#e4e8ee", "#5d5d66", "#f2f2f2"),
+                 pal("#e0b83a", "#b8912a", "#f6e08a", "#6b4a2b", "#fff2c0")],
+    "moblin": [pal("#a4552f", "#7c3f22", "#d49a6a", "#5b4430", "#e8dcb8", "#3a2418"),
+               pal("#3a6ba8", "#2a4f80", "#86a9d0", "#5b4430", "#e8dcb8", "#1c2a3e"),
+               pal("#3c3a48", "#272530", "#6a6678", "#3f3226", "#c9c2a8", "#141418"),
+               pal("#c4c8d0", "#989eaa", "#eceef2", "#55555e", "#ffffff", "#7a7f8c"),
+               pal("#d9ad35", "#b08622", "#f4dc82", "#5b4430", "#fff2c0", "#8a6418")],
+    "lizalfos": [pal("#5a9a3a", "#427a2a", "#e0d08a", "#6b4a2b", "#d8c15a", eye="#ff5a2a"),
+                 pal("#3a8ac0", "#2a6a98", "#bfe0ee", "#6b4a2b", "#e8f0f6", eye="#ffee55"),
+                 pal("#3a3a4a", "#28283a", "#8a8aa0", "#4a3a2b", "#aaaabb", eye="#ff3030"),
+                 pal("#b8c4cc", "#8e9aa4", "#f0f4f6", "#5d5d66", "#ffffff", eye="#66ddff"),
+                 pal("#e0b83a", "#b8912a", "#f8e8a0", "#6b4a2b", "#fff2c0", eye="#ffffff")],
+    "keese": [pal("#3a3040", "#2a2030", "#5a4a60", "#000000", "#4a3a50", wing="#2a2236", eye="#ff4040"),
+              pal("#8a2a22", "#661a18", "#c85a4a", "#000000", "#5a2a20", wing="#a8322a", eye="#ffd040"),
+              pal("#3a68a8", "#2a4a80", "#8ab0e0", "#000000", "#2a4a70", wing="#6fa0dc", eye="#ffffff"),
+              pal("#d0b020", "#a08418", "#f0e070", "#000000", "#706010", wing="#e8cc30", eye="#303030"),
+              pal("#e0b83a", "#b8912a", "#f8e8a0", "#000000", "#fff2c0", wing="#ffe27a", eye="#ff3030")],
+}
+
+TEX = 128
+
+
+def pack(parts):
+    """shelf-pack box nets into TEXxTEX; returns uv per part (mutates)."""
+    items = []
+    for p in parts:
+        w, h, d = p["box"][3:6]
+        w, h, d = int(round(w)), int(round(h)), int(round(d))
+        items.append((p, 2 * (w + d), h + d))
+    items.sort(key=lambda x: -x[2])
+    x = y = rowh = 0
+    for p, W, H in items:
+        if x + W > TEX:
+            x, y, rowh = 0, y + rowh, 0
+        p["uv"] = [x, y]
+        x += W
+        rowh = max(rowh, H)
+    assert y + rowh <= TEX, "texture overflow"
+
+
+def paint_box(img, p, col, rng, palette):
+    u, v = p["uv"]
+    w, h, d = [int(round(t)) for t in p["box"][3:6]]
+    faces = {"top": (u + d, v, w, d, 1.15), "bottom": (u + d + w, v, w, d, 0.7),
+             "right": (u, v + d, d, h, 0.9), "front": (u + d, v + d, w, h, 1.0),
+             "left": (u + d + w, v + d, d, h, 0.85), "back": (u + 2 * d + w, v + d, w, h, 0.8)}
+    px = img.load()
+    for name, (fx, fy, fw, fh, s) in faces.items():
+        for i in range(fw):
+            for j in range(fh):
+                n = rng.uniform(0.9, 1.08)
+                grad = 1.04 - 0.1 * (j / max(1, fh))  # darker toward bottom
+                px[fx + i, fy + j] = shade(col, s * n * grad) + (255,)
+        if name == "front":
+            feat = p["f"]
+            if "belly" == p["c"] and fw > 2:
+                pass
+            if "eyes" in feat and fw >= 6:
+                ey = fy + max(2, fh // 3)
+                for ex in (fx + 1, fx + fw - 3):
+                    px[ex, ey] = (255, 255, 255, 255); px[ex + 1, ey] = hexc(palette["eye"]) + (255,)
+                    px[ex, ey + 1] = (20, 10, 10, 255); px[ex + 1, ey + 1] = (20, 10, 10, 255)
+                for ex in (fx, fx + 1, fx + fw - 3, fx + fw - 2):  # angry brow
+                    px[ex, ey - 1] = shade(col, 0.45) + (255,)
+            if "bigeye" in feat:
+                cx, cy = fx + fw // 2, fy + fh // 2
+                for i in range(-2, 2):
+                    for j in range(-2, 2):
+                        px[cx + i, cy + j] = (240, 240, 240, 255)
+                for i in (-1, 0):
+                    for j in (-1, 0):
+                        px[cx + i, cy + j] = hexc(palette["eye"]) + (255,)
+                px[cx - 1, cy - 1] = (10, 0, 0, 255)
+            if "nostrils" in feat:
+                px[fx + 1, fy + fh - 2] = shade(col, 0.4) + (255,)
+                px[fx + fw - 2, fy + fh - 2] = shade(col, 0.4) + (255,)
+        if "eyes_side" in p["f"] and name in ("right", "left"):
+            px[fx + fw // 2, fy + fh // 3] = hexc(palette["eye"]) + (255,)
+        if "hand" in p["f"] and name != "top":
+            for i in range(fw):
+                for j in range(max(0, fh - 3), fh):
+                    px[fx + i, fy + j] = shade(hexc(palette["skin2"]), s) + (255,)
+
+
+def gen_species():
+    os.makedirs(f"{A}/specs", exist_ok=True)
+    os.makedirs(f"{A}/textures/entity", exist_ok=True)
+    for sid, sp in SPECIES.items():
+        parts = [dict(q) for q in sp["parts"]]
+        pack(parts)
+        json.dump(dict(tex=[TEX, TEX], hunch=sp["hunch"], parts=parts),
+                  open(f"{A}/specs/{sid}.json", "w"), separators=(",", ":"))
+        for ri, rname in enumerate(RANKS):
+            palette = PAL[sid][ri]
+            img = Image.new("RGBA", (TEX, TEX), (0, 0, 0, 0))
+            rng = random.Random(zlib.crc32((sid + rname).encode()))
+            for p in parts:
+                paint_box(img, p, hexc(palette[p["c"]]), rng, palette)
+            img.save(f"{A}/textures/entity/{sid}_{rname}.png")
+
+
+# ---------------------------------------------------------------- weapons
+# id, en, ja, kind, dmg bonus (added to base 1), durability, c1, c2
+W = [
+    ("boko_club", "Boko Club", "ボコ棍棒", "club", 3, 20, "#9a6a35", "#6a431f"),
+    ("spiked_boko_club", "Spiked Boko Club", "トゲボコ棍棒", "club", 5, 30, "#9a6a35", "#b0b0b8"),
+    ("dragonbone_boko_club", "Dragonbone Boko Club", "竜骨のボコ棍棒", "club", 8, 50, "#e8dcb8", "#b8a878"),
+    ("boko_bat", "Boko Bat", "ボコバット", "club", 2, 18, "#c9a46a", "#8a6a3a"),
+    ("boko_spear", "Boko Spear", "ボコの槍", "spear", 3, 25, "#9a6a35", "#a8a8b0"),
+    ("spiked_boko_spear", "Spiked Boko Spear", "トゲボコの槍", "spear", 5, 35, "#9a6a35", "#c8c8d0"),
+    ("dragonbone_boko_spear", "Dragonbone Boko Spear", "竜骨のボコ槍", "spear", 8, 50, "#e8dcb8", "#f0e8d0"),
+    ("moblin_club", "Moblin Club", "モリブリンの棍棒", "club", 6, 30, "#7a5a3a", "#4a3220"),
+    ("spiked_moblin_club", "Spiked Moblin Club", "トゲモリブリン棍棒", "club", 9, 45, "#7a5a3a", "#b0b0b8"),
+    ("dragonbone_moblin_club", "Dragonbone Moblin Club", "竜骨のモリブリン棍棒", "club", 12, 70, "#e8dcb8", "#b8a878"),
+    ("lizal_boomerang", "Lizal Boomerang", "リザルブーメラン", "boomerang", 5, 30, "#7a9a3a", "#e0d08a"),
+    ("lizal_forked_boomerang", "Lizal Forked Boomerang", "リザルフォーク", "boomerang", 7, 40, "#3a8ac0", "#bfe0ee"),
+    ("lizal_tri_boomerang", "Lizal Tri-Boomerang", "リザルトライブーメラン", "boomerang", 10, 60, "#4a4a5a", "#aaaabb"),
+    ("travelers_sword", "Traveler's Sword", "旅人の剣", "sword", 3, 40, "#c8ccd4", "#7a5a3a"),
+    ("soldiers_broadsword", "Soldier's Broadsword", "兵士の剣", "sword", 5, 50, "#d4d8e0", "#8a6a3a"),
+    ("knights_broadsword", "Knight's Broadsword", "騎士の剣", "sword", 8, 70, "#e0e4ec", "#4a6aa8"),
+    ("royal_broadsword", "Royal Broadsword", "王家の剣", "sword", 11, 90, "#f0f2f8", "#d8b43a"),
+    ("royal_guards_sword", "Royal Guard's Sword", "王家の近衛の剣", "sword", 13, 100, "#f4f6fa", "#2a4a9a"),
+    ("zora_sword", "Zora Sword", "ゾーラの剣", "sword", 5, 45, "#9ad0e8", "#e8f4fa"),
+    ("gerudo_scimitar", "Gerudo Scimitar", "ゲルド族のシミター", "sword", 8, 60, "#d8c078", "#a8782a"),
+    ("lynel_sword", "Lynel Sword", "ライネルの剣", "sword", 12, 80, "#8a4a3a", "#d8a85a"),
+    ("mighty_lynel_sword", "Mighty Lynel Sword", "強ライネルの剣", "sword", 16, 100, "#3a6aa8", "#d8e0f0"),
+    ("savage_lynel_sword", "Savage Lynel Sword", "猛ライネルの剣", "sword", 21, 130, "#2a2a34", "#e8c85a"),
+    ("master_sword", "Master Sword", "マスターソード", "sword", 14, 400, "#cfe8ff", "#2a3a9a"),
+    ("travelers_claymore", "Traveler's Claymore", "旅人の大剣", "claymore", 6, 40, "#c8ccd4", "#7a5a3a"),
+    ("soldiers_claymore", "Soldier's Claymore", "兵士の大剣", "claymore", 9, 55, "#d4d8e0", "#8a6a3a"),
+    ("knights_claymore", "Knight's Claymore", "騎士の大剣", "claymore", 13, 75, "#e0e4ec", "#4a6aa8"),
+    ("royal_claymore", "Royal Claymore", "王家の大剣", "claymore", 17, 100, "#f0f2f8", "#d8b43a"),
+    ("lynel_crusher", "Lynel Crusher", "ライネルクラッシャー", "club", 13, 60, "#8a4a3a", "#d8a85a"),
+    ("mighty_lynel_crusher", "Mighty Lynel Crusher", "強ライネルクラッシャー", "club", 17, 80, "#3a6aa8", "#d8e0f0"),
+    ("savage_lynel_crusher", "Savage Lynel Crusher", "猛ライネルクラッシャー", "club", 22, 100, "#2a2a34", "#e8c85a"),
+    ("travelers_spear", "Traveler's Spear", "旅人の槍", "spear", 4, 40, "#8a6a3a", "#c8ccd4"),
+    ("soldiers_spear", "Soldier's Spear", "兵士の槍", "spear", 6, 50, "#8a6a3a", "#d4d8e0"),
+    ("knights_halberd", "Knight's Halberd", "騎士のハルバード", "halberd", 9, 70, "#4a6aa8", "#e0e4ec"),
+    ("royal_halberd", "Royal Halberd", "王家のハルバード", "halberd", 12, 90, "#d8b43a", "#f0f2f8"),
+    ("lynel_spear", "Lynel Spear", "ライネルの槍", "spear", 12, 80, "#8a4a3a", "#d8a85a"),
+    ("mighty_lynel_spear", "Mighty Lynel Spear", "強ライネルの槍", "spear", 16, 100, "#3a6aa8", "#d8e0f0"),
+    ("savage_lynel_spear", "Savage Lynel Spear", "猛ライネルの槍", "spear", 21, 130, "#2a2a34", "#e8c85a"),
+]
+
+
+def line(d, a, b, col, w=1):
+    d.line([a, b], fill=col, width=w)
+
+
+def item_tex(kind, c1, c2, name):
+    im = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+    d = ImageDraw.Draw(im)
+    a, b = hexc(c1) + (255,), hexc(c2) + (255,)
+    dk = shade(hexc(c2), 0.6) + (255,)
+    if kind in ("sword", "claymore"):
+        wdt = 3 if kind == "claymore" else 2
+        line(d, (4, 11), (13, 2), a, wdt)
+        line(d, (5, 11), (13, 3), shade(hexc(c1), 1.2) + (255,), 1)
+        line(d, (3, 9), (7, 13), b, 2)
+        line(d, (1, 14), (3, 12), dk, 2)
+    elif kind == "club":
+        line(d, (2, 14), (9, 7), b, 2)
+        d.ellipse([7, 1, 13, 7], fill=a)
+        d.ellipse([8, 2, 11, 5], fill=shade(hexc(c1), 1.2) + (255,))
+        if "spiked" in name or "dragonbone" in name or "crusher" in name:
+            for p in [(6, 3), (7, 0), (13, 3), (12, 0), (14, 6), (9, 8), (6, 6)]:
+                d.point(p, fill=b if "spiked" in name else shade(hexc(c1), 0.8) + (255,))
+    elif kind in ("spear", "halberd"):
+        line(d, (1, 14), (11, 4), a, 1)
+        line(d, (11, 4), (14, 1), b, 2)
+        d.polygon([(10, 2), (14, 1), (13, 5)], fill=b)
+        if kind == "halberd":
+            d.polygon([(8, 5), (4, 3), (7, 8)], fill=b)
+    elif kind == "boomerang":
+        d.arc([2, 2, 14, 14], 200, 340, fill=a, width=3)
+        d.arc([2, 2, 14, 14], 190, 350, fill=b, width=1)
+        d.point((2, 8), fill=a); d.point((13, 8), fill=a)
+    return im
+
+
+def gen_weapons():
+    os.makedirs(f"{A}/textures/item", exist_ok=True)
+    os.makedirs(f"{A}/models/item", exist_ok=True)
+    wj = []
+    for (i, en, ja, kind, dmg, dur, c1, c2) in W:
+        item_tex(kind, c1, c2, i).save(f"{A}/textures/item/{i}.png")
+        json.dump({"parent": "minecraft:item/handheld", "textures": {"layer0": f"{MOD}:item/{i}"}},
+                  open(f"{A}/models/item/{i}.json", "w"))
+        wj.append(dict(id=i, kind=kind, dmg=dmg, dur=dur))
+    json.dump(wj, open(f"{A}/weapons.json", "w"), separators=(",", ":"))
+
+
+NAMES = {"bokoblin": ("Bokoblin", "ボコブリン"), "moblin": ("Moblin", "モリブリン"),
+         "lizalfos": ("Lizalfos", "リザルフォス"), "keese": ("Keese", "キース")}
+RANK_EN = [r.capitalize() for r in RANKS]
+
+
+def gen_lang():
+    os.makedirs(f"{A}/lang", exist_ok=True)
+    for code, idx in (("en_us", 0), ("ja_jp", 1)):
+        L = {"itemGroup." + MOD: "Hyrule Creatures" if idx == 0 else "ハイラルの魔物"}
+        for i, r in enumerate(RANKS):
+            L[f"rank.{MOD}.{r}"] = RANK_EN[i] if idx == 0 else RANK_JA[i]
+        for sid, n in NAMES.items():
+            L[f"entity.{MOD}.{sid}"] = n[idx]
+            L[f"item.{MOD}.{sid}_spawn_egg"] = n[idx] + (" Spawn Egg" if idx == 0 else "のスポーンエッグ")
+        for w in W:
+            L[f"item.{MOD}.{w[0]}"] = w[1 + idx]
+        json.dump(L, open(f"{A}/lang/{code}.json", "w"), ensure_ascii=False, indent=1)
+
+
+def gen_data():
+    d = os.path.join(RES, "data", MOD, "forge", "biome_modifier")
+    os.makedirs(d, exist_ok=True)
+    spawns = {"bokoblin": (40, 2, 4), "moblin": (20, 1, 2), "lizalfos": (25, 1, 3), "keese": (30, 2, 4)}
+    for sid, (wt, lo, hi) in spawns.items():
+        json.dump({"type": "forge:add_spawns", "biomes": "#minecraft:is_overworld",
+                   "spawners": {"type": f"{MOD}:{sid}", "weight": wt, "minCount": lo, "maxCount": hi}},
+                  open(f"{d}/{sid}.json", "w"))
+
+
+if __name__ == "__main__":
+    gen_species(); gen_weapons(); gen_lang(); gen_data()
+    print("ok", len(W), "weapons")
