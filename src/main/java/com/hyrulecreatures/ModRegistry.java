@@ -26,6 +26,7 @@ public final class ModRegistry {
             int[] c = switch (s) { case BOKOBLIN -> new int[]{0xc8452f, 0xe8dcb8}; case MOBLIN -> new int[]{0xa4552f, 0x3a2418};
                 case LIZALFOS -> new int[]{0x5a9a3a, 0xe0d08a}; case HINOX -> new int[]{0x7a5a8a, 0xffe14a}; case TALUS -> new int[]{0x8a8478, 0xe0902a};
                 case OCTOROK -> new int[]{0xc8452f, 0xffffff}; case WIZZROBE -> new int[]{0x9a2a1e, 0xe8dcb8};
+                case LYNEL -> new int[]{0xc89a5a, 0xb8402a}; case CHUCHU -> new int[]{0xd84a30, 0xffd060}; case GUARDIAN -> new int[]{0x6a8a8a, 0x3ae0ff};
                 case GIBDO -> new int[]{0xb8a888, 0xff3030}; case HORRIBLIN -> new int[]{0x8a9a78, 0xff3030}; default -> new int[]{0x3a3040, 0xff4040}; };
             ITEMS.register(s.id + "_spawn_egg", () -> new ForgeSpawnEggItem(TYPES.get(s), c[0], c[1], new Item.Properties()));
         }

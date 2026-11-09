@@ -8,6 +8,6 @@ BotW + TotK creatures & weapons. TotK variants take priority over BotW.
 - Every non-mod mob is hostile to these mobs and vice versa (`FactionEvents`).
 
 ## Done
-Bokoblin, Moblin, Lizalfos, Keese, Hinox, Talus, Gibdo, Horriblin, Octorok, Wizzrobe; 38 melee weapons + 10 bows; ranged system (SHOOT: arrows, rocks, fire/ice/spark balls, returning boomerang).
-## TODO (shields, quadruped model for Lynel, blob model for Chuchu)
+Bokoblin, Moblin, Lizalfos, Keese, Hinox, Talus, Gibdo, Horriblin, Octorok, Wizzrobe, Lynel (quadruped), Chuchu (squash&stretch, elemental hits), Guardian Stalker (laser); 38 melee weapons + 10 bows; ranged system (SHOOT: arrows, rocks, fire/ice/spark balls, returning boomerang).
+## TODO (shields, Chuchu splitting, Guardian variants)
 Remaining creatures (Lynel, Guardian, Chuchu, Wizzrobe, Octorok, Gleeok, Gibdo, Horriblin, Construct, Phantom Ganon, bosses...), elemental variants, loot tables, hand-polished models.

@@ -78,6 +78,9 @@ public class CreatureModel extends EntityModel<HyruleBiped> implements ArmedMode
         if (head != null) { head.xRot += hpitch * rad - hunch; head.yRot += hyaw * rad; }
         if (!flier) {
             body.xRot += hunch;
+            float g = Mth.cos(limb * .6662f) * 1.0f * amt, g2 = Mth.cos(limb * .6662f + Mth.PI) * 1.0f * amt;
+            add("frontLeftLeg", g, 0, 0); add("backRightLeg", g, 0, 0); add("frontRightLeg", g2, 0, 0); add("backLeftLeg", g2, 0, 0);
+            if (e.species == Species.CHUCHU) body.y -= Math.abs(Mth.sin(limb * .4f)) * 3 * amt;
             add("rightLeg", Mth.cos(limb * .6662f) * 1.4f * amt, 0, 0);
             add("leftLeg", Mth.cos(limb * .6662f + Mth.PI) * 1.4f * amt, 0, 0);
             boolean armed = !e.getMainHandItem().isEmpty();
@@ -93,6 +96,16 @@ public class CreatureModel extends EntityModel<HyruleBiped> implements ArmedMode
         add("jaw", Mth.sin(age * .07f) * .03f + 0.02f, 0, 0);
 
         AttackKind k = e.atkKind();
+        if (e.species == Species.CHUCHU) { // squash & stretch instead of limbs
+            float sq = 1 + Mth.sin(age * .15f) * .05f, sy = sq, sxz = 2 - sq;
+            if (k != null) {
+                float t = e.atkTick() + pt; int[] T = {0, k.windup, k.hit, k.total};
+                sy = key(t, T, new float[]{1, .6f, 1.35f, 1}); sxz = key(t, T, new float[]{1, 1.3f, .8f, 1});
+            }
+            if (e.downLeft() > 0) { sy = .55f; sxz = 1.3f; }
+            body.xScale = sxz; body.zScale = sxz; body.yScale = sy;
+            return;
+        }
         float flap = 1f;
         if (k != null) {
             float t = e.atkTick() + pt;

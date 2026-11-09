@@ -58,7 +58,7 @@ public class HyruleBiped extends HyruleMob {
             level().addFreshEntity(a);
         } else {
             boolean boom = isBoomerang(h);
-            int ty = boom ? 4 : species == Species.OCTOROK ? 0 : new int[]{1, 2, 3, 1, 3}[rank()];
+            int ty = boom ? 4 : species == Species.OCTOROK ? 0 : species == Species.GUARDIAN ? 3 : new int[]{1, 2, 3, 1, 3}[rank()];
             Shot s = new Shot(level(), this, ty, boom ? h.copy() : new ItemStack(ModRegistry.shotItem(ty)), dmg);
             s.shoot(dx, dy + h2 * (ty == 0 ? 0.05 : 0), dz, boom ? 1.1f : 1.2f, 1f);
             level().addFreshEntity(s);
@@ -87,6 +87,17 @@ public class HyruleBiped extends HyruleMob {
         s.setDamageValue(r.nextInt(Math.max(1, s.getMaxDamage() / 2)));
         setItemSlot(EquipmentSlot.MAINHAND, s);
         setDropChance(EquipmentSlot.MAINHAND, 0.2f);
+    }
+
+    @Override public boolean doHurtTarget(Entity t) {
+        boolean ok = super.doHurtTarget(t);
+        if (ok && species == Species.CHUCHU && t instanceof LivingEntity e) switch (rank()) {
+            case 0 -> e.setSecondsOnFire(4);
+            case 1 -> { e.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.MOVEMENT_SLOWDOWN, 100, 2)); e.setTicksFrozen(e.getTicksRequiredToFreeze() + 80); }
+            case 2, 4 -> e.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.WEAKNESS, 100, 1));
+            default -> {}
+        }
+        return ok;
     }
 
     @Override public boolean causeFallDamage(float f, float m, net.minecraft.world.damagesource.DamageSource s) {

@@ -119,6 +119,32 @@ SPECIES = {
         P("cone", "head", (-3, -6, -3, 6, 6, 6), (0, -9, 0), c="hair"),
         P("rightArm", None, (-3, -2, -2, 4, 10, 4), (-6, 10, 0), c="cloth", f=["hand"]),
         P("leftArm", None, (-1, -2, -2, 4, 10, 4), (6, 10, 0), c="cloth", f=["hand"])]),
+    "lynel": dict(hunch=0.0, parts=[
+        P("horse", None, (-5, 0, -2, 10, 10, 16), (0, 6, 0), c="skin2"),
+        P("tail1", "horse", (-1.5, 0, 0, 3, 11, 3), (0, 1, 15), (0.35, 0, 0), c="hair"),
+        P("body", None, (-4, -12, -4, 8, 12, 5), (0, 6, 0), f=[]),
+        P("belly", "body", (-3, -8, -5, 6, 8, 1), (0, 0, 0), c="belly"),
+        P("head", None, (-4, -8, -4, 8, 8, 8), (0, -6, -2), f=["eyes"]),
+        P("snout", "head", (-2, -3, -7, 4, 3, 3), (0, 0, 0), c="skin2", f=["nostrils"]),
+        P("mane", "head", (-1.5, -9, 3, 3, 14, 3), (0, 0, 0), c="hair"),
+        P("hornL", "head", (0, -5, -1, 2, 6, 2), (3, -8, 0), (0, 0, -0.4), c="horn"),
+        P("hornR", "head", (-2, -5, -1, 2, 6, 2), (-3, -8, 0), (0, 0, 0.4), c="horn"),
+        P("rightArm", None, (-3, -2, -2, 4, 12, 4), (-6, -4, -2), f=["hand"]),
+        P("leftArm", None, (-1, -2, -2, 4, 12, 4), (6, -4, -2), f=["hand"]),
+        P("frontRightLeg", None, (-2, 0, -2, 4, 8, 4), (-3.5, 16, 0), c="skin2"),
+        P("frontLeftLeg", None, (-2, 0, -2, 4, 8, 4), (3.5, 16, 0), c="skin2"),
+        P("backRightLeg", None, (-2, 0, -2, 4, 8, 4), (-3.5, 16, 12), c="skin2"),
+        P("backLeftLeg", None, (-2, 0, -2, 4, 8, 4), (3.5, 16, 12), c="skin2")]),
+    "chuchu": dict(hunch=0.0, parts=[
+        P("body", None, (-5, 0, -5, 10, 8, 10), (0, 16, 0), f=["eyes"]),
+        P("core", "body", (-2, -2, -2, 4, 2, 4), (0, 0, 0), c="horn")]),
+    "guardian": dict(hunch=0.0, parts=[
+        P("body", None, (-6, -6, -6, 12, 12, 12), (0, 8, 0), f=["bigeye"]),
+        P("crest", "body", (-1, -9, -4, 2, 3, 8), (0, 0, 0), c="horn"),
+        P("frontRightLeg", None, (-1.5, 0, -1.5, 3, 16, 3), (-6, 8, -4), c="skin2"),
+        P("frontLeftLeg", None, (-1.5, 0, -1.5, 3, 16, 3), (6, 8, -4), c="skin2"),
+        P("backRightLeg", None, (-1.5, 0, -1.5, 3, 16, 3), (-6, 8, 4), c="skin2"),
+        P("backLeftLeg", None, (-1.5, 0, -1.5, 3, 16, 3), (6, 8, 4), c="skin2")]),
     "keese": dict(hunch=0, parts=[
         P("body", None, (-3, -3, -3, 6, 6, 6), (0, 19, 0), f=["bigeye"]),
         P("earL", "body", (0, -3, -0.5, 2, 3, 1), (2, -3, -1), c="horn"),
@@ -191,6 +217,22 @@ PAL["wizzrobe"] = [pal("#d9b48a", "#b08a62", "#d9b48a", "#9a2a1e", "#e8dcb8", ha
                    pal("#d9b48a", "#b08a62", "#d9b48a", "#8a7a1e", "#e8dcb8", hair="#d8c030", eye="#ffff66"),
                    pal("#d9b48a", "#b08a62", "#d9b48a", "#4a3a5a", "#e8dcb8", hair="#7a4aa8", eye="#ff66ff"),
                    pal("#d9b48a", "#b08a62", "#d9b48a", "#8a6a1e", "#e8dcb8", hair="#e0b83a", eye="#ffffff")]
+
+PAL["lynel"] = [pal("#c89a5a", "#a07a42", "#e8c890", "#8a4a3a", "#e8dcb8", "#b8402a"),
+                pal("#7a9ac0", "#5a789c", "#b4cce0", "#3a6aa8", "#e8dcb8", "#2a4a8a"),
+                pal("#4a3a3a", "#33292a", "#7a6a6a", "#2a2a34", "#c9c2a8", "#e8e0d0"),
+                pal("#d8dce0", "#b0b4b8", "#f4f6f8", "#8e98a4", "#ffffff", "#ffffff"),
+                pal("#e0b83a", "#b8912a", "#f6e08a", "#e8c85a", "#fff2c0", "#fff2a0")]
+PAL["chuchu"] = [pal("#d84a30", "#a83020", "#ff8a60", "#000000", "#ffd060", eye="#ffffff"),
+                 pal("#3f88e0", "#2a64b0", "#8ac0ff", "#000000", "#c0f0ff", eye="#ffffff"),
+                 pal("#6a4a8a", "#4a3266", "#9a7ab8", "#000000", "#e0a0ff", eye="#ffffff"),
+                 pal("#e8ecf0", "#c0c4c8", "#ffffff", "#000000", "#a0e0ff", eye="#202020"),
+                 pal("#e8c830", "#b8a020", "#fff080", "#000000", "#ffffff", eye="#ffffff")]
+PAL["guardian"] = [pal("#6a8a8a", "#4a6666", "#8ab0b0", "#000000", "#3ae0ff", eye="#40d8ff"),
+                   pal("#5a7aa8", "#3f5a84", "#86a4d0", "#000000", "#3ae0ff", eye="#40d8ff"),
+                   pal("#3a3f4a", "#262a32", "#5a606c", "#000000", "#ff6a2a", eye="#ff5a20"),
+                   pal("#b8c4cc", "#8e9aa4", "#e0e8ec", "#000000", "#66ffcc", eye="#66ffcc"),
+                   pal("#c8a850", "#9a8038", "#e8d088", "#000000", "#ffffff", eye="#ffffff")]
 
 TEX = 128
 
@@ -395,7 +437,8 @@ def gen_weapons():
 NAMES = {"bokoblin": ("Bokoblin", "ボコブリン"), "moblin": ("Moblin", "モリブリン"),
          "lizalfos": ("Lizalfos", "リザルフォス"), "keese": ("Keese", "キース"), "hinox": ("Hinox", "ヒノックス"), "talus": ("Talus", "イワロック"),
          "gibdo": ("Gibdo", "ガイブドー"), "horriblin": ("Horriblin", "ホラブリン"),
-         "octorok": ("Octorok", "オクタロック"), "wizzrobe": ("Wizzrobe", "ウィズローブ")}
+         "octorok": ("Octorok", "オクタロック"), "wizzrobe": ("Wizzrobe", "ウィズローブ"),
+         "lynel": ("Lynel", "ライネル"), "chuchu": ("Chuchu", "チュチュ"), "guardian": ("Guardian Stalker", "ガーディアン")}
 RANK_EN = [r.capitalize() for r in RANKS]
 
 
@@ -419,7 +462,7 @@ def gen_lang():
 def gen_data():
     d = os.path.join(RES, "data", MOD, "forge", "biome_modifier")
     os.makedirs(d, exist_ok=True)
-    spawns = {"bokoblin": (40, 2, 4), "moblin": (20, 1, 2), "lizalfos": (25, 1, 3), "keese": (30, 2, 4), "hinox": (4, 1, 1), "talus": (8, 1, 1), "gibdo": (14, 1, 3), "horriblin": (14, 2, 3), "octorok": (12, 1, 2), "wizzrobe": (6, 1, 1)}
+    spawns = {"bokoblin": (40, 2, 4), "moblin": (20, 1, 2), "lizalfos": (25, 1, 3), "keese": (30, 2, 4), "hinox": (4, 1, 1), "talus": (8, 1, 1), "gibdo": (14, 1, 3), "horriblin": (14, 2, 3), "octorok": (12, 1, 2), "wizzrobe": (6, 1, 1), "lynel": (3, 1, 1), "chuchu": (30, 2, 4), "guardian": (3, 1, 1)}
     for sid, (wt, lo, hi) in spawns.items():
         json.dump({"type": "forge:add_spawns", "biomes": "#minecraft:is_overworld",
                    "spawners": {"type": f"{MOD}:{sid}", "weight": wt, "minCount": lo, "maxCount": hi}},

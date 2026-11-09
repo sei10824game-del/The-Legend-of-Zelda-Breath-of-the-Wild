@@ -11,6 +11,7 @@ import net.minecraft.util.Mth;
 
 public class HyruleRenderer extends MobRenderer<HyruleBiped, CreatureModel> {
     private final Species species;
+    private final boolean side;
 
     public static ModelLayerLocation layer(Species s) {
         return new ModelLayerLocation(new ResourceLocation(HyruleCreatures.ID, s.id), "main");
@@ -18,7 +19,7 @@ public class HyruleRenderer extends MobRenderer<HyruleBiped, CreatureModel> {
 
     public HyruleRenderer(EntityRendererProvider.Context ctx, Species s) {
         super(ctx, new CreatureModel(ctx.bakeLayer(layer(s)), Spec.get(s.id)), 0.4f * s.scale);
-        species = s;
+        species = s; side = Spec.get(s.id).names().contains("frontLeftLeg");
         if (Spec.get(s.id).names().contains("rightArm")) addLayer(new ItemInHandLayer<>(this, ctx.getItemInHandRenderer()));
     }
 
@@ -36,7 +37,7 @@ public class HyruleRenderer extends MobRenderer<HyruleBiped, CreatureModel> {
             float dp = Mth.clamp(Math.min((HyruleMob.DOWN_TIME - left) / 6f, left / 12f), 0, 1);
             dp = dp * dp * (3 - 2 * dp);
             ps.translate(0, 0.22 * dp * species.scale, 0);
-            ps.mulPose(Axis.XP.rotationDegrees(-90 * dp));
+            ps.mulPose(side ? Axis.ZP.rotationDegrees(90 * dp) : Axis.XP.rotationDegrees(-90 * dp));
         }
         AttackKind k = e.atkKind();
         if (k == AttackKind.SPIN) {

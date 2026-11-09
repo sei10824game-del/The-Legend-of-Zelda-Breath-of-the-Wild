@@ -19,6 +19,13 @@ public enum Species {
     GIBDO("gibdo", 0.6f, 1.8f, 30, 3, 0.25, 0.3, 1.9, 1.0f, AttackKind.SLASH, 0f, false, new String[][]{{}, {}, {}, {}, {}}),
     OCTOROK("octorok", 0.9f, 0.9f, 16, 3, 0.14, 0.2, 14, 1.0f, AttackKind.SHOOT, 0f, false, new String[][]{{}, {}, {}, {}, {}}),
     WIZZROBE("wizzrobe", 0.6f, 1.8f, 24, 4, 0.2, 0.1, 14, 1.0f, AttackKind.SHOOT, 0f, true, new String[][]{{}, {}, {}, {}, {}}),
+    LYNEL("lynel", 1.4f, 3.0f, 120, 8, 0.3, 2.5, 3.4, 1.6f, AttackKind.SLASH, 0f, false, new String[][]{
+        {"lynel_sword", "lynel_spear", "lynel_crusher", "lynel_bow"}, {"mighty_lynel_sword", "mighty_lynel_spear", "mighty_lynel_crusher", "mighty_lynel_bow"},
+        {"savage_lynel_sword", "savage_lynel_spear", "savage_lynel_crusher", "savage_lynel_bow"},
+        {"savage_lynel_sword", "savage_lynel_spear", "savage_lynel_crusher", "savage_lynel_bow"},
+        {"savage_lynel_sword", "savage_lynel_spear", "savage_lynel_crusher", "savage_lynel_bow"}}),
+    CHUCHU("chuchu", 0.9f, 0.9f, 12, 3, 0.2, 0.2, 1.8, 1.0f, AttackKind.BITE, 0f, false, new String[][]{{}, {}, {}, {}, {}}),
+    GUARDIAN("guardian", 1.2f, 2.2f, 100, 10, 0.26, 1.0, 16, 1.5f, AttackKind.SHOOT, 0f, false, new String[][]{{}, {}, {}, {}, {}}),
     HORRIBLIN("horriblin", 0.6f, 1.7f, 30, 3, 0.3, 0.4, 1.9, 1.0f, AttackKind.SLASH, 0f, false, new String[][]{
         {"boko_club", "boko_spear"}, {"spiked_boko_club", "spiked_boko_spear"}, {"dragonbone_boko_club"}, {"dragonbone_boko_spear"}, {"dragonbone_boko_club"}});
 
