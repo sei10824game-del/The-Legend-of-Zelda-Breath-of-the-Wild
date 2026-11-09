@@ -28,12 +28,14 @@ public final class ModRegistry {
                 case OCTOROK -> new int[]{0xc8452f, 0xffffff}; case WIZZROBE -> new int[]{0x9a2a1e, 0xe8dcb8};
                 case LYNEL -> new int[]{0xc89a5a, 0xb8402a}; case CHUCHU -> new int[]{0xd84a30, 0xffd060}; case GUARDIAN -> new int[]{0x6a8a8a, 0x3ae0ff};
                 case GIBDO -> new int[]{0xb8a888, 0xff3030}; case HORRIBLIN -> new int[]{0x8a9a78, 0xff3030}; default -> new int[]{0x3a3040, 0xff4040}; };
+            for (String suf : new String[]{"horn", "fang", "guts"}) ITEMS.register(s.id + "_" + suf, () -> new Item(new Item.Properties()));
             ITEMS.register(s.id + "_spawn_egg", () -> new ForgeSpawnEggItem(TYPES.get(s), c[0], c[1], new Item.Properties()));
         }
         JsonObject[] ws = new Gson().fromJson(new InputStreamReader(ModRegistry.class.getResourceAsStream(
                 "/assets/" + HyruleCreatures.ID + "/weapons.json")), JsonObject[].class);
         for (JsonObject w : ws) {
             String kind = w.get("kind").getAsString();
+            if (kind.equals("shield")) { int su = w.get("dur").getAsInt(); ITEMS.register(w.get("id").getAsString(), () -> new ShieldItem(new Item.Properties().durability(su))); continue; }
             if (kind.equals("bow")) { int bd = w.get("dmg").getAsInt(), bu = w.get("dur").getAsInt();
                 ITEMS.register(w.get("id").getAsString(), () -> new HyruleBowItem(bu, bd)); continue; }
             AttackKind ak = switch (kind) { case "club", "claymore" -> AttackKind.SMASH; case "spear", "halberd" -> AttackKind.THRUST; default -> AttackKind.SLASH; };

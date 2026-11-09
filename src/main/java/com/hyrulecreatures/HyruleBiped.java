@@ -16,6 +16,12 @@ import javax.annotation.Nullable;
 /** Data-driven creature (Bokoblin, Moblin, Lizalfos, ...). */
 public class HyruleBiped extends HyruleMob {
     public final Species species;
+    private static final java.util.Map<Species, String[]> SHIELDS = java.util.Map.of(
+            Species.BOKOBLIN, new String[]{"boko_shield", "spiked_boko_shield", "dragonbone_boko_shield", "knights_shield", "royal_shield"},
+            Species.HORRIBLIN, new String[]{"boko_shield", "spiked_boko_shield", "dragonbone_boko_shield", "knights_shield", "royal_shield"},
+            Species.STALKOBLIN, new String[]{"boko_shield", "spiked_boko_shield", "dragonbone_boko_shield", "dragonbone_boko_shield", "dragonbone_boko_shield"},
+            Species.SOLDIER_CONSTRUCT, new String[]{"soldiers_shield", "knights_shield", "royal_shield", "royal_shield", "hylian_shield"},
+            Species.YIGA_BLADEMASTER, new String[]{"soldiers_shield", "knights_shield", "knights_shield", "royal_shield", "royal_shield"});
     private static final int[] RANK_WEIGHT = {50, 28, 14, 7, 1};
 
     public HyruleBiped(EntityType<? extends HyruleBiped> t, Level l, Species s) { super(t, l); species = s; }
@@ -87,6 +93,11 @@ public class HyruleBiped extends HyruleMob {
         s.setDamageValue(r.nextInt(Math.max(1, s.getMaxDamage() / 2)));
         setItemSlot(EquipmentSlot.MAINHAND, s);
         setDropChance(EquipmentSlot.MAINHAND, 0.2f);
+        String[] sh = SHIELDS.get(species);
+        if (sh != null && !(s.getItem() instanceof HyruleBowItem) && r.nextFloat() < 0.5f) {
+            setItemSlot(EquipmentSlot.OFFHAND, new ItemStack(ForgeRegistries.ITEMS.getValue(new ResourceLocation(HyruleCreatures.ID, sh[rank()]))));
+            setDropChance(EquipmentSlot.OFFHAND, 0.15f);
+        }
     }
 
     @Override public boolean doHurtTarget(Entity t) {

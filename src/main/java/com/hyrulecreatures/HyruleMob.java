@@ -77,6 +77,11 @@ public abstract class HyruleMob extends Monster {
         if (level().isClientSide) return super.hurt(s, a);
         boolean down = isDown();
         if (down) a *= 1.5f;
+        else if (getOffhandItem().getItem() instanceof net.minecraft.world.item.ShieldItem && atkKind() == null
+                && s.getDirectEntity() != null && random.nextFloat() < 0.5f
+                && getViewVector(1).dot(s.getDirectEntity().position().subtract(position()).normalize()) > 0.4) {
+            playSound(SoundEvents.SHIELD_BLOCK, 1f, 1f); stagger += a * 0.5f; return false; // guarded
+        }
         boolean r = super.hurt(s, a);
         if (r && !down && s.getEntity() != null && isAlive()) {
             if (tickCount - lastHit > 30) streak = 0;

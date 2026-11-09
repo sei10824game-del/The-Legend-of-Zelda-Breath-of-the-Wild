@@ -185,6 +185,26 @@ PAL = {
 }
 
 SPECIES["horriblin"] = SPECIES["bokoblin"]
+SPECIES["stalkoblin"] = SPECIES["bokoblin"]
+SPECIES["stalmoblin"] = SPECIES["moblin"]
+SPECIES["stalizalfos"] = SPECIES["lizalfos"]
+SPECIES["yiga_footsoldier"] = dict(hunch=0.05, parts=[
+    P("body", None, (-4, 0, -2, 8, 12, 4), (0, 0, 0)),
+    P("belt", "body", (-4.5, 8, -2.5, 9, 2, 5), (0, 0, 0), c="cloth"),
+    P("head", None, (-4, -8, -4, 8, 8, 8), (0, 0, 0), c="belly"),
+    P("mask", "head", (-4.5, -8, -5, 9, 6, 1), (0, 0, 0), c="horn", f=["eyes"]),
+    P("hood", "head", (-4.5, -9, -4.5, 9, 3, 9), (0, 0, 0), c="skin2"),
+] + biped_legs(4, 12, 5, 4, 12, 2, 12))
+SPECIES["yiga_blademaster"] = SPECIES["yiga_footsoldier"]
+SPECIES["soldier_construct"] = dict(hunch=0.0, parts=[
+    P("body", None, (-5, 0, -3, 10, 12, 6), (0, 0, 0)),
+    P("core", "body", (-2, 3, -4, 4, 4, 1), (0, 0, 0), c="horn"),
+    P("head", None, (-4, -7, -4, 8, 7, 8), (0, 0, 0), c="skin2", f=["bigeye"]),
+    P("padL", "body", (0, -2, -3.5, 4, 2, 7), (4, 0, 0), c="horn"),
+    P("padR", "body", (-4, -2, -3.5, 4, 2, 7), (-4, 0, 0), c="horn"),
+] + biped_legs(5, 12, 7, 5, 12, 2.5, 12))
+SPECIES["captain_construct"] = SPECIES["soldier_construct"]
+
 PAL["hinox"] = [pal("#7a5a8a", "#5a3f68", "#a98cb8", "#4a3a2b", "#e8dcb8", "#241a2a", eye="#ffe14a"),
                 pal("#4a7ab0", "#35567e", "#8fb0d6", "#4a3a2b", "#e8dcb8", "#1c2a3e", eye="#ffe14a"),
                 pal("#3a3a48", "#262632", "#6a6a7a", "#3a2a1b", "#c9c2a8", "#101018", eye="#ff4a3a"),
@@ -233,6 +253,19 @@ PAL["guardian"] = [pal("#6a8a8a", "#4a6666", "#8ab0b0", "#000000", "#3ae0ff", ey
                    pal("#3a3f4a", "#262a32", "#5a606c", "#000000", "#ff6a2a", eye="#ff5a20"),
                    pal("#b8c4cc", "#8e9aa4", "#e0e8ec", "#000000", "#66ffcc", eye="#66ffcc"),
                    pal("#c8a850", "#9a8038", "#e8d088", "#000000", "#ffffff", eye="#ffffff")]
+
+def bone(eye): return pal("#e6e0cc", "#c4bca4", "#d0c8b0", "#bfb79c", "#f4f0e0", eye=eye)
+for _sid, _src, _eye in (("stalkoblin", "bokoblin", "#66ccff"), ("stalmoblin", "moblin", "#66ccff"), ("stalizalfos", "lizalfos", "#66ccff")):
+    PAL[_sid] = [bone(_eye), bone("#aaddff"), bone("#ff66ff"), bone("#ffffff"), bone("#ffe066")]
+def suit(a, b, mask): return pal(a, b, "#d9b48a", "#000000", mask, hair=b, eye="#ff3030")
+PAL["yiga_footsoldier"] = [suit("#8a1e1e", "#5a1212", "#e8e0d0"), suit("#2a2a3a", "#161622", "#e8e0d0"),
+                           suit("#3a1e5a", "#241238", "#e8e0d0"), suit("#6a6a74", "#44444c", "#ffffff"), suit("#a08a2a", "#6a5a18", "#fff2c0")]
+PAL["yiga_blademaster"] = [suit("#5a1212", "#2e0808", "#c8c0b0"), suit("#161622", "#0a0a10", "#c8c0b0"),
+                           suit("#241238", "#120820", "#c8c0b0"), suit("#44444c", "#26262c", "#e0e0e0"), suit("#6a5a18", "#3a300c", "#e8d890")]
+def cons(a, b, glow): return pal(a, b, a, "#000000", "#707882", eye=glow)
+PAL["soldier_construct"] = [cons("#8a948c", "#6a746c", "#40e0ff"), cons("#7a8a9c", "#5a6a7c", "#40ffa0"),
+                            cons("#5a5a66", "#3c3c46", "#ff8a30"), cons("#b8c0c8", "#8e969e", "#ffffff"), cons("#c0a860", "#98803e", "#fff2a0")]
+PAL["captain_construct"] = PAL["soldier_construct"]
 
 TEX = 128
 
@@ -339,6 +372,15 @@ W = [
     ("lynel_bow", "Lynel Bow", "ライネルの弓", "bow", 12, 100, "#8a4a3a", "#d8a85a"),
     ("mighty_lynel_bow", "Mighty Lynel Bow", "強ライネルの弓", "bow", 16, 130, "#3a6aa8", "#d8e0f0"),
     ("savage_lynel_bow", "Savage Lynel Bow", "猛ライネルの弓", "bow", 21, 160, "#2a2a34", "#e8c85a"),
+    ("yiga_blade", "Yiga Blade", "イーガ団の刀", "sword", 6, 60, "#c0c4cc", "#9a1e1e"),
+    ("yiga_bow", "Yiga Bow", "イーガ団の弓", "bow", 6, 90, "#3a2a2a", "#9a1e1e"),
+    ("boko_shield", "Boko Shield", "ボコ盾", "shield", 0, 60, "#9a6a35", "#6a431f"),
+    ("spiked_boko_shield", "Spiked Boko Shield", "トゲボコ盾", "shield", 0, 90, "#9a6a35", "#b0b0b8"),
+    ("dragonbone_boko_shield", "Dragonbone Boko Shield", "竜骨のボコ盾", "shield", 0, 130, "#e8dcb8", "#b8a878"),
+    ("soldiers_shield", "Soldier's Shield", "兵士の盾", "shield", 0, 100, "#8a8e98", "#8a6a3a"),
+    ("knights_shield", "Knight's Shield", "騎士の盾", "shield", 0, 150, "#4a6aa8", "#e0e4ec"),
+    ("royal_shield", "Royal Shield", "王家の盾", "shield", 0, 200, "#d8b43a", "#f0f2f8"),
+    ("hylian_shield", "Hylian Shield", "ハイリアの盾", "shield", 0, 400, "#2a4a9a", "#d8b43a"),
     ("lizal_boomerang", "Lizal Boomerang", "リザルブーメラン", "boomerang", 5, 30, "#7a9a3a", "#e0d08a"),
     ("lizal_forked_boomerang", "Lizal Forked Boomerang", "リザルフォーク", "boomerang", 7, 40, "#3a8ac0", "#bfe0ee"),
     ("lizal_tri_boomerang", "Lizal Tri-Boomerang", "リザルトライブーメラン", "boomerang", 10, 60, "#4a4a5a", "#aaaabb"),
@@ -398,6 +440,9 @@ def item_tex(kind, c1, c2, name):
         d.polygon([(10, 2), (14, 1), (13, 5)], fill=b)
         if kind == "halberd":
             d.polygon([(8, 5), (4, 3), (7, 8)], fill=b)
+    elif kind == "shield":
+        d.polygon([(3, 2), (12, 2), (13, 8), (8, 14), (2, 8)], fill=a, outline=dk)
+        d.line([(8, 3), (8, 13)], fill=b, width=2); d.line([(4, 7), (11, 7)], fill=b, width=1)
     elif kind == "bow":
         d.arc([-6, 1, 13, 20], 270, 90, fill=a, width=2)
         line(d, (7, 1), (7, 14), b, 1)
@@ -438,7 +483,10 @@ NAMES = {"bokoblin": ("Bokoblin", "ボコブリン"), "moblin": ("Moblin", "モ�
          "lizalfos": ("Lizalfos", "リザルフォス"), "keese": ("Keese", "キース"), "hinox": ("Hinox", "ヒノックス"), "talus": ("Talus", "イワロック"),
          "gibdo": ("Gibdo", "ガイブドー"), "horriblin": ("Horriblin", "ホラブリン"),
          "octorok": ("Octorok", "オクタロック"), "wizzrobe": ("Wizzrobe", "ウィズローブ"),
-         "lynel": ("Lynel", "ライネル"), "chuchu": ("Chuchu", "チュチュ"), "guardian": ("Guardian Stalker", "ガーディアン")}
+         "lynel": ("Lynel", "ライネル"), "chuchu": ("Chuchu", "チュチュ"), "guardian": ("Guardian Stalker", "ガーディアン"),
+         "stalkoblin": ("Stalkoblin", "スタルコブリン"), "stalmoblin": ("Stalmoblin", "スタルモリブリン"), "stalizalfos": ("Stalizalfos", "スタルリザルフォス"),
+         "yiga_footsoldier": ("Yiga Footsoldier", "イーガ団員"), "yiga_blademaster": ("Yiga Blademaster", "イーガ団の剣士"),
+         "soldier_construct": ("Soldier Construct", "ソルジャーコンストラクト"), "captain_construct": ("Captain Construct", "キャプテンコンストラクト")}
 RANK_EN = [r.capitalize() for r in RANKS]
 
 
@@ -449,6 +497,8 @@ def gen_lang():
         for i, r in enumerate(RANKS):
             L[f"rank.{MOD}.{r}"] = RANK_EN[i] if idx == 0 else RANK_JA[i]
         for sid, n in NAMES.items():
+            for suf, en, ja in (("horn", "Horn", "角"), ("fang", "Fang", "牙"), ("guts", "Guts", "内臓")):
+                L[f"item.{MOD}.{sid}_{suf}"] = f"{n[0]} {en}" if idx == 0 else f"{n[1]}の{ja}"
             L[f"entity.{MOD}.{sid}"] = n[idx]
             L[f"item.{MOD}.{sid}_spawn_egg"] = n[idx] + (" Spawn Egg" if idx == 0 else "のスポーンエッグ")
         for i, (en, ja, c) in SHOTS.items():
@@ -459,10 +509,31 @@ def gen_lang():
         json.dump(L, open(f"{A}/lang/{code}.json", "w"), ensure_ascii=False, indent=1)
 
 
+def gen_parts():
+    kinds = [("horn", "Horn", "角", 0.7), ("fang", "Fang", "牙", 0.5), ("guts", "Guts", "内臓", 0.3)]
+    ld = os.path.join(RES, "data", MOD, "loot_tables", "entities"); os.makedirs(ld, exist_ok=True)
+    for sid in SPECIES:
+        pl = PAL[sid][0]
+        for suf, en, ja, ch in kinds:
+            im = Image.new("RGBA", (16, 16), (0, 0, 0, 0)); d = ImageDraw.Draw(im)
+            if suf == "horn":
+                c = hexc(pl["horn"]) + (255,); d.polygon([(4, 14), (7, 3), (9, 3), (12, 14)], fill=c, outline=shade(hexc(pl["horn"]), .6) + (255,))
+            elif suf == "fang":
+                d.polygon([(5, 3), (11, 3), (8, 14)], fill=(240, 240, 232, 255), outline=(150, 150, 140, 255))
+            else:
+                d.ellipse([3, 4, 13, 12], fill=(200, 90, 110, 255), outline=(120, 40, 60, 255)); d.ellipse([5, 6, 8, 8], fill=(230, 140, 150, 255))
+            im.save(f"{A}/textures/item/{sid}_{suf}.png")
+            json.dump({"parent": "minecraft:item/generated", "textures": {"layer0": f"{MOD}:item/{sid}_{suf}"}}, open(f"{A}/models/item/{sid}_{suf}.json", "w"))
+        pools = [{"rolls": 1, "entries": [{"type": "minecraft:item", "name": f"{MOD}:{sid}_{suf}",
+                  "functions": [{"function": "minecraft:set_count", "count": {"type": "minecraft:uniform", "min": 1, "max": 2}}],
+                  "conditions": [{"condition": "minecraft:random_chance", "chance": ch}]}]} for suf, en, ja, ch in kinds]
+        json.dump({"type": "minecraft:entity", "pools": pools}, open(f"{ld}/{sid}.json", "w"))
+
+
 def gen_data():
     d = os.path.join(RES, "data", MOD, "forge", "biome_modifier")
     os.makedirs(d, exist_ok=True)
-    spawns = {"bokoblin": (40, 2, 4), "moblin": (20, 1, 2), "lizalfos": (25, 1, 3), "keese": (30, 2, 4), "hinox": (4, 1, 1), "talus": (8, 1, 1), "gibdo": (14, 1, 3), "horriblin": (14, 2, 3), "octorok": (12, 1, 2), "wizzrobe": (6, 1, 1), "lynel": (3, 1, 1), "chuchu": (30, 2, 4), "guardian": (3, 1, 1)}
+    spawns = {"bokoblin": (40, 2, 4), "moblin": (20, 1, 2), "lizalfos": (25, 1, 3), "keese": (30, 2, 4), "hinox": (4, 1, 1), "talus": (8, 1, 1), "gibdo": (14, 1, 3), "horriblin": (14, 2, 3), "octorok": (12, 1, 2), "wizzrobe": (6, 1, 1), "lynel": (3, 1, 1), "chuchu": (30, 2, 4), "guardian": (3, 1, 1), "stalkoblin": (10, 2, 3), "stalmoblin": (5, 1, 2), "stalizalfos": (6, 1, 2), "yiga_footsoldier": (6, 1, 3), "yiga_blademaster": (2, 1, 1), "soldier_construct": (4, 1, 2), "captain_construct": (1, 1, 1)}
     for sid, (wt, lo, hi) in spawns.items():
         json.dump({"type": "forge:add_spawns", "biomes": "#minecraft:is_overworld",
                    "spawners": {"type": f"{MOD}:{sid}", "weight": wt, "minCount": lo, "maxCount": hi}},
@@ -470,5 +541,5 @@ def gen_data():
 
 
 if __name__ == "__main__":
-    gen_species(); gen_weapons(); gen_shots(); gen_lang(); gen_data()
+    gen_species(); gen_weapons(); gen_shots(); gen_parts(); gen_lang(); gen_data()
     print("ok", len(W), "weapons")

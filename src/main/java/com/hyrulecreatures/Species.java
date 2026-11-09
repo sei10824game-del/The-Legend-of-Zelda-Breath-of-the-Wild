@@ -26,6 +26,20 @@ public enum Species {
         {"savage_lynel_sword", "savage_lynel_spear", "savage_lynel_crusher", "savage_lynel_bow"}}),
     CHUCHU("chuchu", 0.9f, 0.9f, 12, 3, 0.2, 0.2, 1.8, 1.0f, AttackKind.BITE, 0f, false, new String[][]{{}, {}, {}, {}, {}}),
     GUARDIAN("guardian", 1.2f, 2.2f, 100, 10, 0.26, 1.0, 16, 1.5f, AttackKind.SHOOT, 0f, false, new String[][]{{}, {}, {}, {}, {}}),
+    STALKOBLIN("stalkoblin", 0.6f, 1.7f, 14, 2, 0.28, 0.3, 1.9, 1.0f, AttackKind.SMASH, 0f, false, new String[][]{
+        {"boko_club", "boko_spear"}, {"spiked_boko_club", "spiked_boko_spear"}, {"dragonbone_boko_club"}, {"dragonbone_boko_spear"}, {"dragonbone_boko_club"}}),
+    STALMOBLIN("stalmoblin", 1.0f, 2.6f, 35, 4, 0.25, 1.2, 2.6, 1.4f, AttackKind.SMASH, 0.2f, false, new String[][]{
+        {"moblin_club"}, {"spiked_moblin_club"}, {"dragonbone_moblin_club"}, {"dragonbone_moblin_club"}, {"dragonbone_moblin_club"}}),
+    STALIZALFOS("stalizalfos", 0.6f, 1.8f, 20, 3, 0.34, 0.4, 2.0, 1.0f, AttackKind.SLASH, 0f, false, new String[][]{
+        {"lizal_boomerang"}, {"lizal_forked_boomerang"}, {"lizal_tri_boomerang"}, {"lizal_tri_boomerang"}, {"lizal_tri_boomerang"}}),
+    YIGA_FOOTSOLDIER("yiga_footsoldier", 0.6f, 1.8f, 30, 3, 0.32, 0.3, 1.9, 1.0f, AttackKind.SLASH, 0f, false, new String[][]{
+        {"yiga_blade", "yiga_bow"}, {"yiga_blade", "soldiers_bow"}, {"yiga_blade", "knights_broadsword"}, {"yiga_blade", "knights_bow"}, {"royal_broadsword", "royal_bow"}}),
+    YIGA_BLADEMASTER("yiga_blademaster", 0.6f, 1.8f, 70, 6, 0.36, 0.5, 2.0, 1.1f, AttackKind.SLASH, 0f, false, new String[][]{
+        {"yiga_blade"}, {"yiga_blade"}, {"knights_broadsword"}, {"royal_broadsword"}, {"royal_guards_sword"}}),
+    SOLDIER_CONSTRUCT("soldier_construct", 0.8f, 2.2f, 60, 6, 0.22, 0.8, 2.3, 1.2f, AttackKind.SLASH, 0f, false, new String[][]{
+        {"soldiers_broadsword"}, {"knights_broadsword"}, {"royal_broadsword"}, {"royal_guards_sword"}, {"royal_guards_sword"}}),
+    CAPTAIN_CONSTRUCT("captain_construct", 1.2f, 3.4f, 160, 11, 0.22, 2.0, 3.4, 1.8f, AttackKind.SMASH, 0.2f, false, new String[][]{
+        {"soldiers_claymore"}, {"knights_claymore"}, {"royal_claymore"}, {"royal_claymore"}, {"royal_claymore"}}),
     HORRIBLIN("horriblin", 0.6f, 1.7f, 30, 3, 0.3, 0.4, 1.9, 1.0f, AttackKind.SLASH, 0f, false, new String[][]{
         {"boko_club", "boko_spear"}, {"spiked_boko_club", "spiked_boko_spear"}, {"dragonbone_boko_club"}, {"dragonbone_boko_spear"}, {"dragonbone_boko_club"}});
 
