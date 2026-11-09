@@ -39,32 +39,36 @@ import math
 
 def guardian_parts(legs=True):
     parts = [
-        P("body", None, (-6, -5, -6, 12, 10, 12), (0, 8, 0), f=["circuit"]),
-        P("dome", "body", (-5, -8, -5, 10, 3, 10), (0, 0, 0), c="skin2", f=["circuit"]),
-        P("crest", "body", (-1, -11, -4, 2, 3, 8), (0, 0, 0), c="horn"),
-        P("eyeCyl", "body", (-3, -3, -9, 6, 6, 3), (0, 0, 0), c="skin2", f=["bigeye"]),
-        P("ringL", "body", (6, -3, -3, 1, 6, 6), (0, 0, 0), c="horn"),
-        P("ringR", "body", (-7, -3, -3, 1, 6, 6), (0, 0, 0), c="horn"),
+        P("body", None, (-8, -5, -8, 16, 10, 16), (0, 5, 0), f=["circuit"]),
+        P("rim", "body", (-9, 0, -9, 18, 2, 18), (0, 0, 0), c="horn"),
+        P("dome", "body", (-6, -8, -6, 12, 3, 12), (0, 0, 0), c="skin2", f=["circuit"]),
+        P("dome2", "body", (-4, -10, -4, 8, 2, 8), (0, 0, 0), c="skin", f=["circuit"]),
+        P("crest", "body", (-1, -13, -3, 2, 3, 6), (0, 0, 0), c="horn"),
+        P("eyeCyl", "body", (-4, -4, -12, 8, 8, 4), (0, 0, 0), c="skin2", f=["bigeye"]),
+        P("eyeRing", "body", (-5, -5, -9, 10, 10, 1), (0, 0, 0), c="horn"),
+        P("ringL", "body", (8, -3, -4, 1, 6, 8), (0, 0, 0), c="horn"),
+        P("ringR", "body", (-9, -3, -4, 1, 6, 8), (0, 0, 0), c="horn"),
     ]
     if legs:
         for i in range(8):
-            a = i * math.pi / 4; dx, dz = round(math.cos(a), 3), round(math.sin(a), 3); th = 0.85
-            parts.append(P(f"leg{i}", None, (-1.5, 0, -1.5, 3, 8, 3), (dx * 5, 12, dz * 5), (th * dz, 0, -th * dx), c="skin2"))
-            parts.append(P(f"leg{i}b", f"leg{i}", (-1, 0, -1, 2, 6.5, 2), (0, 8, 0), (-th * dz, 0, th * dx), c="horn"))
+            a = i * math.pi / 4 + math.pi / 8; dx, dz = round(math.cos(a), 3), round(math.sin(a), 3); th = 0.8
+            parts.append(P(f"leg{i}", None, (-1.5, 0, -1.5, 3, 9, 3), (dx * 7, 10, dz * 7), (th * dz, 0, -th * dx), c="skin2"))
+            parts.append(P(f"leg{i}b", f"leg{i}", (-1, 0, -1, 2, 7.7, 2), (0, 9, 0), (-th * dz, 0, th * dx), c="horn"))
     return parts
 
 
 def scout_parts():
     return [
-        P("body", None, (-5, 0, -4, 10, 12, 8), (0, 0, 0), f=["circuit"]),
+        P("body", None, (-6, 0, -4, 12, 12, 8), (0, 0, 0), f=["circuit"]),
         P("core", "body", (-2, 3, -5, 4, 4, 1), (0, 0, 0), c="horn"),
-        P("pelvis", "body", (-4, 10, -3, 8, 3, 6), (0, 0, 0), c="skin2"),
-        P("head", None, (-4, -8, -4, 8, 8, 8), (0, 0, 0), c="skin2", f=["bigeye"]),
-        P("crest", "head", (-1, -11, -3, 2, 3, 6), (0, 0, 0), c="horn"),
-        P("rightArm", None, (-3, -2, -2, 4, 13, 4), (-7, 2, 0), c="skin2", f=["circuit"]),
-        P("leftArm", None, (-1, -2, -2, 4, 13, 4), (7, 2, 0), c="skin2", f=["circuit"]),
-        P("rightLeg", None, (-2.5, 0, -2.5, 5, 10, 5), (-2.5, 12, 0), c="skin"),
-        P("leftLeg", None, (-2.5, 0, -2.5, 5, 10, 5), (2.5, 12, 0), c="skin")]
+        P("pelvis", "body", (-5, 10, -3, 10, 3, 6), (0, 0, 0), c="skin2"),
+        P("head", None, (-5, -8, -5, 10, 8, 10), (0, 0, 0), c="skin2", f=["circuit"]),
+        P("eyeCyl", "head", (-3, -6, -8, 6, 6, 3), (0, 0, 0), c="skin", f=["bigeye"]),
+        P("crest", "head", (-1, -11, -4, 2, 3, 8), (0, 0, 0), c="horn"),
+        P("rightArm", None, (-5, -2, -3, 5, 14, 5), (-8, 2, 0), c="skin2", f=["circuit"]),
+        P("leftArm", None, (-0, -2, -3, 5, 14, 5), (8, 2, 0), c="skin2", f=["circuit"]),
+        P("rightLeg", None, (-3, 0, -3, 6, 10, 6), (-3, 12, 0), c="skin"),
+        P("leftLeg", None, (-3, 0, -3, 6, 10, 6), (3, 12, 0), c="skin")]
 
 
 SPECIES = {
