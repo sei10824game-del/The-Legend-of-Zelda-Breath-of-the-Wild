@@ -51,6 +51,13 @@ public class CreatureModel extends EntityModel<HyruleBiped> implements ArmedMode
                 {0, -.7f, .9f, 0}, {0, 0, 0, 0}, {0, -.3f, .5f, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}});
     }
 
+    private static final float[][] CAST = {{0, -2.8f, -2.4f, 0}, {0, 0, 0, 0}, {0, -.3f, -.3f, 0}, {0, -2.8f, -2.4f, 0}, {0, 0, 0, 0}, {0, .3f, .3f, 0},
+            {0, -.45f, .3f, 0}, {0, 0, 0, 0}, {0, -.3f, .2f, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}};
+    private static final float[][] BOW = {{0, -1.5f, -1.55f, 0}, {0, -.15f, -.15f, 0}, {0, 0, 0, 0}, {0, -1.5f, -1.5f, 0}, {0, .25f, .2f, 0}, {0, 0, 0, 0},
+            {0, -.05f, .1f, 0}, {0, .3f, .25f, 0}, {0, 0, 0, 0}, {0, .1f, .1f, 0}, {0, .1f, .1f, 0}, {0, -.1f, -.1f, 0}};
+    private static final float[][] THROW = {{0, -2.7f, -.4f, 0}, {0, 0, 0, 0}, {0, -.3f, .2f, 0}, {0, -.6f, -.2f, 0}, {0, 0, 0, 0}, {0, 0, 0, 0},
+            {0, -.3f, .4f, 0}, {0, .4f, -.5f, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, .4f, -.4f, 0}, {0, -.4f, .4f, 0}};
+
     static float key(float t, int[] T, float[] V) {
         if (t <= T[0]) return V[0];
         for (int i = 0; i < T.length - 1; i++) if (t < T[i + 1]) {
@@ -90,7 +97,9 @@ public class CreatureModel extends EntityModel<HyruleBiped> implements ArmedMode
         if (k != null) {
             float t = e.atkTick() + pt;
             int[] T = {0, k.windup, k.hit, k.total};
-            float[][] c = KF.get(k);
+            net.minecraft.world.item.Item held = e.getMainHandItem().getItem();
+            float[][] c = k != AttackKind.SHOOT ? KF.get(k) : held instanceof HyruleBowItem ? BOW
+                    : held != net.minecraft.world.item.Items.AIR ? THROW : CAST;
             float dir = k == AttackKind.SLASH && e.combo() % 2 == 1 ? -1 : 1;
             add("rightArm", key(t, T, c[0]), key(t, T, c[1]) * dir, key(t, T, c[2]));
             add("leftArm", key(t, T, c[3]), key(t, T, c[4]) * dir, key(t, T, c[5]));
@@ -98,6 +107,7 @@ public class CreatureModel extends EntityModel<HyruleBiped> implements ArmedMode
             if (head != null) { head.xRot += key(t, T, c[8]); head.yRot += key(t, T, c[9]) * dir; }
             add("rightLeg", key(t, T, c[10]), 0, 0);
             add("leftLeg", key(t, T, c[11]), 0, 0);
+            if (k == AttackKind.SHOOT) add("snout", key(t, T, new float[]{0, -.5f, .25f, 0}), 0, 0);
             if (k == AttackKind.BITE) { flap = 1.6f; add("jaw", key(t, T, new float[]{0, .7f, 0, 0}), 0, 0); }
             if (k == AttackKind.SLASH || k == AttackKind.SMASH) add("jaw", key(t, T, new float[]{0, .5f, .1f, 0}), 0, 0);
         }
@@ -106,6 +116,7 @@ public class CreatureModel extends EntityModel<HyruleBiped> implements ArmedMode
             float f = Mth.sin(age * .9f * flap) * .9f;
             add("wingL", 0, 0, -f); add("wingR", 0, 0, f);
             body.y += Mth.sin(age * .3f) * .8f;
+            add("rightArm", -.2f + Mth.sin(age * .1f) * .06f, 0, .15f); add("leftArm", -.2f - Mth.sin(age * .1f) * .06f, 0, -.15f);
             add("footL", .5f, 0, 0); add("footR", .5f, 0, 0);
         }
 

@@ -105,6 +105,20 @@ SPECIES = {
         P("wrap2", "body", (-4.5, 7, -2.5, 9, 3, 5), (0, 0, 0), c="cloth"),
         P("head", None, (-4, -8, -4, 8, 8, 8), (0, 0, -1), f=["eyes"]),
         P("jaw", "head", (-3, 0, -4, 6, 2, 3), (0, -1, 0), c="skin2")] + biped_legs(3, 14, 5, 4, 10, 2, 12)),
+    "octorok": dict(hunch=0.0, parts=[
+        P("body", None, (-5, 0, -5, 10, 10, 10), (0, 12, 0), f=["eyes"]),
+        P("snout", "body", (-2, 2, -9, 4, 4, 4), (0, 0, 0), c="skin2", f=["nostrils"]),
+        P("crest", "body", (-1, -3, -3, 2, 3, 6), (0, 0, 0), c="horn"),
+        P("rightLeg", None, (-2, 0, -2, 4, 2, 4), (-3, 22, 0), c="skin2"),
+        P("leftLeg", None, (-2, 0, -2, 4, 2, 4), (3, 22, 0), c="skin2")]),
+    "wizzrobe": dict(hunch=0.0, parts=[
+        P("body", None, (-4, 0, -3, 8, 14, 6), (0, 8, 0), c="cloth"),
+        P("hem", "body", (-5, 12, -4, 10, 3, 8), (0, 0, 0), c="cloth"),
+        P("head", None, (-4, -8, -4, 8, 8, 8), (0, 8, 0), f=["eyes"]),
+        P("brim", "head", (-6, -1, -6, 12, 1, 12), (0, -8, 0), c="hair"),
+        P("cone", "head", (-3, -6, -3, 6, 6, 6), (0, -9, 0), c="hair"),
+        P("rightArm", None, (-3, -2, -2, 4, 10, 4), (-6, 10, 0), c="cloth", f=["hand"]),
+        P("leftArm", None, (-1, -2, -2, 4, 10, 4), (6, 10, 0), c="cloth", f=["hand"])]),
     "keese": dict(hunch=0, parts=[
         P("body", None, (-3, -3, -3, 6, 6, 6), (0, 19, 0), f=["bigeye"]),
         P("earL", "body", (0, -3, -0.5, 2, 3, 1), (2, -3, -1), c="horn"),
@@ -165,6 +179,18 @@ PAL["horriblin"] = [pal("#8a9a78", "#667856", "#b4c4a0", "#4a4030", "#d8d0b0", e
                     pal("#5a4a6a", "#403350", "#8a7a9a", "#3a3028", "#c0b8a0", eye="#ff40ff"),
                     pal("#c0c8c4", "#98a09c", "#e4e8e6", "#55555e", "#ffffff", eye="#66ffcc"),
                     pal("#d8b860", "#b0903f", "#f0d890", "#5b4430", "#fff2c0", eye="#ffffff")]
+
+PAL["octorok"] = [pal("#c8452f", "#a33322", "#e98a63", "#000000", "#e8dcb8", eye="#ffffff"),
+                  pal("#3f78c8", "#2d5aa0", "#8fb6e6", "#000000", "#e8dcb8", eye="#ffffff"),
+                  pal("#3a3547", "#27232f", "#6a6478", "#000000", "#c9c2a8", eye="#ffee55"),
+                  pal("#b9bfc9", "#8e95a3", "#e4e8ee", "#000000", "#f2f2f2", eye="#66ddff"),
+                  pal("#e0b83a", "#b8912a", "#f6e08a", "#000000", "#fff2c0", eye="#ffffff")]
+# wizzrobe: fire, ice, electric, meteo, gold
+PAL["wizzrobe"] = [pal("#d9b48a", "#b08a62", "#d9b48a", "#9a2a1e", "#e8dcb8", hair="#c8452f", eye="#ff6a2a"),
+                   pal("#d9b48a", "#b08a62", "#d9b48a", "#2a5aa8", "#e8dcb8", hair="#3f78c8", eye="#aaffff"),
+                   pal("#d9b48a", "#b08a62", "#d9b48a", "#8a7a1e", "#e8dcb8", hair="#d8c030", eye="#ffff66"),
+                   pal("#d9b48a", "#b08a62", "#d9b48a", "#4a3a5a", "#e8dcb8", hair="#7a4aa8", eye="#ff66ff"),
+                   pal("#d9b48a", "#b08a62", "#d9b48a", "#8a6a1e", "#e8dcb8", hair="#e0b83a", eye="#ffffff")]
 
 TEX = 128
 
@@ -261,6 +287,16 @@ W = [
     ("moblin_club", "Moblin Club", "モリブリンの棍棒", "club", 6, 30, "#7a5a3a", "#4a3220"),
     ("spiked_moblin_club", "Spiked Moblin Club", "トゲモリブリン棍棒", "club", 9, 45, "#7a5a3a", "#b0b0b8"),
     ("dragonbone_moblin_club", "Dragonbone Moblin Club", "竜骨のモリブリン棍棒", "club", 12, 70, "#e8dcb8", "#b8a878"),
+    ("boko_bow", "Boko Bow", "ボコの弓", "bow", 3, 60, "#9a6a35", "#e8e0c8"),
+    ("spiked_boko_bow", "Spiked Boko Bow", "トゲボコの弓", "bow", 5, 80, "#9a6a35", "#c8c8d0"),
+    ("dragonbone_boko_bow", "Dragonbone Boko Bow", "竜骨のボコ弓", "bow", 8, 100, "#e8dcb8", "#f0f0e0"),
+    ("travelers_bow", "Traveler's Bow", "旅人の弓", "bow", 4, 70, "#8a6a3a", "#e8e0c8"),
+    ("soldiers_bow", "Soldier's Bow", "兵士の弓", "bow", 6, 90, "#8a6a3a", "#d4d8e0"),
+    ("knights_bow", "Knight's Bow", "騎士の弓", "bow", 9, 110, "#4a6aa8", "#e0e4ec"),
+    ("royal_bow", "Royal Bow", "王家の弓", "bow", 12, 140, "#d8b43a", "#f0f2f8"),
+    ("lynel_bow", "Lynel Bow", "ライネルの弓", "bow", 12, 100, "#8a4a3a", "#d8a85a"),
+    ("mighty_lynel_bow", "Mighty Lynel Bow", "強ライネルの弓", "bow", 16, 130, "#3a6aa8", "#d8e0f0"),
+    ("savage_lynel_bow", "Savage Lynel Bow", "猛ライネルの弓", "bow", 21, 160, "#2a2a34", "#e8c85a"),
     ("lizal_boomerang", "Lizal Boomerang", "リザルブーメラン", "boomerang", 5, 30, "#7a9a3a", "#e0d08a"),
     ("lizal_forked_boomerang", "Lizal Forked Boomerang", "リザルフォーク", "boomerang", 7, 40, "#3a8ac0", "#bfe0ee"),
     ("lizal_tri_boomerang", "Lizal Tri-Boomerang", "リザルトライブーメラン", "boomerang", 10, 60, "#4a4a5a", "#aaaabb"),
@@ -320,11 +356,28 @@ def item_tex(kind, c1, c2, name):
         d.polygon([(10, 2), (14, 1), (13, 5)], fill=b)
         if kind == "halberd":
             d.polygon([(8, 5), (4, 3), (7, 8)], fill=b)
+    elif kind == "bow":
+        d.arc([-6, 1, 13, 20], 270, 90, fill=a, width=2)
+        line(d, (7, 1), (7, 14), b, 1)
+        d.point((8, 7), fill=dk)
     elif kind == "boomerang":
         d.arc([2, 2, 14, 14], 200, 340, fill=a, width=3)
         d.arc([2, 2, 14, 14], 190, 350, fill=b, width=1)
         d.point((2, 8), fill=a); d.point((13, 8), fill=a)
     return im
+
+
+SHOTS = {"shot_rock": ("Rock", "岩", "#8a8478"), "shot_fire": ("Fireball", "火球", "#ff7a2a"),
+         "shot_ice": ("Ice Ball", "氷塊", "#9ae0ff"), "shot_elec": ("Spark Ball", "雷球", "#ffee44")}
+
+
+def gen_shots():
+    for i, (en, ja, c) in SHOTS.items():
+        im = Image.new("RGBA", (16, 16), (0, 0, 0, 0)); d = ImageDraw.Draw(im)
+        d.ellipse([3, 3, 12, 12], fill=hexc(c) + (255,), outline=shade(hexc(c), .6) + (255,))
+        d.ellipse([5, 5, 8, 8], fill=shade(hexc(c), 1.3) + (255,))
+        im.save(f"{A}/textures/item/{i}.png")
+        json.dump({"parent": "minecraft:item/generated", "textures": {"layer0": f"{MOD}:item/{i}"}}, open(f"{A}/models/item/{i}.json", "w"))
 
 
 def gen_weapons():
@@ -341,7 +394,8 @@ def gen_weapons():
 
 NAMES = {"bokoblin": ("Bokoblin", "ボコブリン"), "moblin": ("Moblin", "モリブリン"),
          "lizalfos": ("Lizalfos", "リザルフォス"), "keese": ("Keese", "キース"), "hinox": ("Hinox", "ヒノックス"), "talus": ("Talus", "イワロック"),
-         "gibdo": ("Gibdo", "ガイブドー"), "horriblin": ("Horriblin", "ホラブリン")}
+         "gibdo": ("Gibdo", "ガイブドー"), "horriblin": ("Horriblin", "ホラブリン"),
+         "octorok": ("Octorok", "オクタロック"), "wizzrobe": ("Wizzrobe", "ウィズローブ")}
 RANK_EN = [r.capitalize() for r in RANKS]
 
 
@@ -354,6 +408,9 @@ def gen_lang():
         for sid, n in NAMES.items():
             L[f"entity.{MOD}.{sid}"] = n[idx]
             L[f"item.{MOD}.{sid}_spawn_egg"] = n[idx] + (" Spawn Egg" if idx == 0 else "のスポーンエッグ")
+        for i, (en, ja, c) in SHOTS.items():
+            L[f"item.{MOD}.{i}"] = (en, ja)[idx]
+        L[f"entity.{MOD}.shot"] = ("Projectile", "飛び道具")[idx]
         for w in W:
             L[f"item.{MOD}.{w[0]}"] = w[1 + idx]
         json.dump(L, open(f"{A}/lang/{code}.json", "w"), ensure_ascii=False, indent=1)
@@ -362,7 +419,7 @@ def gen_lang():
 def gen_data():
     d = os.path.join(RES, "data", MOD, "forge", "biome_modifier")
     os.makedirs(d, exist_ok=True)
-    spawns = {"bokoblin": (40, 2, 4), "moblin": (20, 1, 2), "lizalfos": (25, 1, 3), "keese": (30, 2, 4), "hinox": (4, 1, 1), "talus": (8, 1, 1), "gibdo": (14, 1, 3), "horriblin": (14, 2, 3)}
+    spawns = {"bokoblin": (40, 2, 4), "moblin": (20, 1, 2), "lizalfos": (25, 1, 3), "keese": (30, 2, 4), "hinox": (4, 1, 1), "talus": (8, 1, 1), "gibdo": (14, 1, 3), "horriblin": (14, 2, 3), "octorok": (12, 1, 2), "wizzrobe": (6, 1, 1)}
     for sid, (wt, lo, hi) in spawns.items():
         json.dump({"type": "forge:add_spawns", "biomes": "#minecraft:is_overworld",
                    "spawners": {"type": f"{MOD}:{sid}", "weight": wt, "minCount": lo, "maxCount": hi}},
@@ -370,5 +427,5 @@ def gen_data():
 
 
 if __name__ == "__main__":
-    gen_species(); gen_weapons(); gen_lang(); gen_data()
+    gen_species(); gen_weapons(); gen_shots(); gen_lang(); gen_data()
     print("ok", len(W), "weapons")

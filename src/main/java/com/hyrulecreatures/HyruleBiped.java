@@ -30,6 +30,42 @@ public class HyruleBiped extends HyruleMob {
     @Override public double reach() { return species.reach + (getMainHandItem().getItem() instanceof HyruleWeaponItem w && w.attack == AttackKind.THRUST ? 0.6 : 0); }
     @Override protected float spinChance() { return species.spin; }
 
+    private static boolean isBoomerang(ItemStack s) { return ForgeRegistries.ITEMS.getKey(s.getItem()).getPath().contains("boomerang"); }
+    @Override protected boolean ranged() { return getMainHandItem().getItem() instanceof HyruleBowItem || species.attack == AttackKind.SHOOT; }
+    @Override protected double engageRange() {
+        ItemStack h = getMainHandItem();
+        return h.getItem() instanceof HyruleBowItem ? 14 : isBoomerang(h) ? 9 : reach();
+    }
+
+    @Override protected AttackKind chooseAttack() {
+        ItemStack h = getMainHandItem(); LivingEntity t = getTarget();
+        double d = t == null ? 0 : distanceTo(t);
+        if (h.getItem() instanceof HyruleBowItem) return d <= reach() + 0.3 ? AttackKind.SLASH : AttackKind.SHOOT;
+        if (isBoomerang(h)) return d > 4 ? (random.nextFloat() < 0.6f ? AttackKind.SHOOT : null) : d <= reach() + 0.5 ? AttackKind.SLASH : null;
+        return super.chooseAttack();
+    }
+
+    @Override protected void shoot(LivingEntity t) {
+        ItemStack h = getMainHandItem();
+        double dx = t.getX() - getX(), dy = t.getY(0.33) - getEyeY(), dz = t.getZ() - getZ();
+        double h2 = Math.sqrt(dx * dx + dz * dz);
+        float dmg = (float) getAttributeValue(Attributes.ATTACK_DAMAGE);
+        if (h.getItem() instanceof HyruleBowItem b) {
+            net.minecraft.world.entity.projectile.Arrow a = new net.minecraft.world.entity.projectile.Arrow(level(), this);
+            a.setBaseDamage(b.dmg * 0.4 + dmg * 0.3);
+            a.pickup = net.minecraft.world.entity.projectile.AbstractArrow.Pickup.DISALLOWED;
+            a.shoot(dx, dy + h2 * 0.2, dz, 1.6f, 3f);
+            level().addFreshEntity(a);
+        } else {
+            boolean boom = isBoomerang(h);
+            int ty = boom ? 4 : species == Species.OCTOROK ? 0 : new int[]{1, 2, 3, 1, 3}[rank()];
+            Shot s = new Shot(level(), this, ty, boom ? h.copy() : new ItemStack(ModRegistry.shotItem(ty)), dmg);
+            s.shoot(dx, dy + h2 * (ty == 0 ? 0.05 : 0), dz, boom ? 1.1f : 1.2f, 1f);
+            level().addFreshEntity(s);
+        }
+        playSound(net.minecraft.sounds.SoundEvents.ARROW_SHOOT, 1f, 0.8f + random.nextFloat() * 0.4f);
+    }
+
     @Override public SpawnGroupData finalizeSpawn(ServerLevelAccessor lv, DifficultyInstance d, MobSpawnType r,
                                                   @Nullable SpawnGroupData g, @Nullable net.minecraft.nbt.CompoundTag tag) {
         g = super.finalizeSpawn(lv, d, r, g, tag);

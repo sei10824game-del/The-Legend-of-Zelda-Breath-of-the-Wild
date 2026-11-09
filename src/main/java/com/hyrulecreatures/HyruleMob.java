@@ -47,6 +47,9 @@ public abstract class HyruleMob extends Monster {
     public abstract AttackKind defaultAttack();
     public abstract double reach();
     protected float spinChance() { return 0; }
+    protected double engageRange() { return reach(); }
+    protected boolean ranged() { return false; }
+    protected void shoot(LivingEntity target) {}
 
     /** Foe = anything outside this mod. */
     public static boolean isFoe(LivingEntity e) {
@@ -98,7 +101,8 @@ public abstract class HyruleMob extends Monster {
         entityData.set(ATK, k.ordinal()); entityData.set(ATK_T, 0);
     }
 
-    protected AttackKind chooseAttack() {
+    protected AttackKind chooseAttack() { // may return null = keep approaching
+
         AttackKind k = getMainHandItem().getItem() instanceof HyruleWeaponItem w ? w.attack : defaultAttack();
         if (k == AttackKind.SMASH && random.nextFloat() < spinChance()) return AttackKind.SPIN;
         return k;
@@ -120,7 +124,9 @@ public abstract class HyruleMob extends Monster {
         if (a == AttackKind.BITE && t == a.windup && tg != null)
             setDeltaMovement(tg.getEyePosition().subtract(position()).normalize().scale(0.75));
         if (a == AttackKind.SMASH && t == a.windup) lunge(0.25);
-        if (t == a.hit) strike(a, tg);
+        if (t == a.hit) {
+            if (a == AttackKind.SHOOT) { if (tg != null) shoot(tg); } else strike(a, tg);
+        }
         if (t >= a.total) {
             int c = combo();
             if (a == AttackKind.SLASH && tg != null && c < 2 && distanceTo(tg) < reach() + 0.8) {
@@ -159,10 +165,15 @@ public abstract class HyruleMob extends Monster {
             LivingEntity t = getTarget();
             if (atkKind() != null) { getNavigation().stop(); return; }
             getLookControl().setLookAt(t, 30, 30);
-            double reach = reach() + t.getBbWidth() / 2;
-            if (distanceToSqr(t.getX(), t.getY(), t.getZ()) <= reach * reach && canStartAttack() && hasLineOfSight(t)) {
-                startAttack(chooseAttack());
-            } else if (--repath <= 0) { getNavigation().moveTo(t, 1.15); repath = 4 + random.nextInt(7); }
+            double reach = engageRange() + t.getBbWidth() / 2;
+            double d2 = distanceToSqr(t.getX(), t.getY(), t.getZ());
+            boolean los = hasLineOfSight(t);
+            if (d2 <= reach * reach && canStartAttack() && los) {
+                AttackKind k = chooseAttack();
+                if (k != null) { startAttack(k); return; }
+            }
+            if (ranged() && los && d2 < reach * reach * 0.6) { getNavigation().stop(); return; }
+            if (--repath <= 0) { getNavigation().moveTo(t, 1.15); repath = 4 + random.nextInt(7); }
         }
     }
 }

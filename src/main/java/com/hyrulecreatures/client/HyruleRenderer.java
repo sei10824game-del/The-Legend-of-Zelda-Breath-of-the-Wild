@@ -19,7 +19,7 @@ public class HyruleRenderer extends MobRenderer<HyruleBiped, CreatureModel> {
     public HyruleRenderer(EntityRendererProvider.Context ctx, Species s) {
         super(ctx, new CreatureModel(ctx.bakeLayer(layer(s)), Spec.get(s.id)), 0.4f * s.scale);
         species = s;
-        if (!s.flies) addLayer(new ItemInHandLayer<>(this, ctx.getItemInHandRenderer()));
+        if (Spec.get(s.id).names().contains("rightArm")) addLayer(new ItemInHandLayer<>(this, ctx.getItemInHandRenderer()));
     }
 
     @Override public ResourceLocation getTextureLocation(HyruleBiped e) {
