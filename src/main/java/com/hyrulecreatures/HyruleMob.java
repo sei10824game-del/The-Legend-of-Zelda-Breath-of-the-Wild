@@ -20,6 +20,7 @@ public abstract class HyruleMob extends Monster {
     static final EntityDataAccessor<Integer> ATK = SynchedEntityData.defineId(HyruleMob.class, EntityDataSerializers.INT);
     static final EntityDataAccessor<Integer> ATK_T = SynchedEntityData.defineId(HyruleMob.class, EntityDataSerializers.INT);
     static final EntityDataAccessor<Integer> COMBO = SynchedEntityData.defineId(HyruleMob.class, EntityDataSerializers.INT);
+    static final EntityDataAccessor<Boolean> MINI = SynchedEntityData.defineId(HyruleMob.class, EntityDataSerializers.BOOLEAN);
     static final EntityDataAccessor<Integer> DOWN = SynchedEntityData.defineId(HyruleMob.class, EntityDataSerializers.INT);
     public static final int DOWN_TIME = 80;
 
@@ -31,11 +32,13 @@ public abstract class HyruleMob extends Monster {
     @Override protected void defineSynchedData() {
         super.defineSynchedData();
         entityData.define(RANK, 0); entityData.define(ATK, -1); entityData.define(ATK_T, 0);
-        entityData.define(COMBO, 0); entityData.define(DOWN, 0);
+        entityData.define(COMBO, 0); entityData.define(MINI, false); entityData.define(DOWN, 0);
     }
-    @Override public void addAdditionalSaveData(CompoundTag t) { super.addAdditionalSaveData(t); t.putInt("Rank", rank()); }
-    @Override public void readAdditionalSaveData(CompoundTag t) { super.readAdditionalSaveData(t); setRank(t.getInt("Rank")); }
+    @Override public void addAdditionalSaveData(CompoundTag t) { super.addAdditionalSaveData(t); t.putInt("Rank", rank()); t.putBoolean("Mini", isMini()); }
+    @Override public void readAdditionalSaveData(CompoundTag t) { super.readAdditionalSaveData(t); setRank(t.getInt("Rank")); setMini(t.getBoolean("Mini")); }
 
+    public boolean isMini() { return entityData.get(MINI); }
+    public void setMini(boolean m) { entityData.set(MINI, m); }
     public int rank() { return entityData.get(RANK); }
     public void setRank(int r) { entityData.set(RANK, Math.max(0, Math.min(4, r))); }
     public AttackKind atkKind() { int k = entityData.get(ATK); return k < 0 ? null : AttackKind.values()[k]; }

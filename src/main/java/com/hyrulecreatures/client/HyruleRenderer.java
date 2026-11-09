@@ -27,7 +27,7 @@ public class HyruleRenderer extends MobRenderer<HyruleBiped, CreatureModel> {
         return new ResourceLocation(HyruleCreatures.ID, "textures/entity/" + species.id + "_" + Species.RANKS[e.rank()] + ".png");
     }
 
-    @Override protected void scale(HyruleBiped e, PoseStack ps, float pt) { ps.scale(species.scale, species.scale, species.scale); }
+    @Override protected void scale(HyruleBiped e, PoseStack ps, float pt) { float k = species.scale * (e.isMini() ? 0.55f : 1f); ps.scale(k, k, k); }
 
     @Override protected void setupRotations(HyruleBiped e, PoseStack ps, float age, float yaw, float pt) {
         super.setupRotations(e, ps, age, yaw, pt);

@@ -100,6 +100,19 @@ public class HyruleBiped extends HyruleMob {
         }
     }
 
+    @Override public void die(net.minecraft.world.damagesource.DamageSource src) {
+        super.die(src);
+        if (!level().isClientSide && species == Species.CHUCHU && !isMini())
+            for (int i = 0; i < 2; i++) {
+                HyruleBiped m = ModRegistry.TYPES.get(Species.CHUCHU).get().create(level());
+                m.moveTo(getX() + (i * 2 - 1) * 0.4, getY(), getZ(), random.nextFloat() * 360, 0);
+                m.setRank(rank()); m.setMini(true);
+                m.getAttribute(Attributes.MAX_HEALTH).setBaseValue(4); m.setHealth(4);
+                m.getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(species.dmg * 0.5);
+                level().addFreshEntity(m);
+            }
+    }
+
     @Override public boolean doHurtTarget(Entity t) {
         boolean ok = super.doHurtTarget(t);
         if (ok && species == Species.CHUCHU && t instanceof LivingEntity e) switch (rank()) {

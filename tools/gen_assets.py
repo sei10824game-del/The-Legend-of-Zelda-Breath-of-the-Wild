@@ -204,6 +204,21 @@ SPECIES["soldier_construct"] = dict(hunch=0.0, parts=[
     P("padR", "body", (-4, -2, -3.5, 4, 2, 7), (-4, 0, 0), c="horn"),
 ] + biped_legs(5, 12, 7, 5, 12, 2.5, 12))
 SPECIES["captain_construct"] = SPECIES["soldier_construct"]
+SPECIES["frox"] = SPECIES["talus"]
+SPECIES["phantom_ganon"] = SPECIES["yiga_footsoldier"]
+SPECIES["gleeok"] = dict(hunch=0.0, parts=[
+    P("body", None, (-6, 0, -8, 12, 10, 16), (0, 10, 0)),
+    P("belly", "body", (-5, 8, -7, 10, 3, 14), (0, 0, 0), c="belly"),
+    P("tail1", "body", (-2, -2, 0, 4, 4, 8), (0, 4, 8), (0.2, 0, 0), c="skin2"),
+    P("tail2", "tail1", (-1.5, -1.5, 0, 3, 3, 8), (0, 0, 8), c="skin2"),
+    P("neckL", "body", (-1.5, -12, -1.5, 3, 12, 3), (-4, 2, -6), (0, 0, 0.2), c="skin2"),
+    P("neckM", "body", (-1.5, -12, -1.5, 3, 12, 3), (0, 2, -7), c="skin2"),
+    P("neckR", "body", (-1.5, -12, -1.5, 3, 12, 3), (4, 2, -6), (0, 0, -0.2), c="skin2"),
+    P("headL", "neckL", (-3, -4, -6, 6, 5, 8), (0, -11, 0), f=["eyes"]),
+    P("headM", "neckM", (-3, -4, -6, 6, 5, 8), (0, -11, 0), f=["eyes"]),
+    P("headR", "neckR", (-3, -4, -6, 6, 5, 8), (0, -11, 0), f=["eyes"]),
+    P("wingL", "body", (0, -0.5, -5, 16, 1, 12), (6, -1, 0), c="wing"),
+    P("wingR", "body", (-16, -0.5, -5, 16, 1, 12), (-6, -1, 0), c="wing")])
 
 PAL["hinox"] = [pal("#7a5a8a", "#5a3f68", "#a98cb8", "#4a3a2b", "#e8dcb8", "#241a2a", eye="#ffe14a"),
                 pal("#4a7ab0", "#35567e", "#8fb0d6", "#4a3a2b", "#e8dcb8", "#1c2a3e", eye="#ffe14a"),
@@ -266,6 +281,15 @@ def cons(a, b, glow): return pal(a, b, a, "#000000", "#707882", eye=glow)
 PAL["soldier_construct"] = [cons("#8a948c", "#6a746c", "#40e0ff"), cons("#7a8a9c", "#5a6a7c", "#40ffa0"),
                             cons("#5a5a66", "#3c3c46", "#ff8a30"), cons("#b8c0c8", "#8e969e", "#ffffff"), cons("#c0a860", "#98803e", "#fff2a0")]
 PAL["captain_construct"] = PAL["soldier_construct"]
+
+PAL["frox"] = [pal("#7a8470", "#5a6454", "#9aa490", "#000000", "#e0902a", eye="#ff7a2a"), pal("#6a8aa0", "#4a6a80", "#8aaac0", "#000000", "#4ac0e8", eye="#aaffff"),
+               pal("#3f4048", "#2a2b32", "#5a5c66", "#000000", "#b04aff", eye="#ff4aff"), pal("#b8bcc4", "#9096a0", "#d8dce2", "#000000", "#ffffff", eye="#66ddff"),
+               pal("#c4a040", "#9a7c2a", "#e4cc7a", "#000000", "#fff2c0", eye="#ffffff")]
+PAL["phantom_ganon"] = [suit("#3a4a5a", "#222c38", "#cfe8ff"), suit("#2a4a6a", "#162a40", "#cfe8ff"), suit("#2a2a3a", "#12121c", "#cfe8ff"),
+                        suit("#8a9aaa", "#5a6672", "#ffffff"), suit("#8a7a3a", "#5a4e22", "#fff2c0")]
+def drag(a, b, w): return pal(a, b, "#e8d8b0", "#000000", "#e8dcb8", wing=w, eye="#ffee55")
+PAL["gleeok"] = [drag("#a83a2a", "#7a2418", "#c84a30"), drag("#3a78b8", "#2a5688", "#4a90d0"), drag("#d8c030", "#a89020", "#e8d848"),
+                 drag("#a8b4c0", "#808c98", "#c8d4e0"), drag("#d8a838", "#a88222", "#e8c458")]
 
 TEX = 128
 
@@ -486,7 +510,8 @@ NAMES = {"bokoblin": ("Bokoblin", "ボコブリン"), "moblin": ("Moblin", "モ�
          "lynel": ("Lynel", "ライネル"), "chuchu": ("Chuchu", "チュチュ"), "guardian": ("Guardian Stalker", "ガーディアン"),
          "stalkoblin": ("Stalkoblin", "スタルコブリン"), "stalmoblin": ("Stalmoblin", "スタルモリブリン"), "stalizalfos": ("Stalizalfos", "スタルリザルフォス"),
          "yiga_footsoldier": ("Yiga Footsoldier", "イーガ団員"), "yiga_blademaster": ("Yiga Blademaster", "イーガ団の剣士"),
-         "soldier_construct": ("Soldier Construct", "ソルジャーコンストラクト"), "captain_construct": ("Captain Construct", "キャプテンコンストラクト")}
+         "soldier_construct": ("Soldier Construct", "ソルジャーコンストラクト"), "captain_construct": ("Captain Construct", "キャプテンコンストラクト"),
+         "frox": ("Frox", "フロックス"), "phantom_ganon": ("Phantom Ganon", "ファントムガノン"), "gleeok": ("Gleeok", "ゴーマ")}
 RANK_EN = [r.capitalize() for r in RANKS]
 
 
@@ -533,7 +558,7 @@ def gen_parts():
 def gen_data():
     d = os.path.join(RES, "data", MOD, "forge", "biome_modifier")
     os.makedirs(d, exist_ok=True)
-    spawns = {"bokoblin": (40, 2, 4), "moblin": (20, 1, 2), "lizalfos": (25, 1, 3), "keese": (30, 2, 4), "hinox": (4, 1, 1), "talus": (8, 1, 1), "gibdo": (14, 1, 3), "horriblin": (14, 2, 3), "octorok": (12, 1, 2), "wizzrobe": (6, 1, 1), "lynel": (3, 1, 1), "chuchu": (30, 2, 4), "guardian": (3, 1, 1), "stalkoblin": (10, 2, 3), "stalmoblin": (5, 1, 2), "stalizalfos": (6, 1, 2), "yiga_footsoldier": (6, 1, 3), "yiga_blademaster": (2, 1, 1), "soldier_construct": (4, 1, 2), "captain_construct": (1, 1, 1)}
+    spawns = {"bokoblin": (40, 2, 4), "moblin": (20, 1, 2), "lizalfos": (25, 1, 3), "keese": (30, 2, 4), "hinox": (4, 1, 1), "talus": (8, 1, 1), "gibdo": (14, 1, 3), "horriblin": (14, 2, 3), "octorok": (12, 1, 2), "wizzrobe": (6, 1, 1), "lynel": (3, 1, 1), "chuchu": (30, 2, 4), "guardian": (3, 1, 1), "stalkoblin": (10, 2, 3), "stalmoblin": (5, 1, 2), "stalizalfos": (6, 1, 2), "yiga_footsoldier": (6, 1, 3), "yiga_blademaster": (2, 1, 1), "soldier_construct": (4, 1, 2), "captain_construct": (1, 1, 1), "frox": (2, 1, 1), "phantom_ganon": (1, 1, 1), "gleeok": (1, 1, 1)}
     for sid, (wt, lo, hi) in spawns.items():
         json.dump({"type": "forge:add_spawns", "biomes": "#minecraft:is_overworld",
                    "spawners": {"type": f"{MOD}:{sid}", "weight": wt, "minCount": lo, "maxCount": hi}},
