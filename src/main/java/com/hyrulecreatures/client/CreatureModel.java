@@ -170,9 +170,10 @@ public class CreatureModel extends EntityModel<HyruleBiped> implements ArmedMode
         if (p.containsKey("leg0")) { // 8 spider legs: gait + hide destroyed ones
             for (int i = 0; i < 8; i++) {
                 ModelPart leg = p.get("leg" + i);
+                if (leg == null) continue;
                 boolean gone = (e.aux() >> i & 1) != 0;
                 leg.visible = !gone; p.get("leg" + i + "b").visible = !gone;
-                float a = i * Mth.PI / 4, dx = Mth.cos(a), dz = Mth.sin(a);
+                int nl = p.containsKey("leg4") ? 8 : 4; float a = i * 2 * Mth.PI / nl + (nl == 8 ? Mth.PI / 8 : Mth.PI / 4), dx = Mth.cos(a), dz = Mth.sin(a);
                 float lift = Mth.cos(limb * .6662f + (i % 2) * Mth.PI) * amt * .6f + (k == AttackKind.BEAM ? -.15f : 0);
                 add("leg" + i, lift * dz, 0, -lift * dx);
             }

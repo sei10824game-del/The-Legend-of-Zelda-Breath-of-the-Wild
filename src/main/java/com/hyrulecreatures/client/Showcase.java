@@ -39,9 +39,9 @@ public class Showcase {
         SHOTS.add(new Shot("bokoblin_down", B, 0, "boko_club", null, null, 0, 40, false, 0));
         for (Species s : Species.values()) {
             if (s == B) continue;
-            SHOTS.add(new Shot(s.id + "_idle", s, 1, null, null, null, 0, 0, false, 0));
+            SHOTS.add(new Shot(s.id + "_idle", s, 0, null, null, null, 0, 0, false, 0));
             AttackKind k = s.attack == AttackKind.SHOOT ? AttackKind.SHOOT : s == Species.GUARDIAN ? AttackKind.BEAM : s.attack;
-            SHOTS.add(new Shot(s.id + "_atk", s, 1, null, null, k, k.hits[0], 0, false, 0));
+            SHOTS.add(new Shot(s.id + "_atk", s, 0, null, null, k, k.hits[0], 0, false, 0));
         }
         SHOTS.add(new Shot("guardian_legs_broken", Species.GUARDIAN, 0, null, null, null, 0, 0, false, 0b00110101));
         SHOTS.add(new Shot("moblin_SPIN", Species.MOBLIN, 0, "moblin_club", null, AttackKind.SPIN, 20, 0, false, 0));

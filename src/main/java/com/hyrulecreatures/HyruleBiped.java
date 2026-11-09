@@ -72,7 +72,7 @@ public class HyruleBiped extends HyruleMob {
         int best = -1; double bd = 9;
         for (int i = 0; i < 8; i++) {
             if ((aux() >> i & 1) != 0) continue;
-            double df = Math.abs(Mth.wrapDegrees((float) Math.toDegrees(ang - i * Math.PI / 4)));
+            double df = Math.abs(Mth.wrapDegrees((float) Math.toDegrees(ang - (i * Math.PI / 4 + Math.PI / 8))));
             if (df < bd) { bd = df; best = i; }
         }
         if (best < 0) return false;

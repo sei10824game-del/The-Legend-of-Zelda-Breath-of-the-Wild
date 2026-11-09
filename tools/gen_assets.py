@@ -37,38 +37,43 @@ def biped_legs(arm_w, arm_h, arm_x, leg_w, leg_h, leg_x, leg_y, shoulder_y=2):
 import math
 
 
+def spider_legs(n, attach_y, radius, th, l1, l2, off=0.0):
+    out = []
+    for i in range(n):
+        a = i * 2 * math.pi / n + off; dx, dz = round(math.cos(a), 3), round(math.sin(a), 3)
+        out.append(P(f"leg{i}", None, (-1.5, 0, -1.5, 3, l1, 3), (dx * radius, attach_y, dz * radius), (th * dz, 0, -th * dx), c="bone"))
+        out.append(P(f"leg{i}b", f"leg{i}", (-1, 0, -1, 2, l2, 2), (0, l1, 0), (-th * dz, 0, th * dx), c="joint"))
+    return out
+
+
 def guardian_parts(legs=True):
+    """BotW Guardian Stalker: flat copper shell, turret head with big eye, 8 long bone-coloured legs."""
     parts = [
-        P("body", None, (-8, -5, -8, 16, 10, 16), (0, 5, 0), f=["circuit"]),
-        P("rim", "body", (-9, 0, -9, 18, 2, 18), (0, 0, 0), c="horn"),
-        P("dome", "body", (-6, -8, -6, 12, 3, 12), (0, 0, 0), c="skin2", f=["circuit"]),
-        P("dome2", "body", (-4, -10, -4, 8, 2, 8), (0, 0, 0), c="skin", f=["circuit"]),
-        P("crest", "body", (-1, -13, -3, 2, 3, 6), (0, 0, 0), c="horn"),
-        P("eyeCyl", "body", (-4, -4, -12, 8, 8, 4), (0, 0, 0), c="skin2", f=["bigeye"]),
-        P("eyeRing", "body", (-5, -5, -9, 10, 10, 1), (0, 0, 0), c="horn"),
-        P("ringL", "body", (8, -3, -4, 1, 6, 8), (0, 0, 0), c="horn"),
-        P("ringR", "body", (-9, -3, -4, 1, 6, 8), (0, 0, 0), c="horn"),
+        P("body", None, (-9, -3, -9, 18, 7, 18), (0, 8, 0), f=["circuit"]),
+        P("shell2", "body", (-7, -6, -7, 14, 3, 14), (0, 0, 0), c="skin2", f=["circuit"]),
+        P("rim", "body", (-9.5, 3, -9.5, 19, 1, 19), (0, 0, 0), c="horn"),
+        P("head", "body", (-5, -8, -5, 10, 8, 10), (0, -3, -2), c="skin", f=["circuit"]),
+        P("cap", "head", (-3, -3, -3, 6, 3, 6), (0, -8, 0), c="skin2"),
+        P("crest", "head", (-1, -5, -2, 2, 2, 4), (0, -8, 0), c="horn"),
+        P("eyeCyl", "head", (-3, -6, -8, 6, 5, 3), (0, 0, 0), c="skin2", f=["bigeye"]),
+        P("eyeRing", "head", (-4, -7, -6, 8, 7, 1), (0, 0, 0), c="horn"),
     ]
     if legs:
-        for i in range(8):
-            a = i * math.pi / 4 + math.pi / 8; dx, dz = round(math.cos(a), 3), round(math.sin(a), 3); th = 0.8
-            parts.append(P(f"leg{i}", None, (-1.5, 0, -1.5, 3, 9, 3), (dx * 7, 10, dz * 7), (th * dz, 0, -th * dx), c="skin2"))
-            parts.append(P(f"leg{i}b", f"leg{i}", (-1, 0, -1, 2, 7.7, 2), (0, 9, 0), (-th * dz, 0, th * dx), c="horn"))
+        parts += spider_legs(8, 10, 8, 1.0, 9, 9, math.pi / 8)
     return parts
 
 
 def scout_parts():
+    """Guardian Scout (shrine): small copper dome, eye turret, 4 short legs, 2 arms for energy weapons."""
     return [
-        P("body", None, (-6, 0, -4, 12, 12, 8), (0, 0, 0), f=["circuit"]),
-        P("core", "body", (-2, 3, -5, 4, 4, 1), (0, 0, 0), c="horn"),
-        P("pelvis", "body", (-5, 10, -3, 10, 3, 6), (0, 0, 0), c="skin2"),
-        P("head", None, (-5, -8, -5, 10, 8, 10), (0, 0, 0), c="skin2", f=["circuit"]),
-        P("eyeCyl", "head", (-3, -6, -8, 6, 6, 3), (0, 0, 0), c="skin", f=["bigeye"]),
-        P("crest", "head", (-1, -11, -4, 2, 3, 8), (0, 0, 0), c="horn"),
-        P("rightArm", None, (-5, -2, -3, 5, 14, 5), (-8, 2, 0), c="skin2", f=["circuit"]),
-        P("leftArm", None, (-0, -2, -3, 5, 14, 5), (8, 2, 0), c="skin2", f=["circuit"]),
-        P("rightLeg", None, (-3, 0, -3, 6, 10, 6), (-3, 12, 0), c="skin"),
-        P("leftLeg", None, (-3, 0, -3, 6, 10, 6), (3, 12, 0), c="skin")]
+        P("body", None, (-7, -5, -7, 14, 9, 14), (0, 11, 0), f=["circuit"]),
+        P("shell2", "body", (-5, -8, -5, 10, 3, 10), (0, 0, 0), c="skin2", f=["circuit"]),
+        P("rim", "body", (-7.5, 2, -7.5, 15, 1, 15), (0, 0, 0), c="horn"),
+        P("head", "body", (-4, -7, -4, 8, 7, 8), (0, -5, -1), c="skin", f=["circuit"]),
+        P("eyeCyl", "head", (-3, -5, -7, 6, 5, 3), (0, 0, 0), c="skin2", f=["bigeye"]),
+        P("rightArm", None, (-2, -1, -2, 4, 13, 4), (-9, 6, -2), c="bone", f=["circuit"]),
+        P("leftArm", None, (-2, -1, -2, 4, 13, 4), (9, 6, -2), c="bone", f=["circuit"]),
+    ] + spider_legs(4, 13, 6, 0.8, 6, 5.5, math.pi / 4)
 
 
 SPECIES = {
@@ -189,7 +194,7 @@ SPECIES = {
 
 # palette per species, per rank: key -> hex ; tuples listed in RANKS order
 def pal(skin, skin2, belly, cloth, horn, hair="#2a1f1a", wing="#201828", eye="#ffd23a"):
-    return dict(skin=skin, skin2=skin2, belly=belly, cloth=cloth, horn=horn, hair=hair, wing=wing, eye=eye)
+    return dict(skin=skin, skin2=skin2, belly=belly, cloth=cloth, horn=horn, hair=hair, wing=wing, eye=eye, bone=skin2, joint=horn)
 
 
 PAL = {
@@ -238,17 +243,21 @@ SPECIES["captain_construct"] = SPECIES["soldier_construct"]
 SPECIES["decayed_guardian"] = SPECIES["guardian"]
 for _n in (1, 2, 3, 4): SPECIES[f"guardian_scout_{_n}"] = dict(hunch=0.15, parts=scout_parts())
 SPECIES["guardian_turret"] = dict(hunch=0.0, parts=[
-    P("base", None, (-6, 0, -6, 12, 6, 12), (0, 18, 0), c="skin2", f=["circuit"]),
-    P("body", None, (-6, -6, -6, 12, 12, 12), (0, 12, 0), f=["circuit"]),
-    P("dome", "body", (-5, -8, -5, 10, 3, 10), (0, 0, 0), c="skin2"),
-    P("crest", "body", (-1, -11, -4, 2, 3, 8), (0, 0, 0), c="horn"),
-    P("eyeCyl", "body", (-3, -3, -9, 6, 6, 3), (0, 0, 0), c="skin2", f=["bigeye"])])
+    P("base", None, (-9, 0, -9, 18, 5, 18), (0, 19, 0), c="skin2", f=["circuit"]),
+    P("body", None, (-8, -4, -8, 16, 8, 16), (0, 15, 0), f=["circuit"]),
+    P("rim", "body", (-8.5, 2, -8.5, 17, 1, 17), (0, 0, 0), c="horn"),
+    P("head", "body", (-5, -9, -5, 10, 9, 10), (0, -4, 0), c="skin", f=["circuit"]),
+    P("crest", "head", (-1, -3, -2, 2, 3, 4), (0, -9, 0), c="horn"),
+    P("eyeCyl", "head", (-3.5, -7, -8, 7, 6, 3), (0, 0, 0), c="skin2", f=["bigeye"])])
 SPECIES["guardian_skywatcher"] = dict(hunch=0.0, parts=[
-    P("body", None, (-5, -5, -5, 10, 10, 10), (0, 14, 0), f=["circuit"]),
-    P("crest", "body", (-1, -8, -4, 2, 3, 8), (0, 0, 0), c="horn"),
-    P("eyeCyl", "body", (-3, -3, -8, 6, 6, 3), (0, 0, 0), c="skin2", f=["bigeye"]),
-    P("wingL", "body", (0, -0.5, -3, 12, 1, 6), (5, -5, 0), c="horn"),
-    P("wingR", "body", (-12, -0.5, -3, 12, 1, 6), (-5, -5, 0), c="horn")])
+    P("body", None, (-4, -3, -4, 8, 6, 8), (0, 11, 0), f=["circuit"]),
+    P("mast", "body", (-1, -9, -1, 2, 6, 2), (0, 0, 0), c="bone"),
+    P("pod", "body", (-3, 3, -3, 6, 5, 6), (0, 0, 0), c="skin2", f=["circuit"]),
+    P("eyeCyl", "body", (-2.5, 5, -6, 5, 4, 3), (0, 0, 0), c="skin2", f=["bigeye"]),
+    P("armL", "body", (0, -1, -1, 9, 2, 2), (4, 0, 0), c="bone"),
+    P("armR", "body", (-9, -1, -1, 9, 2, 2), (-4, 0, 0), c="bone"),
+    P("wingL", "body", (0, -0.5, -2, 14, 1, 4), (0, -9, 0), c="horn"),
+    P("wingR", "body", (-14, -0.5, -2, 14, 1, 4), (0, -9, 0), c="horn")])
 SPECIES["frox"] = SPECIES["talus"]
 SPECIES["phantom_ganon"] = SPECIES["yiga_footsoldier"]
 SPECIES["gleeok"] = dict(hunch=0.0, parts=[
@@ -308,15 +317,20 @@ PAL["chuchu"] = [pal("#d84a30", "#a83020", "#ff8a60", "#000000", "#ffd060", eye=
                  pal("#6a4a8a", "#4a3266", "#9a7ab8", "#000000", "#e0a0ff", eye="#ffffff"),
                  pal("#e8ecf0", "#c0c4c8", "#ffffff", "#000000", "#a0e0ff", eye="#202020"),
                  pal("#e8c830", "#b8a020", "#fff080", "#000000", "#ffffff", eye="#ffffff")]
-def anc(a, b, c, glow, eye): return pal(a, b, c, "#000000", glow, eye=eye)
-PAL["guardian"] = [anc("#3f5a64", "#2a3f48", "#5a7a86", "#ff7a20", "#ff9a30"), anc("#3a5a78", "#26405a", "#5a7a9a", "#40e0ff", "#80f0ff"),
-                   anc("#3a3a44", "#24242c", "#5a5a66", "#ff3030", "#ff5050"), anc("#a8b8c0", "#808e96", "#d8e4e8", "#40ffb0", "#80ffd0"),
-                   anc("#b09848", "#887430", "#d8c070", "#fff0a0", "#ffffff")]
+def anc(shell, shell2, head, glow, eye, bone="#d8d0b8", joint="#6a9a78"):
+    d = pal(shell, shell2, head, "#000000", glow, eye=eye); d["bone"] = bone; d["joint"] = joint; return d
+PAL["guardian"] = [anc("#8a4a3e", "#6a3228", "#7a4036", "#ff4a9a", "#40c8ff"),
+                   anc("#4a6a90", "#34506e", "#40607e", "#40e0ff", "#a0f0ff", joint="#4a8aa8"),
+                   anc("#3a3638", "#242022", "#302c2e", "#ff3a3a", "#ff7050", bone="#bcb4a4", joint="#7a4a4a"),
+                   anc("#b8b4a8", "#908c80", "#a8a498", "#40ffb0", "#80ffd0", bone="#ece8dc", joint="#8ab89a"),
+                   anc("#b09040", "#887028", "#a08034", "#fff0a0", "#ffffff", bone="#e8d8a8", joint="#c0a050")]
 for _sid in ("guardian_turret", "guardian_skywatcher", "guardian_scout_1", "guardian_scout_2", "guardian_scout_3", "guardian_scout_4"):
     PAL[_sid] = PAL["guardian"]
-PAL["decayed_guardian"] = [anc("#5a6048", "#3e4430", "#7a8060", "#a8a040", "#c8c050"), anc("#4a6058", "#34463e", "#6a8078", "#60b0a0", "#80d0c0"),
-                           anc("#4a4a40", "#30302a", "#6a6a58", "#b06030", "#d08040"), anc("#8a9078", "#686e58", "#aab098", "#a0c080", "#c0e0a0"),
-                           anc("#8a7a40", "#685a2c", "#aa9a60", "#d0b050", "#f0d070")]
+PAL["decayed_guardian"] = [anc("#5a6a44", "#3e4a2e", "#4e5e3a", "#d8408a", "#60c0ff", bone="#b8b494", joint="#506a40"),
+                           anc("#4a6a58", "#34503e", "#3e5e4a", "#60e0c0", "#a0f0ff", bone="#b0b8a0", joint="#406a58"),
+                           anc("#4a4a40", "#30302a", "#40403a", "#e05030", "#ff8050", bone="#a8a290", joint="#605040"),
+                           anc("#8a9078", "#686e58", "#7a8068", "#a0e090", "#c0ffb0", bone="#d0d0b8", joint="#789068"),
+                           anc("#8a7a40", "#685a2c", "#7a6c38", "#e8c860", "#ffe890", bone="#d8c898", joint="#a08a48")]
 
 def bone(eye): return pal("#e6e0cc", "#c4bca4", "#d0c8b0", "#bfb79c", "#f4f0e0", eye=eye)
 for _sid, _src, _eye in (("stalkoblin", "bokoblin", "#66ccff"), ("stalmoblin", "moblin", "#66ccff"), ("stalizalfos", "lizalfos", "#66ccff")):
@@ -464,9 +478,9 @@ W = [
     ("knights_shield", "Knight's Shield", "騎士の盾", "shield", 0, 150, "#4a6aa8", "#e0e4ec"),
     ("royal_shield", "Royal Shield", "王家の盾", "shield", 0, 200, "#d8b43a", "#f0f2f8"),
     ("hylian_shield", "Hylian Shield", "ハイリアの盾", "shield", 0, 400, "#2a4a9a", "#d8b43a"),
-    ("guardian_sword", "Guardian Sword", "ガーディアンソード", "sword", 14, 120, "#5a7a88", "#ff7a20"),
-    ("guardian_sword_plus", "Guardian Sword++", "ガーディアンソード++", "claymore", 22, 160, "#4a6a78", "#ff7a20"),
-    ("guardian_spear", "Guardian Spear", "ガーディアンスピア", "spear", 14, 120, "#4a6a78", "#ff7a20"),
+    ("guardian_sword", "Guardian Sword", "ガーディアンソード", "sword", 14, 120, "#4ac8ff", "#2a6a9a"),
+    ("guardian_sword_plus", "Guardian Sword++", "ガーディアンソード++", "claymore", 22, 160, "#4ac8ff", "#2a6a9a"),
+    ("guardian_spear", "Guardian Spear", "ガーディアンスピア", "spear", 14, 120, "#2a6a9a", "#4ac8ff"),
     ("guardian_shield", "Guardian Shield", "ガーディアンシールド", "shield", 0, 300, "#4a6a78", "#ff7a20"),
     ("lizal_boomerang", "Lizal Boomerang", "リザルブーメラン", "boomerang", 5, 30, "#7a9a3a", "#e0d08a"),
     ("lizal_forked_boomerang", "Lizal Forked Boomerang", "リザルフォーク", "boomerang", 7, 40, "#3a8ac0", "#bfe0ee"),
