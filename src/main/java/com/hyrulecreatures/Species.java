@@ -17,7 +17,7 @@ public enum Species {
         {"moblin_club"}, {"spiked_moblin_club"}, {"dragonbone_moblin_club"}, {"lynel_crusher"}, {"savage_lynel_crusher"}}),
     TALUS("talus", 1.2f, 3.2f, 80, 7, 0.18, 2.0, 2.9, 1.8f, AttackKind.SMASH, 0.15f, false, new String[][]{{}, {}, {}, {}, {}}),
     GIBDO("gibdo", 0.6f, 1.8f, 30, 3, 0.25, 0.3, 1.9, 1.0f, AttackKind.SLASH, 0f, false, new String[][]{{}, {}, {}, {}, {}}),
-    OCTOROK("octorok", 0.9f, 0.9f, 16, 3, 0.14, 0.2, 14, 1.0f, AttackKind.SHOOT, 0f, false, new String[][]{{}, {}, {}, {}, {}}),
+    OCTOROK("octorok", 0.9f, 0.9f, 16, 3, 0.24, 0.2, 14, 1.0f, AttackKind.SHOOT, 0f, false, new String[][]{{}, {}, {}, {}, {}}),
     WIZZROBE("wizzrobe", 0.6f, 1.8f, 24, 4, 0.2, 0.1, 14, 1.0f, AttackKind.SHOOT, 0f, true, new String[][]{{}, {}, {}, {}, {}}),
     LYNEL("lynel", 1.4f, 3.0f, 120, 8, 0.3, 2.5, 3.4, 1.6f, AttackKind.SLASH, 0f, false, new String[][]{
         {"lynel_sword", "lynel_spear", "lynel_crusher", "lynel_bow"}, {"mighty_lynel_sword", "mighty_lynel_spear", "mighty_lynel_crusher", "mighty_lynel_bow"},
@@ -25,7 +25,18 @@ public enum Species {
         {"savage_lynel_sword", "savage_lynel_spear", "savage_lynel_crusher", "savage_lynel_bow"},
         {"savage_lynel_sword", "savage_lynel_spear", "savage_lynel_crusher", "savage_lynel_bow"}}),
     CHUCHU("chuchu", 0.9f, 0.9f, 12, 3, 0.2, 0.2, 1.8, 1.0f, AttackKind.BITE, 0f, false, new String[][]{{}, {}, {}, {}, {}}),
-    GUARDIAN("guardian", 1.2f, 2.2f, 100, 10, 0.26, 1.0, 16, 1.5f, AttackKind.SHOOT, 0f, false, new String[][]{{}, {}, {}, {}, {}}),
+    GUARDIAN("guardian", 1.3f, 2.3f, 100, 10, 0.26, 1.0, 3.4, 1.5f, AttackKind.BEAM, 0f, false, new String[][]{{}, {}, {}, {}, {}}),
+    DECAYED_GUARDIAN("decayed_guardian", 1.0f, 1.8f, 60, 6, 0.16, 0.5, 3.0, 1.2f, AttackKind.BEAM, 0f, false, new String[][]{{}, {}, {}, {}, {}}),
+    GUARDIAN_TURRET("guardian_turret", 1.2f, 2.2f, 120, 10, 0.0, 0.0, 3.0, 1.3f, AttackKind.BEAM, 0f, false, new String[][]{{}, {}, {}, {}, {}}),
+    GUARDIAN_SKYWATCHER("guardian_skywatcher", 0.9f, 0.9f, 50, 8, 0.3, 0.3, 3.0, 1.2f, AttackKind.BEAM, 0f, true, new String[][]{{}, {}, {}, {}, {}}),
+    GUARDIAN_SCOUT_1("guardian_scout_1", 0.8f, 2.0f, 70, 5, 0.2, 0.5, 2.5, 1.2f, AttackKind.SLASH, 0f, false, new String[][]{
+        {"guardian_sword"}, {"guardian_sword"}, {"guardian_sword"}, {"guardian_sword"}, {"guardian_sword"}}),
+    GUARDIAN_SCOUT_2("guardian_scout_2", 0.8f, 2.0f, 100, 7, 0.2, 0.5, 2.6, 1.2f, AttackKind.SLASH, 0f, false, new String[][]{
+        {"guardian_spear"}, {"guardian_spear"}, {"guardian_spear"}, {"guardian_spear"}, {"guardian_spear"}}),
+    GUARDIAN_SCOUT_3("guardian_scout_3", 1.0f, 2.6f, 150, 10, 0.2, 1.2, 3.0, 1.5f, AttackKind.SMASH, 0.3f, false, new String[][]{
+        {"guardian_sword_plus"}, {"guardian_sword_plus"}, {"guardian_sword_plus"}, {"guardian_sword_plus"}, {"guardian_sword_plus"}}),
+    GUARDIAN_SCOUT_4("guardian_scout_4", 1.0f, 2.6f, 240, 12, 0.24, 1.5, 3.0, 1.5f, AttackKind.SLASH, 0f, false, new String[][]{
+        {"guardian_sword"}, {"guardian_sword"}, {"guardian_sword"}, {"guardian_sword"}, {"guardian_sword"}}),
     STALKOBLIN("stalkoblin", 0.6f, 1.7f, 14, 2, 0.28, 0.3, 1.9, 1.0f, AttackKind.SMASH, 0f, false, new String[][]{
         {"boko_club", "boko_spear"}, {"spiked_boko_club", "spiked_boko_spear"}, {"dragonbone_boko_club"}, {"dragonbone_boko_spear"}, {"dragonbone_boko_club"}}),
     STALMOBLIN("stalmoblin", 1.0f, 2.6f, 35, 4, 0.25, 1.2, 2.6, 1.4f, AttackKind.SMASH, 0.2f, false, new String[][]{

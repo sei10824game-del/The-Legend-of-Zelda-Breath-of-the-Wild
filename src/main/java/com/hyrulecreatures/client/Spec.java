@@ -18,6 +18,10 @@ public final class Spec {
                 Spec.class.getResourceAsStream("/assets/" + HyruleCreatures.ID + "/specs/" + k + ".json")), Spec.class));
     }
 
+    public float hipY() {
+        for (String n : new String[]{"rightLeg", "body"}) for (Part p : parts) if (p.n.equals(n)) return p.pose[1];
+        return 12;
+    }
     public List<String> names() { return Arrays.stream(parts).map(p -> p.n).toList(); }
     public String parentOf(String n) { return Arrays.stream(parts).filter(p -> p.n.equals(n)).findFirst().get().p; }
 

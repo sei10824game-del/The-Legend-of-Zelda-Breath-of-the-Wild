@@ -4,9 +4,11 @@ import net.minecraft.world.item.*;
 import net.minecraft.world.item.crafting.Ingredient;
 
 public class HyruleWeaponItem extends SwordItem {
+    public enum Style { ONE, TWO, SPEAR }
     public final AttackKind attack;
+    public final Style style;
 
-    public HyruleWeaponItem(int dmg, int durability, float speed, AttackKind attack) {
+    public HyruleWeaponItem(int dmg, int durability, float speed, AttackKind attack, Style style) {
         super(new Tier() {
             public int getUses() { return durability; }
             public float getSpeed() { return 1; }
@@ -15,6 +17,6 @@ public class HyruleWeaponItem extends SwordItem {
             public int getEnchantmentValue() { return 10; }
             public Ingredient getRepairIngredient() { return Ingredient.EMPTY; }
         }, dmg, speed, new Item.Properties());
-        this.attack = attack;
+        this.attack = attack; this.style = style;
     }
 }

@@ -19,7 +19,7 @@ public class HyruleRenderer extends MobRenderer<HyruleBiped, CreatureModel> {
 
     public HyruleRenderer(EntityRendererProvider.Context ctx, Species s) {
         super(ctx, new CreatureModel(ctx.bakeLayer(layer(s)), Spec.get(s.id)), 0.4f * s.scale);
-        species = s; side = Spec.get(s.id).names().contains("frontLeftLeg");
+        species = s; side = Spec.get(s.id).names().contains("frontLeftLeg") || Spec.get(s.id).names().contains("leg0");
         if (Spec.get(s.id).names().contains("rightArm")) addLayer(new ItemInHandLayer<>(this, ctx.getItemInHandRenderer()));
     }
 
