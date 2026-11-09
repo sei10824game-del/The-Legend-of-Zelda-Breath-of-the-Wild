@@ -24,7 +24,8 @@ public final class ModRegistry {
                     (t, l) -> s.flies ? new Keese(t, l, s) : new HyruleBiped(t, l, s), MobCategory.MONSTER)
                     .sized(s.w, s.h).clientTrackingRange(10).build(s.id)));
             int[] c = switch (s) { case BOKOBLIN -> new int[]{0xc8452f, 0xe8dcb8}; case MOBLIN -> new int[]{0xa4552f, 0x3a2418};
-                case LIZALFOS -> new int[]{0x5a9a3a, 0xe0d08a}; default -> new int[]{0x3a3040, 0xff4040}; };
+                case LIZALFOS -> new int[]{0x5a9a3a, 0xe0d08a}; case HINOX -> new int[]{0x7a5a8a, 0xffe14a}; case TALUS -> new int[]{0x8a8478, 0xe0902a};
+                case GIBDO -> new int[]{0xb8a888, 0xff3030}; case HORRIBLIN -> new int[]{0x8a9a78, 0xff3030}; default -> new int[]{0x3a3040, 0xff4040}; };
             ITEMS.register(s.id + "_spawn_egg", () -> new ForgeSpawnEggItem(TYPES.get(s), c[0], c[1], new Item.Properties()));
         }
         JsonObject[] ws = new Gson().fromJson(new InputStreamReader(ModRegistry.class.getResourceAsStream(

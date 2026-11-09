@@ -8,6 +8,6 @@ BotW + TotK creatures & weapons. TotK variants take priority over BotW.
 - Every non-mod mob is hostile to these mobs and vice versa (`FactionEvents`).
 
 ## Done
-Bokoblin, Moblin, Lizalfos, Keese; 38 melee weapons.
+Bokoblin, Moblin, Lizalfos, Keese, Hinox, Talus, Gibdo, Horriblin; 38 melee weapons.
 ## TODO
-Remaining creatures (Hinox, Talus, Lynel, Guardian, Chuchu, Wizzrobe, Octorok, Gleeok, Gibdo, Horriblin, Construct, Phantom Ganon, bosses...), bows/shields/arrows, Lizalfos boomerang throw, elemental variants, loot tables, hand-polished models.
+Remaining creatures (Lynel, Guardian, Chuchu, Wizzrobe, Octorok, Gleeok, Gibdo, Horriblin, Construct, Phantom Ganon, bosses...), bows/shields/arrows, Lizalfos boomerang throw, elemental variants, loot tables, hand-polished models.
