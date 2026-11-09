@@ -46,6 +46,8 @@ public class Showcase {
         SHOTS.add(new Shot("guardian_legs_broken", Species.GUARDIAN, 0, null, null, null, 0, 0, false, 0b00110101));
         SHOTS.add(new Shot("moblin_SPIN", Species.MOBLIN, 0, "moblin_club", null, AttackKind.SPIN, 20, 0, false, 0));
         SHOTS.add(new Shot("hinox_STOMP", Species.HINOX, 0, "moblin_club", null, AttackKind.STOMP, 20, 0, false, 0));
+        for (Species q : new Species[]{Species.LYNEL, Species.MOBLIN, Species.HINOX, Species.LIZALFOS, Species.OCTOROK, Species.TALUS})
+            SHOTS.add(new Shot(q.id + "_side", q, 0, null, null, null, 0, 0, false, 0));
         SHOTS.add(new Shot("lynel_SMASH", Species.LYNEL, 0, "lynel_crusher", null, AttackKind.SMASH, 17, 0, false, 0));
     }
 
