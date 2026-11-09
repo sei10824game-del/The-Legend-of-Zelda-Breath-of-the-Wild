@@ -153,7 +153,7 @@ public class CreatureModel extends EntityModel<HyruleBiped> implements ArmedMode
             float dir = k == AttackKind.SLASH && e.combo() % 2 == 1 ? -1 : 1;
             add("rightArm", key(t, T, c[RAX]), key(t, T, c[RAY]) * dir, key(t, T, c[RAZ]));
             add("leftArm", key(t, T, c[LAX]), key(t, T, c[LAY]) * dir, key(t, T, c[LAZ]));
-            lean += key(t, T, c[BX]); twist += key(t, T, c[BY]) * dir; dip += key(t, T, c[DIP]);
+            lean += key(t, T, c[BX]) * .5f; twist += key(t, T, c[BY]) * dir * .6f; dip += key(t, T, c[DIP]) * .5f;
             if (head != null) { head.xRot += key(t, T, c[HX]); head.yRot += key(t, T, c[HY]) * dir; }
             add("rightLeg", key(t, T, c[RL]), 0, 0); add("leftLeg", key(t, T, c[LL]), 0, 0);
             if (k == AttackKind.CHARGE && t > k.windup) { // gallop
@@ -196,6 +196,6 @@ public class CreatureModel extends EntityModel<HyruleBiped> implements ArmedMode
             add("wingL", 0, 0, 1.2f * s); add("wingR", 0, 0, -1.2f * s);
             lean = 0; dip = 0; twist = 0;
         }
-        lean(lean, twist, dip);
+        lean(Mth.clamp(lean, -.6f, 1.05f), twist, Math.min(dip, 3f));
     }
 }

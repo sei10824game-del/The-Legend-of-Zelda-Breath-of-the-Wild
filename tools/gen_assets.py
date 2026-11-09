@@ -70,15 +70,15 @@ def scout_parts():
 SPECIES = {
     "bokoblin": dict(hunch=0.5, parts=[
         P("body", None, (-4, 0, -2, 8, 12, 4), (0, 0, 0)),
-        P("belly", "body", (-3, 5, -4, 6, 6, 2), (0, 0, 0), c="belly"),
+        P("belly", "body", (-4, 3, -5, 8, 8, 3), (0, 0, 0), c="belly"),
         P("loin", "body", (-4, 10, -2, 8, 4, 4), (0, 1, 0), c="cloth"),
-        P("head", None, (-4, -8, -4, 8, 8, 8), (0, 0, -1), f=["eyes"]),
-        P("snout", "head", (-2, -3, -7, 4, 3, 3), (0, 0, 0), c="skin2", f=["nostrils"]),
+        P("head", None, (-5, -9, -5, 10, 9, 9), (0, 0, -1), f=["eyes"]),
+        P("snout", "head", (-2.5, -4, -8, 5, 4, 3), (0, 0, 0), c="skin2", f=["nostrils"]),
         P("jaw", "head", (-1.5, 0, -6, 3, 1, 2), (0, -1, 0), c="skin2"),
         P("horn", "head", (-1, -4, -1, 2, 4, 2), (0, -8, -2), (-0.35, 0, 0), c="horn"),
-        P("earL", "head", (0, -1, -0.5, 6, 2, 1), (4, -5, 0), (0, 0, -0.45), c="skin2"),
-        P("earR", "head", (-6, -1, -0.5, 6, 2, 1), (-4, -5, 0), (0, 0, 0.45), c="skin2"),
-    ] + biped_legs(4, 12, 5, 4, 10, 2, 12)),
+        P("earL", "head", (0, -2, -0.5, 9, 4, 1), (5, -5, 0), (0, 0, -0.35), c="skin2"),
+        P("earR", "head", (-9, -2, -0.5, 9, 4, 1), (-5, -5, 0), (0, 0, 0.35), c="skin2"),
+    ] + biped_legs(5, 14, 5.5, 5, 10, 2.5, 12)),
     "moblin": dict(hunch=0.38, parts=[
         P("body", None, (-6, 0, -3, 12, 14, 6), (0, 0, 0)),
         P("belly", "body", (-5, 6, -5, 10, 7, 2), (0, 0, 0), c="belly"),
@@ -335,6 +335,8 @@ PAL["phantom_ganon"] = [suit("#3a4a5a", "#222c38", "#cfe8ff"), suit("#2a4a6a", "
 def drag(a, b, w): return pal(a, b, "#e8d8b0", "#000000", "#e8dcb8", wing=w, eye="#ffee55")
 PAL["gleeok"] = [drag("#a83a2a", "#7a2418", "#c84a30"), drag("#3a78b8", "#2a5688", "#4a90d0"), drag("#d8c030", "#a89020", "#e8d848"),
                  drag("#a8b4c0", "#808c98", "#c8d4e0"), drag("#d8a838", "#a88222", "#e8c458")]
+
+for _p in PAL["bokoblin"]: _p["eye"] = "#46c8ff"
 
 TEX = 128
 

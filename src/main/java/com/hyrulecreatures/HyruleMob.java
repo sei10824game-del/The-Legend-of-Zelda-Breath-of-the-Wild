@@ -39,6 +39,11 @@ public abstract class HyruleMob extends Monster {
     @Override public void addAdditionalSaveData(CompoundTag t) { super.addAdditionalSaveData(t); t.putInt("Rank", rank()); t.putBoolean("Mini", isMini()); }
     @Override public void readAdditionalSaveData(CompoundTag t) { super.readAdditionalSaveData(t); setRank(t.getInt("Rank")); setMini(t.getBoolean("Mini")); }
 
+    /** dev showcase only */
+    public void debugPose(AttackKind k, int t, int down, boolean guard, int aux) {
+        entityData.set(ATK, k == null ? -1 : k.ordinal()); entityData.set(ATK_T, t); entityData.set(DOWN, down);
+        entityData.set(GUARD, guard); entityData.set(AUX, aux);
+    }
     public int aux() { return entityData.get(AUX); }
     protected void setAux(int v) { entityData.set(AUX, v); }
     protected void tickAttack(AttackKind a, int t, LivingEntity tg) {}
