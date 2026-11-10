@@ -84,6 +84,10 @@ minecraft {
         client {
             // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
             property 'forge.enabledGameTestNamespaces', mod_id
+            if (project.hasProperty('beam')) {
+                args '--quickPlaySingleplayer', 'showcase'
+                property 'hc.beam', 'true'
+            }
             if (project.hasProperty('showcase')) { // dev only: screenshot every creature/pose into run/screenshots
                 args '--quickPlaySingleplayer', 'showcase'
                 property 'hc.showcase', 'true'

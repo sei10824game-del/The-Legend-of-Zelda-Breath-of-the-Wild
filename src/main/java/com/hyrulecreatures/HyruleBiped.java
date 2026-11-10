@@ -105,11 +105,11 @@ public class HyruleBiped extends HyruleMob {
         if (aim == null) return;
         if (t < a.hit) { // laser sight: thin red while tracking, thick orange once locked
             boolean locked = t > a.windup;
-            line(sl, eye, aim, new net.minecraft.core.particles.DustParticleOptions(new org.joml.Vector3f(1f, locked ? 0.45f : 0.05f, 0.05f), locked ? 1.2f : 0.6f), locked ? 0.35 : 0.8);
+            line(sl, eye, aim, new net.minecraft.core.particles.DustParticleOptions(new org.joml.Vector3f(1f, locked ? 0.45f : 0.05f, 0.05f), locked ? 1.6f : 1.0f), locked ? 0.2 : 0.35);
             if (t % 5 == 0) playSound(locked ? SoundEvents.NOTE_BLOCK_BIT.value() : SoundEvents.NOTE_BLOCK_HAT.value(), 1f, locked ? 2f : 1.2f);
         } else if (t <= a.hit + 8 && impact != null) { // the beam itself
-            line(sl, eye, impact, ParticleTypes.END_ROD, 0.3);
-            line(sl, eye, impact, new net.minecraft.core.particles.DustParticleOptions(new org.joml.Vector3f(0.4f, 1f, 1f), 1.8f), 0.4);
+            line(sl, eye, impact, ParticleTypes.END_ROD, 0.15);
+            line(sl, eye, impact, new net.minecraft.core.particles.DustParticleOptions(new org.joml.Vector3f(0.4f, 1f, 1f), 2.6f), 0.2);
         }
     }
 

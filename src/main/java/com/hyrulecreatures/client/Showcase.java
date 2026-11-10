@@ -54,8 +54,27 @@ public class Showcase {
     static int tick = 0, idx = -1, phase = 0;
     static HyruleBiped cur;
 
+    static int btick = 0;
+    /** -Pbeam: spawn a real Guardian on the integrated server and screenshot its lock-on / beam / explosion. */
+    static void beamTick(Minecraft mc) {
+        var srv = mc.getSingleplayerServer();
+        if (srv == null || mc.player == null) return;
+        btick++;
+        mc.options.hideGui = true;
+        if (btick == 100) srv.execute(() -> {
+            var src = srv.createCommandSourceStack().withSuppressedOutput();
+            for (String c : new String[]{"gamemode survival @a", "effect give @a minecraft:resistance 999 255 true", "time set day", "gamerule doMobGriefing true",
+                    "execute as @a at @s run summon hyrulecreatures:guardian ~ ~ ~16 {Rank:0}"})
+                srv.getCommands().performPrefixedCommand(src, c);
+        });
+        if (btick > 110 && btick % 5 == 0 && btick < 400)
+            Screenshot.grab(mc.gameDirectory, String.format("beam_%03d.png", (btick - 110) / 5), mc.getMainRenderTarget(), msg -> {});
+        if (btick >= 410) { System.out.println("BEAM_DONE"); mc.stop(); }
+    }
+
     @SubscribeEvent
     public static void onTick(TickEvent.ClientTickEvent e) {
+        if (Boolean.getBoolean("hc.beam") && e.phase == TickEvent.Phase.END) { beamTick(Minecraft.getInstance()); return; }
         if (!Boolean.getBoolean("hc.showcase") || e.phase != TickEvent.Phase.END) return;
         Minecraft mc = Minecraft.getInstance();
         if (mc.level == null || mc.player == null) return;
