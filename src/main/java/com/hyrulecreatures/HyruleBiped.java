@@ -30,6 +30,7 @@ public class HyruleBiped extends HyruleMob {
             Species.GUARDIAN_SCOUT_1, new String[]{"guardian_shield", "guardian_shield", "guardian_shield", "guardian_shield", "guardian_shield"},
             Species.GUARDIAN_SCOUT_2, new String[]{"guardian_shield", "guardian_shield", "guardian_shield", "guardian_shield", "guardian_shield"},
             Species.GUARDIAN_SCOUT_4, new String[]{"guardian_shield", "guardian_shield", "guardian_shield", "guardian_shield", "guardian_shield"},
+            Species.FIREBLIGHT_GANON, new String[]{"royal_shield", "royal_shield", "royal_shield", "royal_shield", "royal_shield"},
             Species.YIGA_BLADEMASTER, new String[]{"soldiers_shield", "knights_shield", "knights_shield", "royal_shield", "royal_shield"});
     private static final int[] RANK_WEIGHT = {50, 28, 14, 7, 1};
 
@@ -44,15 +45,15 @@ public class HyruleBiped extends HyruleMob {
     @Override public AttackKind defaultAttack() { return species.attack; }
     @Override public double reach() { return species.reach + (getMainHandItem().getItem() instanceof HyruleWeaponItem w && w.style == HyruleWeaponItem.Style.SPEAR ? 0.6 : 0); }
     @Override protected double stompChance() {
-        return switch (species) { case HINOX, TALUS, GUARDIAN -> 0.3; case GUARDIAN_SCOUT_4 -> 0.2; case FROX -> 0.35; case CAPTAIN_CONSTRUCT -> 0.2; case MOBLIN -> 0.1; default -> 0; };
+        return switch (species) { case HINOX, TALUS, GUARDIAN, STALHINOX, CALAMITY_GANON, THUNDERBLIGHT_GANON -> 0.3; case GUARDIAN_SCOUT_4 -> 0.2; case FROX -> 0.35; case CAPTAIN_CONSTRUCT -> 0.2; case MOBLIN -> 0.1; default -> 0; };
     }
     @Override protected boolean canCharge() {
         return switch (species) { case BOKOBLIN, HORRIBLIN, STALKOBLIN, MOBLIN, STALMOBLIN, LYNEL -> true; default -> false; };
     }
     // ---------------------------------------------------------------- guardians: 8 legs with own HP, beam
-    public boolean isLegged() { return species == Species.GUARDIAN || species == Species.DECAYED_GUARDIAN; }
-    private boolean longShooter() { return switch (species) { case LYNEL, HINOX, TALUS, FROX -> true; default -> false; }; }
-    private boolean pureBeamer() { return switch (species) { case GUARDIAN, DECAYED_GUARDIAN, GUARDIAN_TURRET, GUARDIAN_SKYWATCHER -> true; default -> false; }; }
+    public boolean isLegged() { return species == Species.GUARDIAN || species == Species.DECAYED_GUARDIAN || species == Species.CALAMITY_GANON; }
+    private boolean longShooter() { return switch (species) { case LYNEL, HINOX, TALUS, FROX, STALHINOX, FIREBLIGHT_GANON, WATERBLIGHT_GANON, WINDBLIGHT_GANON, THUNDERBLIGHT_GANON -> true; default -> false; }; }
+    private boolean pureBeamer() { return switch (species) { case GUARDIAN, DECAYED_GUARDIAN, GUARDIAN_TURRET, GUARDIAN_SKYWATCHER, CALAMITY_GANON -> true; default -> false; }; }
     private float[] legHp;
 
     private Vec3 hitPoint(net.minecraft.world.damagesource.DamageSource s) {
@@ -144,7 +145,7 @@ public class HyruleBiped extends HyruleMob {
     @Override public boolean hurt(net.minecraft.world.damagesource.DamageSource src, float a) {
         if (isLegged() && !level().isClientSide && hitLeg(src, a)) return true;
         boolean r = super.hurt(src, a);
-        if (r && species == Species.WIZZROBE && !level().isClientSide && isAlive())
+        if (r && (species == Species.WIZZROBE || species == Species.FIREBLIGHT_GANON || species == Species.WATERBLIGHT_GANON || species == Species.WINDBLIGHT_GANON || species == Species.THUNDERBLIGHT_GANON) && !level().isClientSide && isAlive())
             for (int i = 0; i < 8; i++) if (randomTeleport(getX() + (random.nextDouble() - .5) * 16, getY() + random.nextInt(3), getZ() + (random.nextDouble() - .5) * 16, true)) break;
         return r;
     }
@@ -188,7 +189,7 @@ public class HyruleBiped extends HyruleMob {
             level().addFreshEntity(a);
         } else {
             boolean boom = isBoomerang(h);
-            int ty = boom ? 4 : species == Species.OCTOROK || species == Species.HINOX || species == Species.TALUS || species == Species.FROX ? 0 :  new int[]{1, 2, 3, 1, 3}[rank()];
+            int ty = boom ? 4 : species == Species.FIREBLIGHT_GANON ? 1 : species == Species.WATERBLIGHT_GANON ? 2 : species == Species.WINDBLIGHT_GANON || species == Species.THUNDERBLIGHT_GANON ? 3 : species == Species.OCTOROK || species == Species.HINOX || species == Species.STALHINOX || species == Species.TALUS || species == Species.FROX ? 0 :  new int[]{1, 2, 3, 1, 3}[rank()];
             Shot s = new Shot(level(), this, ty, boom ? h.copy() : new ItemStack(ModRegistry.shotItem(ty)), dmg);
             s.shoot(dx, dy + h2 * (ty == 0 ? 0.05 : 0), dz, boom ? 1.1f : 1.2f, 1f);
             level().addFreshEntity(s);

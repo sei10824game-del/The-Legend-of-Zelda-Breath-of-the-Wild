@@ -275,6 +275,23 @@ SPECIES["guardian_skywatcher"] = dict(hunch=0.0, parts=[
     P("wingL", "body", (0, -0.5, -2, 14, 1, 4), (0, -9, 0), c="horn"),
     P("wingR", "body", (-14, -0.5, -2, 14, 1, 4), (0, -9, 0), c="horn")])
 SPECIES["frox"] = SPECIES["talus"]
+SPECIES["stalhinox"] = SPECIES["hinox"]
+SPECIES["calamity_ganon"] = SPECIES["guardian"]
+SPECIES["master_kohga"] = SPECIES["yiga_blademaster"]
+BLIGHT = dict(hunch=0.15, parts=[
+    P("body", None, (-5, 0, -3, 10, 14, 6), (0, 0, 0), c="cloth"),
+    P("robe", "body", (-6.5, 9, -4.5, 13, 8, 9), (0, 0, 0), c="cloth"),
+    P("cape", "body", (-6, 0, 2.5, 12, 20, 1), (0, 0, 0), c="skin2"),
+    P("core", "body", (-2, 3, -3.5, 4, 4, 1), (0, 0, 0), c="horn"),
+    P("head", None, (-4, -8, -4, 8, 8, 8), (0, 0, -0.5), c="skin2", f=["eyes"]),
+    P("crown", "head", (-5, -3, -5, 10, 2, 10), (0, -8, 0), c="horn"),
+    P("hornL", "head", (0, -7, -1, 2, 7, 2), (3, -8, 0), (0, 0, -0.35), c="horn"),
+    P("hornR", "head", (-2, -7, -1, 2, 7, 2), (-3, -8, 0), (0, 0, 0.35), c="horn"),
+    P("rightArm", None, (-4, -2, -2, 4, 17, 4), (-7, 2, 0), c="skin", f=["hand"]),
+    P("leftArm", None, (0, -2, -2, 4, 17, 4), (7, 2, 0), c="skin", f=["hand"]),
+    P("rightLeg", None, (-2.5, 0, -2.5, 5, 10, 5), (-2.5, 14, 0), c="skin2"),
+    P("leftLeg", None, (-2.5, 0, -2.5, 5, 10, 5), (2.5, 14, 0), c="skin2")])
+for _b in ("fireblight_ganon", "waterblight_ganon", "windblight_ganon", "thunderblight_ganon"): SPECIES[_b] = BLIGHT
 SPECIES["phantom_ganon"] = SPECIES["yiga_footsoldier"]
 def gleeok_parts():
     parts = [
@@ -404,6 +421,16 @@ PAL["chuchu"][0] = pal("#58b0f0", "#3a88c8", "#a8d8ff", "#000000", "#ff8a20", ey
 PAL["moblin"][0] = pal("#9a3a30", "#722a22", "#d49a7a", "#5b4430", "#e8dcb8", "#3a2418")
 PAL["lizalfos"][0] = pal("#4a9a3a", "#357828", "#e0d08a", "#7a8a68", "#e8dcb8", eye="#ffd030")
 PAL["bokoblin"][0].update(skin="#e0522c", skin2="#b83a20", belly="#f0a070")
+
+PAL["stalhinox"] = [bone("#66ccff"), bone("#aaddff"), bone("#ff66ff"), bone("#ffffff"), bone("#ffe066")]
+PAL["master_kohga"] = PAL["yiga_blademaster"]
+PAL["calamity_ganon"] = [anc("#2a2430", "#1a141e", "#3a2c3a", "#ff2a2a", "#ffd040", bone="#4a3a4a", joint="#8a1a1a")] * 5
+def blight(robe, glow):
+    return pal("#2e2428", "#1c1418", "#d9b48a", robe, glow, eye=glow)
+PAL["fireblight_ganon"] = [blight("#7a2418", "#ff7a20")] * 5
+PAL["waterblight_ganon"] = [blight("#1f4a7a", "#40d0ff")] * 5
+PAL["windblight_ganon"] = [blight("#3f6a52", "#d0ffd0")] * 5
+PAL["thunderblight_ganon"] = [blight("#6a5a1a", "#ffee40")] * 5
 
 TEX = 128
 
@@ -651,7 +678,10 @@ NAMES = {"bokoblin": ("Bokoblin", "ボコブリン"), "moblin": ("Moblin", "モ�
          "stalkoblin": ("Stalkoblin", "スタルコブリン"), "stalmoblin": ("Stalmoblin", "スタルモリブリン"), "stalizalfos": ("Stalizalfos", "スタルリザルフォス"),
          "yiga_footsoldier": ("Yiga Footsoldier", "イーガ団員"), "yiga_blademaster": ("Yiga Blademaster", "イーガ団の剣士"),
          "soldier_construct": ("Soldier Construct", "ソルジャーコンストラクト"), "captain_construct": ("Captain Construct", "キャプテンコンストラクト"),
-         "frox": ("Frox", "フロックス"), "phantom_ganon": ("Phantom Ganon", "ファントムガノン"), "gleeok": ("Gleeok", "ゴーマ")}
+         "frox": ("Frox", "フロックス"), "stalhinox": ("Stalhinox", "スタルヒノックス"), "calamity_ganon": ("Calamity Ganon", "厄災ガノン"),
+         "master_kohga": ("Master Kohga", "マスター・コーガ"), "fireblight_ganon": ("Fireblight Ganon", "炎のカースガノン"),
+         "waterblight_ganon": ("Waterblight Ganon", "水のカースガノン"), "windblight_ganon": ("Windblight Ganon", "風のカースガノン"),
+         "thunderblight_ganon": ("Thunderblight Ganon", "雷のカースガノン"), "phantom_ganon": ("Phantom Ganon", "ファントムガノン"), "gleeok": ("Gleeok", "ゴーマ")}
 RANK_EN = [r.capitalize() for r in RANKS]
 
 

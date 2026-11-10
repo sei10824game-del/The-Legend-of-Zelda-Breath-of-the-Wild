@@ -55,6 +55,13 @@ public enum Species {
     PHANTOM_GANON("phantom_ganon", 0.7f, 2.0f, 150, 9, 0.3, 1.5, 2.6, 1.2f, AttackKind.SLASH, 0f, true, new String[][]{
         {"royal_guards_sword"}, {"royal_guards_sword"}, {"royal_claymore"}, {"royal_guards_sword"}, {"royal_claymore"}}),
     GLEEOK("gleeok", 2.4f, 3.6f, 300, 10, 0.25, 2.0, 16, 2.0f, AttackKind.SHOOT, 0f, true, new String[][]{{}, {}, {}, {}, {}}),
+    STALHINOX("stalhinox", 1.4f, 4.2f, 160, 8, 0.2, 2.5, 3.6, 2.2f, AttackKind.SMASH, 0.2f, false, new String[][]{{"moblin_club"}, {"spiked_moblin_club"}, {"dragonbone_moblin_club"}, {"lynel_crusher"}, {"savage_lynel_crusher"}}),
+    CALAMITY_GANON("calamity_ganon", 7.0f, 8.0f, 1500, 25, 0.22, 3.0, 8.0, 4.0f, AttackKind.BEAM, 0f, false, new String[][]{{}, {}, {}, {}, {}}),
+    MASTER_KOHGA("master_kohga", 0.9f, 2.6f, 300, 9, 0.34, 1.0, 2.8, 1.4f, AttackKind.SLASH, 0f, false, new String[][]{{"yiga_blade"}, {"yiga_blade"}, {"yiga_blade"}, {"yiga_blade"}, {"yiga_blade"}}),
+    FIREBLIGHT_GANON("fireblight_ganon", 1.0f, 3.6f, 400, 12, 0.28, 1.5, 3.4, 1.5f, AttackKind.SLASH, 0f, false, new String[][]{{"royal_guards_sword"}, {"royal_guards_sword"}, {"royal_guards_sword"}, {"royal_guards_sword"}, {"royal_guards_sword"}}),
+    WATERBLIGHT_GANON("waterblight_ganon", 1.0f, 3.6f, 400, 12, 0.28, 1.5, 3.6, 1.5f, AttackKind.SLASH, 0f, false, new String[][]{{"royal_halberd"}, {"royal_halberd"}, {"royal_halberd"}, {"royal_halberd"}, {"royal_halberd"}}),
+    WINDBLIGHT_GANON("windblight_ganon", 1.0f, 3.6f, 400, 12, 0.32, 1.0, 3.2, 1.5f, AttackKind.SLASH, 0f, true, new String[][]{{"royal_bow"}, {"royal_bow"}, {"royal_bow"}, {"royal_bow"}, {"royal_bow"}}),
+    THUNDERBLIGHT_GANON("thunderblight_ganon", 1.2f, 3.8f, 450, 14, 0.26, 2.0, 3.6, 1.6f, AttackKind.SMASH, 0.3f, false, new String[][]{{"royal_claymore"}, {"royal_claymore"}, {"royal_claymore"}, {"royal_claymore"}, {"royal_claymore"}}),
     HORRIBLIN("horriblin", 0.6f, 1.7f, 30, 3, 0.3, 0.4, 1.9, 1.0f, AttackKind.SLASH, 0f, false, new String[][]{
         {"boko_club", "boko_spear"}, {"spiked_boko_club", "spiked_boko_spear"}, {"dragonbone_boko_club"}, {"dragonbone_boko_spear"}, {"dragonbone_boko_club"}});
 
