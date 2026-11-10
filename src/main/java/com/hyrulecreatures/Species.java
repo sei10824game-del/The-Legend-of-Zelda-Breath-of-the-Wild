@@ -54,7 +54,7 @@ public enum Species {
     FROX("frox", 1.6f, 3.6f, 200, 12, 0.18, 3.0, 3.8, 2.0f, AttackKind.SMASH, 0.2f, false, new String[][]{{}, {}, {}, {}, {}}),
     PHANTOM_GANON("phantom_ganon", 0.7f, 2.0f, 150, 9, 0.3, 1.5, 2.6, 1.2f, AttackKind.SLASH, 0f, true, new String[][]{
         {"royal_guards_sword"}, {"royal_guards_sword"}, {"royal_claymore"}, {"royal_guards_sword"}, {"royal_claymore"}}),
-    GLEEOK("gleeok", 2.4f, 3.6f, 300, 10, 0.25, 2.0, 16, 2.0f, AttackKind.SHOOT, 0f, true, new String[][]{{}, {}, {}, {}, {}}),
+    GLEEOK("gleeok", 2.4f, 5.0f, 300, 10, 0.25, 2.0, 16, 2.0f, AttackKind.SHOOT, 0f, true, new String[][]{{}, {}, {}, {}, {}}),
     STALHINOX("stalhinox", 1.4f, 4.2f, 160, 8, 0.2, 2.5, 3.6, 2.2f, AttackKind.SMASH, 0.2f, false, new String[][]{{"moblin_club"}, {"spiked_moblin_club"}, {"dragonbone_moblin_club"}, {"lynel_crusher"}, {"savage_lynel_crusher"}}),
     CALAMITY_GANON("calamity_ganon", 7.0f, 8.0f, 1500, 25, 0.22, 3.0, 8.0, 4.0f, AttackKind.BEAM, 0f, false, new String[][]{{}, {}, {}, {}, {}}),
     MASTER_KOHGA("master_kohga", 0.9f, 2.6f, 300, 9, 0.34, 1.0, 2.8, 1.4f, AttackKind.SLASH, 0f, false, new String[][]{{"yiga_blade"}, {"yiga_blade"}, {"yiga_blade"}, {"yiga_blade"}, {"yiga_blade"}}),

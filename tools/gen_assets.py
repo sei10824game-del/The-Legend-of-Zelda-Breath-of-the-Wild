@@ -125,15 +125,17 @@ SPECIES = {
         P("tail2", "tail1", (-1.5, -1.5, 0, 3, 3, 5), (0, 0, 5), (0.25, 0, 0), c="skin2"),
         P("tail3", "tail2", (-1, -1, 0, 2, 2, 5), (0, 0, 5), c="skin2"),
     ] + biped_legs(4, 13, 5.5, 4, 12, 2.2, 12)),
-    "hinox": dict(hunch=0.18, parts=[
+    "hinox": dict(hunch=0.3, parts=[
         P("body", None, (-8, 0, -6, 16, 14, 12), (0, 0, 0)),
         P("belly", "body", (-7, 4, -8, 14, 9, 2), (0, 0, 0), c="belly"),
+        P("vest", "body", (-8.5, 0, -6.5, 17, 7, 13), (0, 0, 0), c="cloth", f=["stripes"]),
         P("loin", "body", (-8.5, 11, -6.5, 17, 5, 13), (0, 0, 0), c="cloth"),
         P("head", None, (-6, -10, -6, 12, 10, 11), (0, 1, -2), f=["bigeye"]),
-        P("jaw", "head", (-4, 0, -6, 8, 2, 4), (0, -1, 0), c="skin2"),
-        P("hornL", "head", (0, -5, -1, 2, 6, 2), (4, -8, 0), (0, 0, -0.5), c="horn"),
-        P("hornR", "head", (-2, -5, -1, 2, 6, 2), (-4, -8, 0), (0, 0, 0.5), c="horn"),
-        P("hair", "head", (-5.5, -1, -0.5, 11, 3, 6), (0, -9, 1), c="hair"),
+        P("snout", "head", (-3, -4, -9, 6, 4, 3), (0, 0, 0), c="nose", f=["nostrils"]),
+        P("brow", "head", (-5.5, -2, -6.5, 11, 2, 1), (0, -7, 0), c="hair"),
+        P("earL", "head", (0, -3, -1, 9, 6, 1), (6, -5, 0), (0, 0, -0.35), c="skin2"),
+        P("earR", "head", (-9, -3, -1, 9, 6, 1), (-6, -5, 0), (0, 0, 0.35), c="skin2"),
+        P("knot", "head", (-2, -5, -2, 4, 5, 4), (0, -10, 0), c="hair"),
         P("rightArm", None, (-6, -2, -3, 7, 16, 7), (-10, 2, 0), f=["hand"]),
         P("leftArm", None, (-1, -2, -3, 7, 16, 7), (10, 2, 0), f=["hand"]),
         P("rightLeg", None, (-3.5, 0, -3.5, 7, 8, 7), (-4, 16, 0), c="skin2"),
@@ -335,8 +337,8 @@ def gleeok_parts():
     ]
     for k, x, rz in (("L", 5, .35), ("M", 0, 0), ("R", -5, -.35)):
         parts += [
-            P(f"neck{k}", "body", (-2, -13, -2, 4, 13, 4), (x, 2, -8), (-0.2, 0, rz), c="skin2"),
-            P(f"head{k}", f"neck{k}", (-3, -4, -7, 6, 5, 7), (0, -13, 0), (0.45, 0, 0), f=["eyes"]),
+            P(f"neck{k}", "body", (-1.5, -24, -1.5, 3, 24, 3), (x, 2, -8), (-0.25, 0, rz * 1.4), c="skin2"),
+            P(f"head{k}", f"neck{k}", (-3, -4, -7, 6, 5, 7), (0, -24, 0), (0.7, 0, 0), f=["eyes"]),
             P(f"snout{k}", f"head{k}", (-2, -3.5, -12, 4, 3, 5), (0, 0, 0), c="skin2", f=["nostrils"]),
             P(f"jaw{k}", f"head{k}", (-2, 0, -11, 4, 1, 4), (0, -0.5, 0), (0.25, 0, 0), c="belly"),
             P(f"hornA{k}", f"head{k}", (1.5, -7, -2, 1, 5, 1), (0, 0, 0), (0.4, 0, -0.2), c="horn"),
@@ -456,6 +458,24 @@ PAL["fireblight_ganon"] = [blight("#7a2418", "#ff7a20")] * 5
 PAL["waterblight_ganon"] = [blight("#1f4a7a", "#40d0ff")] * 5
 PAL["windblight_ganon"] = [blight("#3f6a52", "#d0ffd0")] * 5
 PAL["thunderblight_ganon"] = [blight("#6a5a1a", "#ffee40")] * 5
+
+# --- second reference pass (TotK compendium photos) ---
+PAL["hinox"][0] = pal("#6f7d66", "#566350", "#8a9680", "#8a5a38", "#e8dcb8", "#e8e4d4", eye="#b070e0")
+PAL["hinox"][1] = pal("#5a7a8a", "#43606e", "#7a98a6", "#6a4a30", "#e8dcb8", "#cfd8e0", eye="#e8a030")
+PAL["hinox"][2] = pal("#4a4a4e", "#34343a", "#6a6a70", "#503828", "#c9c2a8", "#b8b8b8", eye="#ff6030")
+for _i, _p in enumerate(PAL["hinox"]): _p["nose"] = "#c8909a"
+PAL["talus"][0] = pal("#d8d0b8", "#b0a890", "#e8e0c8", "#000000", "#4ae0a0", eye="#4ae0a0")
+PAL["talus"][1] = pal("#5a5a5a", "#3e3e3e", "#7a7a7a", "#000000", "#4ae0a0", eye="#4ae0a0")
+PAL["talus"][2] = pal("#e4e4e0", "#bcbcb8", "#f4f4f0", "#000000", "#a0e0ff", eye="#a0e0ff")
+PAL["talus"][3] = pal("#4a3a30", "#2e2420", "#6a4a38", "#000000", "#ff9a20", eye="#ff9a20")
+PAL["talus"][4] = pal("#c8e4f4", "#9ac0d8", "#e8f4fc", "#000000", "#e0f8ff", eye="#e0f8ff")
+PAL["lynel"][0] = pal("#6a604a", "#4a4234", "#a04a3a", "#4a3a30", "#e8dcb8", "#a02a20")
+PAL["lynel"][1] = pal("#7a708a", "#5a5068", "#6a5a90", "#4a3a50", "#e8dcb8", "#3a5aa0")
+PAL["lynel"][2] = pal("#7a7468", "#5a5448", "#8a8a8a", "#4a4440", "#e8dcb8", "#e8e8f0")
+PAL["phantom_ganon"] = [suit("#5a1a14", "#2a0a08", "#c03020")] * 5
+def cons2(glow): return pal("#5a8a78", "#3a6a58", "#5a8a78", "#000000", "#707882", eye=glow)
+PAL["soldier_construct"] = [cons2("#40ffc0"), cons2("#80ffe0"), cons2("#ff8a30"), cons2("#ffffff"), cons2("#fff2a0")]
+PAL["captain_construct"] = PAL["soldier_construct"]
 
 TEX = 128
 
