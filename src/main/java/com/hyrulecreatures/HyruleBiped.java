@@ -51,6 +51,7 @@ public class HyruleBiped extends HyruleMob {
     }
     // ---------------------------------------------------------------- guardians: 8 legs with own HP, beam
     public boolean isLegged() { return species == Species.GUARDIAN || species == Species.DECAYED_GUARDIAN; }
+    private boolean longShooter() { return switch (species) { case LYNEL, HINOX, TALUS, FROX -> true; default -> false; }; }
     private boolean pureBeamer() { return switch (species) { case GUARDIAN, DECAYED_GUARDIAN, GUARDIAN_TURRET, GUARDIAN_SKYWATCHER -> true; default -> false; }; }
     private float[] legHp;
 
@@ -154,6 +155,7 @@ public class HyruleBiped extends HyruleMob {
     @Override protected double engageRange() {
         ItemStack h = getMainHandItem();
         if (pureBeamer() || species == Species.GUARDIAN_SCOUT_4) return 20;
+        if (longShooter() && !(h.getItem() instanceof HyruleBowItem)) return 18;
         if (h.getItem() instanceof HyruleBowItem) return 14;
         if (isBoomerang(h)) return 9;
         double r = reach();
@@ -166,6 +168,7 @@ public class HyruleBiped extends HyruleMob {
         ItemStack h = getMainHandItem(); LivingEntity t = getTarget();
         double d = t == null ? 0 : distanceTo(t);
         if (pureBeamer()) return d > 5 ? AttackKind.BEAM : isLegged() && random.nextFloat() < 0.4f ? AttackKind.STOMP : null;
+        if (longShooter() && !(h.getItem() instanceof HyruleBowItem) && d > 6 && d < 18 && random.nextFloat() < 0.025f) return AttackKind.SHOOT;
         if (species == Species.GUARDIAN_SCOUT_4 && d > 6 && random.nextFloat() < 0.02f) return AttackKind.BEAM;
         if (h.getItem() instanceof HyruleBowItem) return d <= reach() + 0.3 ? AttackKind.SLASH : AttackKind.SHOOT;
         if (isBoomerang(h)) return d > 4 ? (random.nextFloat() < 0.6f ? AttackKind.SHOOT : null) : d <= reach() + 0.5 ? AttackKind.SLASH : null;
@@ -185,7 +188,7 @@ public class HyruleBiped extends HyruleMob {
             level().addFreshEntity(a);
         } else {
             boolean boom = isBoomerang(h);
-            int ty = boom ? 4 : species == Species.OCTOROK ? 0 :  new int[]{1, 2, 3, 1, 3}[rank()];
+            int ty = boom ? 4 : species == Species.OCTOROK || species == Species.HINOX || species == Species.TALUS || species == Species.FROX ? 0 :  new int[]{1, 2, 3, 1, 3}[rank()];
             Shot s = new Shot(level(), this, ty, boom ? h.copy() : new ItemStack(ModRegistry.shotItem(ty)), dmg);
             s.shoot(dx, dy + h2 * (ty == 0 ? 0.05 : 0), dz, boom ? 1.1f : 1.2f, 1f);
             level().addFreshEntity(s);
