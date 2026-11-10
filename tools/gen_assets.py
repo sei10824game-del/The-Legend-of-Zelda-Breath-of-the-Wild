@@ -276,7 +276,14 @@ SPECIES["guardian_skywatcher"] = dict(hunch=0.0, parts=[
     P("wingR", "body", (-14, -0.5, -2, 14, 1, 4), (0, -9, 0), c="horn")])
 SPECIES["frox"] = SPECIES["talus"]
 SPECIES["stalhinox"] = SPECIES["hinox"]
-SPECIES["calamity_ganon"] = SPECIES["guardian"]
+SPECIES["calamity_ganon"] = dict(hunch=0.0, parts=guardian_parts() + [
+    P("hornL", "body", (0, -14, -2, 3, 12, 3), (6, -4, 0), (0, 0, -0.5), c="horn"),
+    P("hornR", "body", (-3, -14, -2, 3, 12, 3), (-6, -4, 0), (0, 0, 0.5), c="horn"),
+    P("hornL2", "body", (0, -10, -2, 3, 9, 3), (9, -2, 2), (0, 0, -0.9), c="horn"),
+    P("hornR2", "body", (-3, -10, -2, 3, 9, 3), (-9, -2, 2), (0, 0, 0.9), c="horn"),
+    P("spk1", "body", (-1.5, -10, 2, 3, 8, 3), (0, 0, 0), (0.3, 0, 0), c="horn"),
+    P("spk2", "body", (-1.5, -9, 6, 3, 8, 3), (0, 0, 0), (0.5, 0, 0), c="horn"),
+    P("core", "body", (-3, 0, -9.5, 6, 6, 1), (0, 0, 0), c="horn")])
 SPECIES["master_kohga"] = SPECIES["yiga_blademaster"]
 BLIGHT = dict(hunch=0.15, parts=[
     P("body", None, (-5, 0, -3, 10, 14, 6), (0, 0, 0), c="cloth"),
@@ -291,7 +298,25 @@ BLIGHT = dict(hunch=0.15, parts=[
     P("leftArm", None, (0, -2, -2, 4, 17, 4), (7, 2, 0), c="skin", f=["hand"]),
     P("rightLeg", None, (-2.5, 0, -2.5, 5, 10, 5), (-2.5, 14, 0), c="skin2"),
     P("leftLeg", None, (-2.5, 0, -2.5, 5, 10, 5), (2.5, 14, 0), c="skin2")])
-for _b in ("fireblight_ganon", "waterblight_ganon", "windblight_ganon", "thunderblight_ganon"): SPECIES[_b] = BLIGHT
+def blight_variant(extra):
+    return dict(hunch=BLIGHT["hunch"], parts=[dict(q) for q in BLIGHT["parts"]] + extra)
+SPECIES["fireblight_ganon"] = blight_variant([
+    P("flame", "head", (-3, -8, -2, 6, 8, 4), (0, -8, 0), c="horn"),
+    P("flameL", "head", (0, -6, -1, 3, 6, 3), (4, -8, 0), (0, 0, -0.5), c="horn"),
+    P("flameR", "head", (-3, -6, -1, 3, 6, 3), (-4, -8, 0), (0, 0, 0.5), c="horn"),
+    P("padL", "body", (0, -3, -4, 6, 4, 8), (5, 0, 0), c="horn"), P("padR", "body", (-6, -3, -4, 6, 4, 8), (-5, 0, 0), c="horn")])
+SPECIES["waterblight_ganon"] = blight_variant([
+    P("finL", "head", (0, -3, -0.5, 8, 6, 1), (4, -3, 0), (0, 0.4, -0.3), c="horn"),
+    P("finR", "head", (-8, -3, -0.5, 8, 6, 1), (-4, -3, 0), (0, -0.4, 0.3), c="horn"),
+    P("dorsal", "body", (-1, -4, 3, 2, 14, 3), (0, 0, 0), c="horn")])
+SPECIES["windblight_ganon"] = blight_variant([
+    P("wingL", "body", (0, -0.5, -2, 16, 1, 9), (4, 2, 4), c="cloth"),
+    P("wingR", "body", (-16, -0.5, -2, 16, 1, 9), (-4, 2, 4), c="cloth"),
+    P("scarf", "head", (-4.5, 0, -4.5, 9, 3, 9), (0, 0, 0), c="cloth")])
+SPECIES["thunderblight_ganon"] = blight_variant([
+    P("padL", "body", (0, -5, -5, 8, 6, 10), (4, 0, 0), c="cloth"), P("padR", "body", (-8, -5, -5, 8, 6, 10), (-4, 0, 0), c="cloth"),
+    P("spikeL", "body", (0, -12, -1, 2, 8, 2), (8, -3, 0), (0, 0, -0.3), c="horn"), P("spikeR", "body", (-2, -12, -1, 2, 8, 2), (-8, -3, 0), (0, 0, 0.3), c="horn"),
+    P("bolt", "head", (-1, -10, -1, 2, 6, 2), (0, -8, 0), c="horn")])
 SPECIES["phantom_ganon"] = SPECIES["yiga_footsoldier"]
 def gleeok_parts():
     parts = [
