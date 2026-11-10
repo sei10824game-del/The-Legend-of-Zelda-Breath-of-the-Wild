@@ -55,6 +55,16 @@ public class Showcase {
     static HyruleBiped cur;
 
     static int btick = 0;
+    static String spawnCmd() {
+        String id = System.getProperty("hc.beam", "guardian"); if (id.equals("true") || id.isEmpty()) id = "guardian";
+        String nbt = switch (id) {
+            case "bokoblin" -> "{Rank:0,HandItems:[{id:\"hyrulecreatures:boko_club\",Count:1b},{id:\"hyrulecreatures:boko_shield\",Count:1b}]}";
+            case "lizalfos" -> "{Rank:0,HandItems:[{id:\"hyrulecreatures:lizal_boomerang\",Count:1b},{}]}";
+            default -> "{Rank:0}";
+        };
+        String y = id.equals("gleeok") || id.equals("wizzrobe") ? "~2" : "~";
+        return "execute as @a at @s run summon hyrulecreatures:" + id + " ~ " + y + " ~" + (id.equals("bokoblin") ? 9 : 16) + " " + nbt;
+    }
     /** -Pbeam: spawn a real Guardian on the integrated server and screenshot its lock-on / beam / explosion. */
     static void beamTick(Minecraft mc) {
         var srv = mc.getSingleplayerServer();
@@ -64,7 +74,7 @@ public class Showcase {
         if (btick == 100) srv.execute(() -> {
             var src = srv.createCommandSourceStack().withSuppressedOutput();
             for (String c : new String[]{"gamemode survival @a", "effect give @a minecraft:resistance 999 255 true", "time set day", "gamerule doMobGriefing true",
-                    "execute as @a at @s run summon hyrulecreatures:guardian ~ ~ ~16 {Rank:0}"})
+                    spawnCmd()})
                 srv.getCommands().performPrefixedCommand(src, c);
         });
         if (btick > 110 && btick % 5 == 0 && btick < 400)
@@ -74,7 +84,7 @@ public class Showcase {
 
     @SubscribeEvent
     public static void onTick(TickEvent.ClientTickEvent e) {
-        if (Boolean.getBoolean("hc.beam") && e.phase == TickEvent.Phase.END) { beamTick(Minecraft.getInstance()); return; }
+        if (System.getProperty("hc.beam") != null && e.phase == TickEvent.Phase.END) { beamTick(Minecraft.getInstance()); return; }
         if (!Boolean.getBoolean("hc.showcase") || e.phase != TickEvent.Phase.END) return;
         Minecraft mc = Minecraft.getInstance();
         if (mc.level == null || mc.player == null) return;

@@ -86,7 +86,7 @@ minecraft {
             property 'forge.enabledGameTestNamespaces', mod_id
             if (project.hasProperty('beam')) {
                 args '--quickPlaySingleplayer', 'showcase'
-                property 'hc.beam', 'true'
+                property 'hc.beam', project.property('beam').toString()
             }
             if (project.hasProperty('showcase')) { // dev only: screenshot every creature/pose into run/screenshots
                 args '--quickPlaySingleplayer', 'showcase'
