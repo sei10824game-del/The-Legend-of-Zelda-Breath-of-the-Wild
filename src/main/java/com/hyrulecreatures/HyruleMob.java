@@ -97,7 +97,9 @@ public abstract class HyruleMob extends Monster {
         else if (getOffhandItem().getItem() instanceof net.minecraft.world.item.ShieldItem && atkKind() == null
                 && s.getDirectEntity() != null && random.nextFloat() < (isGuard() ? 0.85f : 0.25f)
                 && getViewVector(1).dot(s.getDirectEntity().position().subtract(position()).normalize()) > 0.4) {
-            playSound(SoundEvents.SHIELD_BLOCK, 1f, 1f); stagger += a * 0.5f; return false; // guarded
+            playSound(SoundEvents.SHIELD_BLOCK, 1f, 1f); stagger += a * 0.5f;
+            if (System.getProperty("hc.debug") != null) System.out.println("HC_BLOCK " + a);
+            return false; // guarded
         }
         boolean r = super.hurt(s, a);
         if (r && !down && s.getEntity() != null && isAlive()) {
