@@ -50,9 +50,55 @@ public class HyruleBiped extends HyruleMob {
     @Override protected boolean canCharge() {
         return switch (species) { case BOKOBLIN, HORRIBLIN, STALKOBLIN, MOBLIN, STALMOBLIN, LYNEL -> true; default -> false; };
     }
+    // ---------------------------------------------------------------- Stal creatures: 1 HP, head pops off, body keeps fighting
+    private java.util.UUID headId;
+    public boolean headless() { return (aux() & 1) != 0; }
+    private StalHead head() {
+        return level() instanceof ServerLevel sl && headId != null && sl.getEntity(headId) instanceof StalHead h && h.isAlive() ? h : null;
+    }
+    private void popHead(net.minecraft.world.damagesource.DamageSource src) {
+        setAux(aux() | 1);
+        StalHead h = new StalHead(level(), this);
+        headId = h.getUUID();
+        if (src.getEntity() != null) {
+            Vec3 away = h.position().subtract(src.getEntity().position()).multiply(1, 0, 1).normalize();
+            h.setDeltaMovement(away.x * 0.5, 0.45, away.z * 0.5);
+        }
+        level().addFreshEntity(h);
+        playSound(SoundEvents.SKELETON_HURT, 1f, 0.7f);
+    }
+    private void reattach() {
+        StalHead h = head();
+        if (h != null) h.discard();
+        setAux(aux() & ~1); headId = null;
+        playSound(SoundEvents.SKELETON_AMBIENT, 1f, 1.4f);
+    }
+
+    @Override protected void registerGoals() {
+        super.registerGoals();
+        goalSelector.addGoal(0, new net.minecraft.world.entity.ai.goal.Goal() { // fetch the skull
+            { setFlags(java.util.EnumSet.of(Flag.MOVE)); }
+            @Override public boolean canUse() {
+                StalHead h = head();
+                return species != null && species.isStal() && headless() && h != null && (getTarget() == null || distanceTo(getTarget()) > 3.5);
+            }
+            @Override public void tick() {
+                StalHead h = head();
+                if (h == null) return;
+                getNavigation().moveTo(h, 1.15);
+                if (distanceTo(h) < 1.5) reattach();
+            }
+        });
+    }
+
+    @Override public void aiStep() {
+        super.aiStep();
+        if (!level().isClientSide && species.isStal() && headless() && tickCount % 20 == 0 && head() == null) setAux(aux() & ~1); // head lost: grow back
+    }
+
     // ---------------------------------------------------------------- guardians: 8 legs with own HP, beam
     public boolean isLegged() { return species == Species.GUARDIAN || species == Species.DECAYED_GUARDIAN || species == Species.CALAMITY_GANON; }
-    private boolean longShooter() { return switch (species) { case LYNEL, HINOX, TALUS, FROX, STALHINOX, FIREBLIGHT_GANON, WATERBLIGHT_GANON, WINDBLIGHT_GANON, THUNDERBLIGHT_GANON -> true; default -> false; }; }
+    private boolean longShooter() { return switch (species) { case LYNEL, HINOX, TALUS, FROX, STALHINOX, MASTER_KOHGA, FIREBLIGHT_GANON, WATERBLIGHT_GANON, WINDBLIGHT_GANON, THUNDERBLIGHT_GANON -> true; default -> false; }; }
     private boolean pureBeamer() { return switch (species) { case GUARDIAN, DECAYED_GUARDIAN, GUARDIAN_TURRET, GUARDIAN_SKYWATCHER, CALAMITY_GANON -> true; default -> false; }; }
     private float[] legHp;
 
@@ -100,7 +146,81 @@ public class HyruleBiped extends HyruleMob {
         for (double x = 0; x < len; x += step) sl.sendParticles(p, a.x + dv.x * x, a.y + dv.y * x, a.z + dv.z * x, 1, 0, 0, 0, 0);
     }
 
+    private boolean isBlight() { return switch (species) { case FIREBLIGHT_GANON, WATERBLIGHT_GANON, WINDBLIGHT_GANON, THUNDERBLIGHT_GANON -> true; default -> false; }; }
+    /** element of the ground-targeted magic: 1 fire, 2 water, 3 lightning, 4 wind */
+    private int areaElement() {
+        return switch (species) { case WATERBLIGHT_GANON -> 2; case THUNDERBLIGHT_GANON -> 3; case WINDBLIGHT_GANON -> 4; default -> 1; };
+    }
+    private boolean areaUser() { return isBlight() || species == Species.CALAMITY_GANON || species == Species.MASTER_KOHGA; }
+
+    private void fireSea(Vec3 center, int r) {
+        if (!level().getGameRules().getBoolean(net.minecraft.world.level.GameRules.RULE_MOBGRIEFING)) return;
+        BlockPos c = BlockPos.containing(center);
+        for (int x = -r; x <= r; x++) for (int z = -r; z <= r; z++) {
+            if (x * x + z * z > r * r + 2 || random.nextFloat() > 0.75f) continue;
+            for (int y = 3; y >= -3; y--) {
+                BlockPos p = c.offset(x, y, z);
+                if (level().getBlockState(p).isAir() && net.minecraft.world.level.block.Blocks.FIRE.defaultBlockState().canSurvive(level(), p)) {
+                    level().setBlockAndUpdate(p, net.minecraft.world.level.block.Blocks.FIRE.defaultBlockState()); break;
+                }
+            }
+        }
+    }
+
+    private void areaTick(ServerLevel sl, AttackKind a, int t) {
+        if (aim == null) return;
+        int el = areaElement();
+        org.joml.Vector3f col = switch (el) { case 2 -> new org.joml.Vector3f(0.2f, 0.5f, 1f); case 3 -> new org.joml.Vector3f(1f, 1f, 0.2f); case 4 -> new org.joml.Vector3f(0.6f, 1f, 0.7f); default -> new org.joml.Vector3f(1f, 0.35f, 0.05f); };
+        if (t < a.hit) { // ground circle: thin while tracking, bright + pulsing once locked
+            boolean locked = t > a.windup; double rad = 3.5;
+            for (int i = 0; i < (locked ? 40 : 20); i++) {
+                double ang = i * Math.PI * 2 / (locked ? 40 : 20) + t * 0.15;
+                sl.sendParticles(new net.minecraft.core.particles.DustParticleOptions(col, locked ? 1.6f : 0.9f), aim.x + Math.cos(ang) * rad, aim.y + 0.1, aim.z + Math.sin(ang) * rad, 1, 0, 0, 0, 0);
+            }
+            if (locked && t % 4 == 0) { playSound(SoundEvents.NOTE_BLOCK_BIT.value(), 1f, 2f); sl.sendParticles(ParticleTypes.CLOUD, aim.x, aim.y + 4, aim.z, 3, 1, 0.5, 1, 0.01); }
+        }
+    }
+
+    private void areaFire(ServerLevel sl) {
+        int el = areaElement(); float dmg = (float) getAttributeValue(Attributes.ATTACK_DAMAGE);
+        Vec3 c = aim;
+        playSound(SoundEvents.GENERIC_EXPLODE, 2f, 1.3f);
+        switch (el) {
+            case 2 -> { // geyser: launch everything upward
+                sl.sendParticles(ParticleTypes.SPLASH, c.x, c.y + 1, c.z, 160, 1.2, 2.5, 1.2, 0.3);
+                sl.sendParticles(ParticleTypes.BUBBLE_POP, c.x, c.y + 1, c.z, 60, 1.2, 2, 1.2, 0.2);
+                for (LivingEntity e : sl.getEntitiesOfClass(LivingEntity.class, new AABB(c, c).inflate(3.5), HyruleMob::isFoe)) {
+                    e.hurt(damageSources().mobAttack(this), dmg * 0.8f); e.setDeltaMovement(e.getDeltaMovement().add(0, 1.2, 0)); e.hurtMarked = true;
+                }
+            }
+            case 3 -> { // lightning
+                net.minecraft.world.entity.LightningBolt bolt = EntityType.LIGHTNING_BOLT.create(sl);
+                if (bolt != null) { bolt.moveTo(c.x, c.y, c.z); sl.addFreshEntity(bolt); }
+                for (LivingEntity e : sl.getEntitiesOfClass(LivingEntity.class, new AABB(c, c).inflate(3.5), HyruleMob::isFoe)) e.hurt(damageSources().mobAttack(this), dmg * 0.8f);
+            }
+            case 4 -> { // whirlwind: heavy knockback outward and up
+                sl.sendParticles(ParticleTypes.CLOUD, c.x, c.y + 1, c.z, 120, 2, 1.5, 2, 0.4);
+                sl.sendParticles(ParticleTypes.SWEEP_ATTACK, c.x, c.y + 1, c.z, 12, 2, 0.5, 2, 0);
+                for (LivingEntity e : sl.getEntitiesOfClass(LivingEntity.class, new AABB(c, c).inflate(4.5), HyruleMob::isFoe)) {
+                    e.hurt(damageSources().mobAttack(this), dmg * 0.6f);
+                    e.knockback(2.2, c.x - e.getX(), c.z - e.getZ()); e.setDeltaMovement(e.getDeltaMovement().add(0, 0.8, 0)); e.hurtMarked = true;
+                }
+            }
+            default -> { // fire pillar + sea of fire
+                sl.explode(this, c.x, c.y, c.z, 2.4f, false, Level.ExplosionInteraction.MOB);
+                for (LivingEntity e : sl.getEntitiesOfClass(LivingEntity.class, new AABB(c, c).inflate(3.5), HyruleMob::isFoe)) { e.setSecondsOnFire(8); e.hurt(damageSources().mobAttack(this), dmg * 0.7f); }
+                fireSea(c, 3);
+                sl.sendParticles(ParticleTypes.FLAME, c.x, c.y + 0.5, c.z, 120, 1.5, 2.5, 1.5, 0.08);
+            }
+        }
+    }
+
     @Override protected void tickAttack(AttackKind a, int t, LivingEntity tg) {
+        if (a == AttackKind.AREA && level() instanceof ServerLevel asl) {
+            if (t <= a.windup && tg != null) aim = Vec3.atBottomCenterOf(BlockPos.containing(tg.position())); // tracks the target's feet, then locks
+            areaTick(asl, a, t);
+            return;
+        }
         if (a != AttackKind.BEAM || !(level() instanceof ServerLevel sl)) return;
         Vec3 eye = beamEye();
         if (t <= a.windup && tg != null) aim = tg.position().add(0, tg.getBbHeight() * 0.5, 0); // tracking
@@ -116,6 +236,7 @@ public class HyruleBiped extends HyruleMob {
     }
 
     @Override protected void beamFire() {
+        if (atkKind() == AttackKind.AREA) { if (level() instanceof ServerLevel asl && aim != null) areaFire(asl); return; }
         if (!(level() instanceof ServerLevel sl) || aim == null) return;
         Vec3 eye = beamEye(), dir = aim.subtract(eye).normalize();
         impact = level().clip(new net.minecraft.world.level.ClipContext(eye, eye.add(dir.scale(48)), net.minecraft.world.level.ClipContext.Block.COLLIDER,
@@ -126,26 +247,19 @@ public class HyruleBiped extends HyruleMob {
         for (LivingEntity e : level().getEntitiesOfClass(LivingEntity.class, new AABB(impact, impact).inflate(4.5), HyruleMob::isFoe)) {
             e.setSecondsOnFire(10); e.hurt(damageSources().mobAttack(this), dmg * 0.6f);
         }
-        if (level().getGameRules().getBoolean(net.minecraft.world.level.GameRules.RULE_MOBGRIEFING)) { // sea of fire
-            BlockPos c = BlockPos.containing(impact);
-            for (int x = -4; x <= 4; x++) for (int z = -4; z <= 4; z++) {
-                if (x * x + z * z > 18 || random.nextFloat() > 0.75f) continue;
-                for (int y = 3; y >= -3; y--) {
-                    BlockPos p = c.offset(x, y, z);
-                    if (level().getBlockState(p).isAir() && net.minecraft.world.level.block.Blocks.FIRE.defaultBlockState().canSurvive(level(), p)) {
-                        level().setBlockAndUpdate(p, net.minecraft.world.level.block.Blocks.FIRE.defaultBlockState()); break;
-                    }
-                }
-            }
-        }
+        fireSea(impact, 4);
         sl.sendParticles(ParticleTypes.FLAME, impact.x, impact.y + 0.3, impact.z, 80, 2.5, 0.4, 2.5, 0.05);
         sl.sendParticles(ParticleTypes.LAVA, impact.x, impact.y + 0.3, impact.z, 20, 2, 0.3, 2, 0.1);
     }
 
     @Override public boolean hurt(net.minecraft.world.damagesource.DamageSource src, float a) {
+        if (species.isStal() && !level().isClientSide && !src.is(net.minecraft.tags.DamageTypeTags.BYPASSES_INVULNERABILITY)) {
+            if (headless()) return false;          // headless body cannot be hurt: smash the skull
+            if (a > 0 && src.getEntity() != null) { popHead(src); return true; }
+        }
         if (isLegged() && !level().isClientSide && hitLeg(src, a)) return true;
         boolean r = super.hurt(src, a);
-        if (r && (species == Species.WIZZROBE || species == Species.FIREBLIGHT_GANON || species == Species.WATERBLIGHT_GANON || species == Species.WINDBLIGHT_GANON || species == Species.THUNDERBLIGHT_GANON) && !level().isClientSide && isAlive())
+        if (r && species.teleports() && !level().isClientSide && isAlive())
             for (int i = 0; i < 8; i++) if (randomTeleport(getX() + (random.nextDouble() - .5) * 16, getY() + random.nextInt(3), getZ() + (random.nextDouble() - .5) * 16, true)) break;
         return r;
     }
@@ -155,7 +269,7 @@ public class HyruleBiped extends HyruleMob {
     @Override protected boolean ranged() { return getMainHandItem().getItem() instanceof HyruleBowItem || species.attack == AttackKind.SHOOT || pureBeamer(); }
     @Override protected double engageRange() {
         ItemStack h = getMainHandItem();
-        if (pureBeamer() || species == Species.GUARDIAN_SCOUT_4) return 20;
+        if (pureBeamer() || species == Species.GUARDIAN_SCOUT_4 || areaUser()) return 20;
         if (longShooter() && !(h.getItem() instanceof HyruleBowItem)) return 18;
         if (h.getItem() instanceof HyruleBowItem) return 14;
         if (isBoomerang(h)) return 9;
@@ -168,6 +282,7 @@ public class HyruleBiped extends HyruleMob {
     @Override protected AttackKind chooseAttack() {
         ItemStack h = getMainHandItem(); LivingEntity t = getTarget();
         double d = t == null ? 0 : distanceTo(t);
+        if (areaUser() && d > 4 && d < 22 && random.nextFloat() < (species == Species.CALAMITY_GANON ? 0.03f : 0.02f)) return AttackKind.AREA;
         if (pureBeamer()) return d > 5 ? AttackKind.BEAM : isLegged() && random.nextFloat() < 0.4f ? AttackKind.STOMP : null;
         if (longShooter() && !(h.getItem() instanceof HyruleBowItem) && d > 6 && d < 18 && random.nextFloat() < 0.06f) return AttackKind.SHOOT;
         if (species == Species.GUARDIAN_SCOUT_4 && d > 6 && random.nextFloat() < 0.02f) return AttackKind.BEAM;
@@ -189,7 +304,7 @@ public class HyruleBiped extends HyruleMob {
             level().addFreshEntity(a);
         } else {
             boolean boom = isBoomerang(h);
-            int ty = boom ? 4 : species == Species.FIREBLIGHT_GANON ? 1 : species == Species.WATERBLIGHT_GANON ? 2 : species == Species.WINDBLIGHT_GANON || species == Species.THUNDERBLIGHT_GANON ? 3 : species == Species.OCTOROK || species == Species.HINOX || species == Species.STALHINOX || species == Species.TALUS || species == Species.FROX ? 0 :  new int[]{1, 2, 3, 1, 3}[rank()];
+            int ty = boom ? 4 : species == Species.FIREBLIGHT_GANON || species == Species.MASTER_KOHGA ? 1 : species == Species.WATERBLIGHT_GANON ? 2 : species == Species.WINDBLIGHT_GANON || species == Species.THUNDERBLIGHT_GANON ? 3 : species == Species.OCTOROK || species == Species.HINOX || species == Species.STALHINOX || species == Species.TALUS || species == Species.FROX ? 0 :  new int[]{1, 2, 3, 1, 3}[rank()];
             Shot s = new Shot(level(), this, ty, boom ? h.copy() : new ItemStack(ModRegistry.shotItem(ty)), dmg);
             s.shoot(dx, dy + h2 * (ty == 0 ? 0.05 : 0), dz, boom ? 1.1f : 1.2f, 1f);
             level().addFreshEntity(s);
@@ -203,7 +318,7 @@ public class HyruleBiped extends HyruleMob {
         int roll = random.nextInt(100), rank = 0;
         for (int i = 0; i < 5 && roll >= RANK_WEIGHT[i]; i++) { roll -= RANK_WEIGHT[i]; rank = i + 1; }
         setRank(Math.min(rank, 4));
-        getAttribute(Attributes.MAX_HEALTH).setBaseValue(species.hp * Species.HP_MUL[rank()]);
+        getAttribute(Attributes.MAX_HEALTH).setBaseValue(species.isStal() ? 1 : species.hp * Species.HP_MUL[rank()]);
         getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(species.dmg * Species.DMG_MUL[rank()]);
         setHealth(getMaxHealth());
         populateDefaultEquipmentSlots(lv.getRandom(), d);
@@ -227,6 +342,7 @@ public class HyruleBiped extends HyruleMob {
 
     @Override public void die(net.minecraft.world.damagesource.DamageSource src) {
         super.die(src);
+        if (!level().isClientSide && head() != null) head().discard();
         if (!level().isClientSide && species == Species.CHUCHU && !isMini())
             for (int i = 0; i < 2; i++) {
                 HyruleBiped m = ModRegistry.TYPES.get(Species.CHUCHU).get().create(level());

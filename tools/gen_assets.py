@@ -744,6 +744,7 @@ def gen_lang():
         for i, (en, ja, c) in SHOTS.items():
             L[f"item.{MOD}.{i}"] = (en, ja)[idx]
         L[f"entity.{MOD}.shot"] = ("Projectile", "飛び道具")[idx]
+        L[f"entity.{MOD}.stal_head"] = ("Stal Skull", "スタルの頭")[idx]
         for w in W:
             L[f"item.{MOD}.{w[0]}"] = w[1 + idx]
         json.dump(L, open(f"{A}/lang/{code}.json", "w"), ensure_ascii=False, indent=1)

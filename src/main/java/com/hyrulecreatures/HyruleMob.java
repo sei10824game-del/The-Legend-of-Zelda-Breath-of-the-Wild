@@ -70,7 +70,7 @@ public abstract class HyruleMob extends Monster {
 
     /** Foe = anything outside this mod. */
     public static boolean isFoe(LivingEntity e) {
-        return !(e instanceof HyruleMob) && e.isAlive() && !(e instanceof Player p && p.isSpectator());
+        return !(e instanceof HyruleMob) && !(e instanceof StalHead) && e.isAlive() && !(e instanceof Player p && p.isSpectator());
     }
 
     @Override protected Component getTypeName() {
@@ -175,7 +175,7 @@ public abstract class HyruleMob extends Monster {
         }
         tickAttack(a, t, tg);
         if (a.hitsAt(t)) {
-            if (a == AttackKind.BEAM) beamFire();
+            if (a == AttackKind.BEAM || a == AttackKind.AREA) beamFire();
             else if (a == AttackKind.SHOOT) { if (tg != null) shoot(tg); } else strike(a, tg);
         }
         if (t >= a.total) {
@@ -183,7 +183,7 @@ public abstract class HyruleMob extends Monster {
             if (a == AttackKind.SLASH && tg != null && c < 2 && distanceTo(tg) < reach() + 0.8) {
                 entityData.set(COMBO, c + 1); startAttack(AttackKind.SLASH); return;
             }
-            entityData.set(COMBO, 0); entityData.set(ATK, -1); cooldown = (a == AttackKind.BEAM ? 90 : 20) + random.nextInt(12);
+            entityData.set(COMBO, 0); entityData.set(ATK, -1); cooldown = (a == AttackKind.BEAM || a == AttackKind.AREA ? 90 : 20) + random.nextInt(12);
         } else entityData.set(ATK_T, t);
     }
 

@@ -14,6 +14,7 @@ public class ClientSetup {
     }
     @SubscribeEvent
     public static void renderers(EntityRenderersEvent.RegisterRenderers e) {
+        e.registerEntityRenderer(ModRegistry.STAL_HEAD.get(), StalHeadRenderer::new);
         e.registerEntityRenderer(ModRegistry.SHOT.get(), net.minecraft.client.renderer.entity.ThrownItemRenderer::new);
         ModRegistry.TYPES.forEach((s, t) -> e.registerEntityRenderer(t.get(), ctx -> new HyruleRenderer(ctx, s)));
     }

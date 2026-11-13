@@ -58,6 +58,7 @@ public class Showcase {
     static String spawnCmd() {
         String id = System.getProperty("hc.beam", "guardian"); if (id.equals("true") || id.isEmpty()) id = "guardian";
         String nbt = switch (id) {
+            case "stalkoblin" -> "{Rank:0}";
             case "bokoblin" -> "{Rank:0,HandItems:[{id:\"hyrulecreatures:boko_club\",Count:1b},{id:\"hyrulecreatures:boko_shield\",Count:1b}]}";
             case "lizalfos" -> "{Rank:0,HandItems:[{id:\"hyrulecreatures:lizal_boomerang\",Count:1b},{}]}";
             default -> "{Rank:0}";

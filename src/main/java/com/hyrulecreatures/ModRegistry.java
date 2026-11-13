@@ -49,6 +49,8 @@ public final class ModRegistry {
         }
     }
 
+    public static final RegistryObject<EntityType<StalHead>> STAL_HEAD = ENTITIES.register("stal_head", () -> EntityType.Builder.<StalHead>of(StalHead::new, MobCategory.MISC)
+            .sized(0.6f, 0.6f).clientTrackingRange(8).build("stal_head"));
     public static final RegistryObject<EntityType<Shot>> SHOT = ENTITIES.register("shot", () -> EntityType.Builder.<Shot>of(Shot::new, MobCategory.MISC)
             .sized(0.3f, 0.3f).clientTrackingRange(6).updateInterval(2).build("shot"));
     private static final String[] SHOT_IDS = {"shot_rock", "shot_fire", "shot_ice", "shot_elec"};

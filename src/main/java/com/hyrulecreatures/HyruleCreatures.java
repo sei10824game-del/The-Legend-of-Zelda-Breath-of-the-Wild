@@ -20,6 +20,9 @@ public class HyruleCreatures {
         ModRegistry.TABS.register(bus);
         bus.addListener((EntityAttributeCreationEvent e) ->
                 ModRegistry.TYPES.forEach((s, t) -> e.put(t.get(), HyruleBiped.attributes(s).build())));
+        bus.addListener((EntityAttributeCreationEvent e) -> e.put(ModRegistry.STAL_HEAD.get(),
+                net.minecraft.world.entity.Mob.createMobAttributes().add(net.minecraft.world.entity.ai.attributes.Attributes.MAX_HEALTH, 1)
+                        .add(net.minecraft.world.entity.ai.attributes.Attributes.MOVEMENT_SPEED, 0.3).add(net.minecraft.world.entity.ai.attributes.Attributes.FOLLOW_RANGE, 48).build()));
         bus.addListener((SpawnPlacementRegisterEvent e) -> ModRegistry.TYPES.forEach((s, t) -> e.register(t.get(),
                 s.flies ? SpawnPlacements.Type.NO_RESTRICTIONS : SpawnPlacements.Type.ON_GROUND,
                 s.flies ? Heightmap.Types.MOTION_BLOCKING : Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,

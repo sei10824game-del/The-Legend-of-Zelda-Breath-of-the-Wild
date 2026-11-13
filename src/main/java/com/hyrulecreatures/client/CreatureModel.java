@@ -108,6 +108,7 @@ public class CreatureModel extends EntityModel<HyruleBiped> implements ArmedMode
         float pt = age - e.tickCount, rad = Mth.DEG_TO_RAD;
         ModelPart head = p.get("head"), body = p.get("body");
         boolean flier = e.species.flies;
+        if (head != null) head.visible = !(e.species.isStal() && e.headless());
         float lean = hunch, twist = 0, dip = 0;
 
         if (head != null) { head.xRot += hpitch * rad - hunch * .75f; head.yRot += hyaw * rad; }
@@ -149,7 +150,7 @@ public class CreatureModel extends EntityModel<HyruleBiped> implements ArmedMode
             float t = e.atkTick() + pt;
             int[] T = k.keys();
             Item held = e.getMainHandItem().getItem();
-            float[][] c = k != AttackKind.SHOOT ? KF.get(k) : held instanceof HyruleBowItem ? BOW : held != Items.AIR ? THROW : CAST;
+            float[][] c = k == AttackKind.AREA ? CAST : k != AttackKind.SHOOT ? KF.get(k) : held instanceof HyruleBowItem ? BOW : held != Items.AIR ? THROW : CAST;
             float dir = k == AttackKind.SLASH && e.combo() % 2 == 1 ? -1 : 1;
             add("rightArm", key(t, T, c[RAX]), key(t, T, c[RAY]) * dir, key(t, T, c[RAZ]));
             add("leftArm", key(t, T, c[LAX]), key(t, T, c[LAY]) * dir, key(t, T, c[LAZ]));

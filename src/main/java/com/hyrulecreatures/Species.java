@@ -37,11 +37,11 @@ public enum Species {
         {"guardian_sword_plus"}, {"guardian_sword_plus"}, {"guardian_sword_plus"}, {"guardian_sword_plus"}, {"guardian_sword_plus"}}),
     GUARDIAN_SCOUT_4("guardian_scout_4", 1.9f, 3.0f, 240, 12, 0.26, 1.5, 3.6, 1.6f, AttackKind.SLASH, 0f, false, new String[][]{
         {"guardian_sword"}, {"guardian_sword"}, {"guardian_sword"}, {"guardian_sword"}, {"guardian_sword"}}),
-    STALKOBLIN("stalkoblin", 0.6f, 1.7f, 14, 2, 0.28, 0.3, 1.9, 1.0f, AttackKind.SMASH, 0f, false, new String[][]{
+    STALKOBLIN("stalkoblin", 0.6f, 1.7f, 1, 2, 0.28, 0.3, 1.9, 1.0f, AttackKind.SMASH, 0f, false, new String[][]{
         {"boko_club", "boko_spear"}, {"spiked_boko_club", "spiked_boko_spear"}, {"dragonbone_boko_club"}, {"dragonbone_boko_spear"}, {"dragonbone_boko_club"}}),
-    STALMOBLIN("stalmoblin", 1.0f, 2.6f, 35, 4, 0.25, 1.2, 2.6, 1.4f, AttackKind.SMASH, 0.2f, false, new String[][]{
+    STALMOBLIN("stalmoblin", 1.0f, 2.6f, 1, 4, 0.25, 1.2, 2.6, 1.4f, AttackKind.SMASH, 0.2f, false, new String[][]{
         {"moblin_club"}, {"spiked_moblin_club"}, {"dragonbone_moblin_club"}, {"dragonbone_moblin_club"}, {"dragonbone_moblin_club"}}),
-    STALIZALFOS("stalizalfos", 0.6f, 1.8f, 20, 3, 0.34, 0.4, 2.0, 1.0f, AttackKind.SLASH, 0f, false, new String[][]{
+    STALIZALFOS("stalizalfos", 0.6f, 1.8f, 1, 3, 0.34, 0.4, 2.0, 1.0f, AttackKind.SLASH, 0f, false, new String[][]{
         {"lizal_boomerang"}, {"lizal_forked_boomerang"}, {"lizal_tri_boomerang"}, {"lizal_tri_boomerang"}, {"lizal_tri_boomerang"}}),
     YIGA_FOOTSOLDIER("yiga_footsoldier", 0.6f, 1.8f, 30, 3, 0.32, 0.3, 1.9, 1.0f, AttackKind.SLASH, 0f, false, new String[][]{
         {"yiga_blade", "yiga_bow"}, {"yiga_blade", "soldiers_bow"}, {"yiga_blade", "knights_broadsword"}, {"yiga_blade", "knights_bow"}, {"royal_broadsword", "royal_bow"}}),
@@ -76,6 +76,11 @@ public enum Species {
             AttackKind attack, float spin, boolean flies, String[][] weapons) {
         this.id = id; this.w = w; this.h = h; this.hp = hp; this.dmg = dmg; this.speed = speed; this.knock = knock;
         this.reach = reach; this.scale = scale; this.attack = attack; this.spin = spin; this.flies = flies; this.weapons = weapons;
+    }
+
+    public boolean isStal() { return this == STALKOBLIN || this == STALMOBLIN || this == STALIZALFOS; }
+    public boolean teleports() {
+        return switch (this) { case WIZZROBE, FIREBLIGHT_GANON, WATERBLIGHT_GANON, WINDBLIGHT_GANON, THUNDERBLIGHT_GANON, PHANTOM_GANON, MASTER_KOHGA, YIGA_FOOTSOLDIER, YIGA_BLADEMASTER -> true; default -> false; };
     }
 
     public static final String[] RANKS = {"red", "blue", "black", "silver", "gold"};
