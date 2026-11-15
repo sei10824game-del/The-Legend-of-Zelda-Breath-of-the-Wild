@@ -407,7 +407,8 @@ PAL["decayed_guardian"] = [anc("#5a6a44", "#3e4a2e", "#4e5e3a", "#d8408a", "#60c
                            anc("#8a9078", "#686e58", "#7a8068", "#a0e090", "#c0ffb0", bone="#d0d0b8", joint="#789068"),
                            anc("#8a7a40", "#685a2c", "#7a6c38", "#e8c860", "#ffe890", bone="#d8c898", joint="#a08a48")]
 
-def bone(eye): return pal("#e6e0cc", "#c4bca4", "#d0c8b0", "#bfb79c", "#f4f0e0", eye=eye)
+def bone(eye):
+    d = pal("#e6e0cc", "#c4bca4", "#d0c8b0", "#bfb79c", "#f4f0e0", eye=eye); d["nose"] = "#c4bca4"; return d
 for _sid, _src, _eye in (("stalkoblin", "bokoblin", "#66ccff"), ("stalmoblin", "moblin", "#66ccff"), ("stalizalfos", "lizalfos", "#66ccff")):
     PAL[_sid] = [bone(_eye), bone("#aaddff"), bone("#ff66ff"), bone("#ffffff"), bone("#ffe066")]
 def suit(a, b, mask): return pal(a, b, "#d9b48a", "#000000", mask, hair=b, eye="#ff3030")

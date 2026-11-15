@@ -43,6 +43,8 @@ public class Showcase {
             AttackKind k = s.attack == AttackKind.SHOOT ? AttackKind.SHOOT : s == Species.GUARDIAN ? AttackKind.BEAM : s.attack;
             SHOTS.add(new Shot(s.id + "_atk", s, 0, null, null, k, k.hits[0], 0, false, 0));
         }
+        SHOTS.add(new Shot("stalkoblin_headless", Species.STALKOBLIN, 0, "boko_club", null, null, 0, 0, false, 1));
+        SHOTS.add(new Shot("stalmoblin_headless_atk", Species.STALMOBLIN, 0, "moblin_club", null, AttackKind.SMASH, 17, 0, false, 1));
         SHOTS.add(new Shot("guardian_legs_broken", Species.GUARDIAN, 0, null, null, null, 0, 0, false, 0b00110101));
         SHOTS.add(new Shot("moblin_SPIN", Species.MOBLIN, 0, "moblin_club", null, AttackKind.SPIN, 20, 0, false, 0));
         SHOTS.add(new Shot("hinox_STOMP", Species.HINOX, 0, "moblin_club", null, AttackKind.STOMP, 20, 0, false, 0));
@@ -53,6 +55,7 @@ public class Showcase {
 
     static int tick = 0, idx = -1, phase = 0;
     static HyruleBiped cur;
+    static com.hyrulecreatures.StalHead head;
 
     static int btick = 0;
     static String spawnCmd() {
@@ -95,6 +98,7 @@ public class Showcase {
         if (tick < 120) return;
         if (phase == 0) { // set up next shot
             if (cur != null) cur.discard();
+            if (head != null) { head.discard(); head = null; }
             idx++;
             if (idx >= SHOTS.size()) { System.out.println("SHOWCASE_DONE"); mc.stop(); return; }
             Shot sh = SHOTS.get(idx);
@@ -110,6 +114,12 @@ public class Showcase {
             m.debugPose(sh.k, sh.t, sh.down, sh.guard, sh.aux);
             lv.putNonPlayerEntity(9000 + idx, m);
             cur = m;
+            if (sh.aux == 1) { // show the loose skull beside the body
+                HyruleBiped body = m;
+                com.hyrulecreatures.StalHead h = new com.hyrulecreatures.StalHead(lv, body);
+                h.moveTo(p.x + 1.4, p.y, p.z + dist, 0, 0);
+                lv.putNonPlayerEntity(9500 + idx, h); head = h;
+            }
             float mid = sh.s.h * sh.s.scale * 0.5f;
             mc.player.setXRot((float) Math.toDegrees(Math.atan((1.62 - mid) / dist)));
             phase = 1; return;

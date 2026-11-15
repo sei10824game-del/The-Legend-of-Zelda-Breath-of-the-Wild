@@ -48,7 +48,7 @@ public class HyruleBiped extends HyruleMob {
         return switch (species) { case HINOX, TALUS, GUARDIAN, STALHINOX, CALAMITY_GANON, THUNDERBLIGHT_GANON -> 0.3; case GUARDIAN_SCOUT_4 -> 0.2; case FROX -> 0.35; case CAPTAIN_CONSTRUCT -> 0.2; case MOBLIN -> 0.1; default -> 0; };
     }
     @Override protected boolean canCharge() {
-        return switch (species) { case BOKOBLIN, HORRIBLIN, STALKOBLIN, MOBLIN, STALMOBLIN, LYNEL -> true; default -> false; };
+        return switch (species) { case BOKOBLIN, HORRIBLIN, STALKOBLIN, MOBLIN, STALMOBLIN, LYNEL, THUNDERBLIGHT_GANON, FIREBLIGHT_GANON, MASTER_KOHGA -> true; default -> false; };
     }
     // ---------------------------------------------------------------- Stal creatures: 1 HP, head pops off, body keeps fighting
     private java.util.UUID headId;
@@ -302,6 +302,14 @@ public class HyruleBiped extends HyruleMob {
             a.pickup = net.minecraft.world.entity.projectile.AbstractArrow.Pickup.DISALLOWED;
             a.shoot(dx, dy + h2 * 0.2, dz, 1.6f, 3f);
             level().addFreshEntity(a);
+            if (isBlight() || species == Species.MASTER_KOHGA || species == Species.YIGA_BLADEMASTER) // boss volley: 2 extra arrows fanned out
+                for (int i = -1; i <= 1; i += 2) {
+                    net.minecraft.world.entity.projectile.Arrow x = new net.minecraft.world.entity.projectile.Arrow(level(), this);
+                    x.setBaseDamage(b.dmg * 0.4 + dmg * 0.3); x.pickup = net.minecraft.world.entity.projectile.AbstractArrow.Pickup.DISALLOWED;
+                    double ang = i * 0.18, cs = Math.cos(ang), sn = Math.sin(ang);
+                    x.shoot(dx * cs - dz * sn, dy + h2 * 0.2, dx * sn + dz * cs, 1.6f, 3f);
+                    level().addFreshEntity(x);
+                }
         } else {
             boolean boom = isBoomerang(h);
             int ty = boom ? 4 : species == Species.FIREBLIGHT_GANON || species == Species.MASTER_KOHGA ? 1 : species == Species.WATERBLIGHT_GANON ? 2 : species == Species.WINDBLIGHT_GANON || species == Species.THUNDERBLIGHT_GANON ? 3 : species == Species.OCTOROK || species == Species.HINOX || species == Species.STALHINOX || species == Species.TALUS || species == Species.FROX ? 0 :  new int[]{1, 2, 3, 1, 3}[rank()];
