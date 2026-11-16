@@ -269,6 +269,8 @@ SPECIES["soldier_construct"] = dict(hunch=0.0, parts=[
     P("padR", "body", (-4, -2, -3.5, 4, 2, 7), (-4, 0, 0), c="horn"),
 ] + biped_legs(5, 12, 7, 5, 12, 2.5, 12))
 SPECIES["captain_construct"] = SPECIES["soldier_construct"]
+SPECIES["blizzrobe"] = SPECIES["wizzrobe"]
+SPECIES["thunder_wizzrobe"] = SPECIES["wizzrobe"]
 SPECIES["decayed_guardian"] = SPECIES["guardian"]
 for _n in (1, 2, 3, 4): SPECIES[f"guardian_scout_{_n}"] = dict(hunch=0.15, parts=scout_parts())
 SPECIES["guardian_turret"] = dict(hunch=0.0, parts=[
@@ -512,6 +514,10 @@ PAL["chuchu"] = [pal("#58b0f0", "#3a88c8", "#a8d8ff", "#000000", "#ff8a20", eye=
                  pal("#f0d838", "#c8b020", "#fff8a0", "#000000", "#ff8a20", eye="#202020"),
                  pal("#e8c830", "#b8a020", "#fff080", "#000000", "#ff4a20", eye="#202020")]
 
+for _k, _rows in (("blizzrobe", (("#f0f4f8", "#9ad8f8", "#aaffff"), ("#e8f0f8", "#6aa8e8", "#ccffff"), ("#dce8f4", "#4a78c8", "#88ddff"), ("#f4f8ff", "#c8e8ff", "#ffffff"), ("#f0ecd8", "#a8d0e8", "#ffffff"))),
+                  ("thunder_wizzrobe", (("#e8e0b0", "#d8c020", "#ffff66"), ("#e0dcc0", "#c8a818", "#ffee44"), ("#d8d0a0", "#a88810", "#ffff88"), ("#f0ecd0", "#e8d848", "#ffffff"), ("#f0e4a8", "#e8b820", "#ffffff")))):
+    PAL[_k] = [pal("#d9b48a", "#b08a62", "#241a1a", r, "#e8dcb8", hair=h, eye=e) for (r, h, e) in _rows]
+
 TEX = 128
 
 
@@ -752,7 +758,7 @@ NAMES = {"bokoblin": ("Bokoblin", "ボコブリン"), "moblin": ("Moblin", "モ�
          "gibdo": ("Gibdo", "ガイブドー"), "horriblin": ("Horriblin", "ホラブリン"),
          "lizalfos_fire": ("Fire Breath Lizalfos", "火吹きリザルフォス"), "lizalfos_ice": ("Ice Breath Lizalfos", "雹吐きリザルフォス"), "lizalfos_elec": ("Shock Lizalfos", "シビレリザルフォス"),
          "keese_fire": ("Fire Keese", "ファイアキース"), "keese_ice": ("Ice Keese", "アイスキース"), "keese_elec": ("Electric Keese", "エレキース"),
-         "octorok": ("Octorok", "オクタロック"), "wizzrobe": ("Wizzrobe", "ウィズローブ"),
+         "octorok": ("Octorok", "オクタロック"), "wizzrobe": ("Wizzrobe", "ウィズローブ"), "blizzrobe": ("Blizzrobe", "フリーズウィズローブ"), "thunder_wizzrobe": ("Thunder Wizzrobe", "ボルトウィズローブ"),
          "lynel": ("Lynel", "ライネル"), "chuchu": ("Chuchu", "チュチュ"), "guardian": ("Guardian Stalker", "ガーディアン"), "decayed_guardian": ("Decayed Guardian", "朽ちたガーディアン"),
          "guardian_turret": ("Guardian Turret", "ガーディアン・タレット"), "guardian_skywatcher": ("Guardian Skywatcher", "ガーディアン・スカイウォッチャー"),
          "guardian_scout_1": ("Guardian Scout I", "ガーディアン・スカウトI"), "guardian_scout_2": ("Guardian Scout II", "ガーディアン・スカウトII"),
@@ -838,7 +844,7 @@ def gen_data():
     d = os.path.join(RES, "data", MOD, "forge", "biome_modifier")
     os.makedirs(d, exist_ok=True)
     for f in os.listdir(d): os.remove(os.path.join(d, f))  # bosses (gleeok, phantom ganon, captain construct) are spawn-egg/command only
-    spawns = {"bokoblin": (40, 2, 4), "moblin": (20, 1, 2), "lizalfos": (25, 1, 3), "keese": (30, 2, 4), "hinox": (4, 1, 1), "talus": (8, 1, 1), "gibdo": (14, 1, 3), "horriblin": (14, 2, 3), "octorok": (12, 1, 2), "wizzrobe": (6, 1, 1), "lynel": (3, 1, 1), "chuchu": (30, 2, 4), "guardian": (3, 1, 1), "decayed_guardian": (4, 1, 1), "stalkoblin": (10, 2, 3), "stalmoblin": (5, 1, 2), "stalizalfos": (6, 1, 2), "yiga_footsoldier": (6, 1, 3), "yiga_blademaster": (2, 1, 1), "soldier_construct": (4, 1, 2), "frox": (2, 1, 1), "lizalfos_fire": (4, 1, 2), "lizalfos_ice": (4, 1, 2), "lizalfos_elec": (4, 1, 2), "keese_fire": (6, 2, 3), "keese_ice": (6, 2, 3), "keese_elec": (6, 2, 3)}
+    spawns = {"bokoblin": (40, 2, 4), "moblin": (20, 1, 2), "lizalfos": (25, 1, 3), "keese": (30, 2, 4), "hinox": (4, 1, 1), "talus": (8, 1, 1), "gibdo": (14, 1, 3), "horriblin": (14, 2, 3), "octorok": (12, 1, 2), "wizzrobe": (6, 1, 1), "blizzrobe": (3, 1, 1), "thunder_wizzrobe": (3, 1, 1), "lynel": (3, 1, 1), "chuchu": (30, 2, 4), "guardian": (3, 1, 1), "decayed_guardian": (4, 1, 1), "stalkoblin": (10, 2, 3), "stalmoblin": (5, 1, 2), "stalizalfos": (6, 1, 2), "yiga_footsoldier": (6, 1, 3), "yiga_blademaster": (2, 1, 1), "soldier_construct": (4, 1, 2), "frox": (2, 1, 1), "lizalfos_fire": (4, 1, 2), "lizalfos_ice": (4, 1, 2), "lizalfos_elec": (4, 1, 2), "keese_fire": (6, 2, 3), "keese_ice": (6, 2, 3), "keese_elec": (6, 2, 3)}
     for sid, (wt, lo, hi) in spawns.items():
         json.dump({"type": "forge:add_spawns", "biomes": "#minecraft:is_overworld",
                    "spawners": {"type": f"{MOD}:{sid}", "weight": wt, "minCount": lo, "maxCount": hi}},

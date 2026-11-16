@@ -68,6 +68,8 @@ public enum Species {
     KEESE_FIRE("keese_fire", 0.5f, 0.5f, 6, 2, 0.5, 0.1, 1.4, 1.0f, AttackKind.BITE, 0f, true, new String[][]{{}, {}, {}, {}, {}}),
     KEESE_ICE("keese_ice", 0.5f, 0.5f, 6, 2, 0.5, 0.1, 1.4, 1.0f, AttackKind.BITE, 0f, true, new String[][]{{}, {}, {}, {}, {}}),
     KEESE_ELEC("keese_elec", 0.5f, 0.5f, 6, 2, 0.5, 0.1, 1.4, 1.0f, AttackKind.BITE, 0f, true, new String[][]{{}, {}, {}, {}, {}}),
+    BLIZZROBE("blizzrobe", 0.6f, 1.8f, 40, 5, 0.2, 0.1, 14, 1.0f, AttackKind.SHOOT, 0f, true, new String[][]{{}, {}, {}, {}, {}}),
+    THUNDER_WIZZROBE("thunder_wizzrobe", 0.6f, 1.8f, 40, 6, 0.2, 0.1, 14, 1.0f, AttackKind.SHOOT, 0f, true, new String[][]{{}, {}, {}, {}, {}}),
     HORRIBLIN("horriblin", 0.6f, 1.7f, 30, 3, 0.3, 0.4, 1.9, 1.0f, AttackKind.SLASH, 0f, false, new String[][]{
         {"boko_club", "boko_spear"}, {"spiked_boko_club", "spiked_boko_spear"}, {"dragonbone_boko_club"}, {"dragonbone_boko_spear"}, {"dragonbone_boko_club"}});
 
@@ -86,7 +88,7 @@ public enum Species {
 
     public boolean isStal() { return this == STALKOBLIN || this == STALMOBLIN || this == STALIZALFOS; }
     public boolean teleports() {
-        return switch (this) { case WIZZROBE, FIREBLIGHT_GANON, WATERBLIGHT_GANON, WINDBLIGHT_GANON, THUNDERBLIGHT_GANON, PHANTOM_GANON, MASTER_KOHGA, YIGA_FOOTSOLDIER, YIGA_BLADEMASTER -> true; default -> false; };
+        return switch (this) { case WIZZROBE, BLIZZROBE, THUNDER_WIZZROBE, FIREBLIGHT_GANON, WATERBLIGHT_GANON, WINDBLIGHT_GANON, THUNDERBLIGHT_GANON, PHANTOM_GANON, MASTER_KOHGA, YIGA_FOOTSOLDIER, YIGA_BLADEMASTER -> true; default -> false; };
     }
 
     public static final String[] RANKS = {"red", "blue", "black", "silver", "gold"};

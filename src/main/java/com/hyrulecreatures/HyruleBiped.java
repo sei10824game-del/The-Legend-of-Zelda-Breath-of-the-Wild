@@ -149,9 +149,9 @@ public class HyruleBiped extends HyruleMob {
     private boolean isBlight() { return switch (species) { case FIREBLIGHT_GANON, WATERBLIGHT_GANON, WINDBLIGHT_GANON, THUNDERBLIGHT_GANON -> true; default -> false; }; }
     /** element of the ground-targeted magic: 1 fire, 2 water, 3 lightning, 4 wind */
     private int areaElement() {
-        return switch (species) { case WATERBLIGHT_GANON -> 2; case THUNDERBLIGHT_GANON -> 3; case WINDBLIGHT_GANON -> 4; default -> 1; };
+        return switch (species) { case BLIZZROBE -> 5; case THUNDER_WIZZROBE -> 3; case WATERBLIGHT_GANON -> 2; case THUNDERBLIGHT_GANON -> 3; case WINDBLIGHT_GANON -> 4; default -> 1; };
     }
-    private boolean areaUser() { return isBlight() || species == Species.CALAMITY_GANON || species == Species.MASTER_KOHGA; }
+    private boolean areaUser() { return isBlight() || species == Species.BLIZZROBE || species == Species.THUNDER_WIZZROBE || (species == Species.WIZZROBE && rank() == 3) || species == Species.CALAMITY_GANON || species == Species.MASTER_KOHGA; }
 
     private void fireSea(Vec3 center, int r) {
         if (!level().getGameRules().getBoolean(net.minecraft.world.level.GameRules.RULE_MOBGRIEFING)) return;
@@ -170,7 +170,7 @@ public class HyruleBiped extends HyruleMob {
     private void areaTick(ServerLevel sl, AttackKind a, int t) {
         if (aim == null) return;
         int el = areaElement();
-        org.joml.Vector3f col = switch (el) { case 2 -> new org.joml.Vector3f(0.2f, 0.5f, 1f); case 3 -> new org.joml.Vector3f(1f, 1f, 0.2f); case 4 -> new org.joml.Vector3f(0.6f, 1f, 0.7f); default -> new org.joml.Vector3f(1f, 0.35f, 0.05f); };
+        org.joml.Vector3f col = switch (el) { case 5 -> new org.joml.Vector3f(0.6f, 0.9f, 1f); case 2 -> new org.joml.Vector3f(0.2f, 0.5f, 1f); case 3 -> new org.joml.Vector3f(1f, 1f, 0.2f); case 4 -> new org.joml.Vector3f(0.6f, 1f, 0.7f); default -> new org.joml.Vector3f(1f, 0.35f, 0.05f); };
         if (t < a.hit) { // ground circle: thin while tracking, bright + pulsing once locked
             boolean locked = t > a.windup; double rad = 3.5;
             for (int i = 0; i < (locked ? 40 : 20); i++) {
@@ -191,6 +191,13 @@ public class HyruleBiped extends HyruleMob {
                 sl.sendParticles(ParticleTypes.BUBBLE_POP, c.x, c.y + 1, c.z, 60, 1.2, 2, 1.2, 0.2);
                 for (LivingEntity e : sl.getEntitiesOfClass(LivingEntity.class, new AABB(c, c).inflate(3.5), HyruleMob::isFoe)) {
                     e.hurt(damageSources().mobAttack(this), dmg * 0.8f); e.setDeltaMovement(e.getDeltaMovement().add(0, 1.2, 0)); e.hurtMarked = true;
+                }
+            }
+            case 5 -> { // blizzard: freezes everything in the circle
+                sl.sendParticles(ParticleTypes.SNOWFLAKE, c.x, c.y + 1.5, c.z, 200, 2.5, 1.5, 2.5, 0.05);
+                for (LivingEntity e : sl.getEntitiesOfClass(LivingEntity.class, new AABB(c, c).inflate(3.5), HyruleMob::isFoe)) {
+                    e.hurt(damageSources().mobAttack(this), dmg * 0.7f); e.setTicksFrozen(e.getTicksRequiredToFreeze() + 200);
+                    e.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.MOVEMENT_SLOWDOWN, 120, 3));
                 }
             }
             case 3 -> { // lightning
@@ -312,7 +319,7 @@ public class HyruleBiped extends HyruleMob {
                 }
         } else {
             boolean boom = isBoomerang(h);
-            int ty = boom ? 4 : species == Species.FIREBLIGHT_GANON || species == Species.MASTER_KOHGA || species == Species.LIZALFOS_FIRE ? 1 : species == Species.LIZALFOS_ICE ? 2 : species == Species.LIZALFOS_ELEC ? 3 : species == Species.WATERBLIGHT_GANON ? 2 : species == Species.WINDBLIGHT_GANON || species == Species.THUNDERBLIGHT_GANON ? 3 : species == Species.OCTOROK || species == Species.HINOX || species == Species.STALHINOX || species == Species.TALUS || species == Species.FROX ? 0 :  new int[]{1, 2, 3, 1, 3}[rank()];
+            int ty = boom ? 4 : species == Species.FIREBLIGHT_GANON || species == Species.MASTER_KOHGA || species == Species.LIZALFOS_FIRE ? 1 : species == Species.LIZALFOS_ICE || species == Species.BLIZZROBE ? 2 : species == Species.THUNDER_WIZZROBE ? 3 : species == Species.LIZALFOS_ELEC ? 3 : species == Species.WATERBLIGHT_GANON ? 2 : species == Species.WINDBLIGHT_GANON || species == Species.THUNDERBLIGHT_GANON ? 3 : species == Species.OCTOROK || species == Species.HINOX || species == Species.STALHINOX || species == Species.TALUS || species == Species.FROX ? 0 :  new int[]{1, 2, 3, 1, 3}[rank()];
             Shot s = new Shot(level(), this, ty, boom ? h.copy() : new ItemStack(ModRegistry.shotItem(ty)), dmg);
             s.shoot(dx, dy + h2 * (ty == 0 ? 0.05 : 0), dz, boom ? 1.1f : 1.2f, 1f);
             level().addFreshEntity(s);
