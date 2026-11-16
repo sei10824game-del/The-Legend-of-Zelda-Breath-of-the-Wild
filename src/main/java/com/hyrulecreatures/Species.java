@@ -62,6 +62,12 @@ public enum Species {
     WATERBLIGHT_GANON("waterblight_ganon", 1.0f, 3.6f, 400, 12, 0.28, 1.5, 3.6, 1.5f, AttackKind.SLASH, 0f, false, new String[][]{{"royal_halberd"}, {"royal_halberd"}, {"royal_halberd"}, {"royal_halberd"}, {"royal_halberd"}}),
     WINDBLIGHT_GANON("windblight_ganon", 1.0f, 3.6f, 400, 12, 0.32, 1.0, 3.2, 1.5f, AttackKind.SLASH, 0f, true, new String[][]{{"royal_bow"}, {"royal_bow"}, {"royal_bow"}, {"royal_bow"}, {"royal_bow"}}),
     THUNDERBLIGHT_GANON("thunderblight_ganon", 1.2f, 3.8f, 450, 14, 0.26, 2.0, 3.6, 1.6f, AttackKind.SMASH, 0.3f, false, new String[][]{{"royal_claymore"}, {"royal_claymore"}, {"royal_claymore"}, {"royal_claymore"}, {"royal_claymore"}}),
+    LIZALFOS_FIRE("lizalfos_fire", 0.6f, 1.8f, 30, 3, 0.33, 0.5, 2.0, 1.0f, AttackKind.SLASH, 0f, false, new String[][]{{}, {}, {}, {}, {}}),
+    LIZALFOS_ICE("lizalfos_ice", 0.6f, 1.8f, 30, 3, 0.33, 0.5, 2.0, 1.0f, AttackKind.SLASH, 0f, false, new String[][]{{}, {}, {}, {}, {}}),
+    LIZALFOS_ELEC("lizalfos_elec", 0.6f, 1.8f, 30, 3, 0.33, 0.5, 2.0, 1.0f, AttackKind.SLASH, 0f, false, new String[][]{{}, {}, {}, {}, {}}),
+    KEESE_FIRE("keese_fire", 0.5f, 0.5f, 6, 2, 0.5, 0.1, 1.4, 1.0f, AttackKind.BITE, 0f, true, new String[][]{{}, {}, {}, {}, {}}),
+    KEESE_ICE("keese_ice", 0.5f, 0.5f, 6, 2, 0.5, 0.1, 1.4, 1.0f, AttackKind.BITE, 0f, true, new String[][]{{}, {}, {}, {}, {}}),
+    KEESE_ELEC("keese_elec", 0.5f, 0.5f, 6, 2, 0.5, 0.1, 1.4, 1.0f, AttackKind.BITE, 0f, true, new String[][]{{}, {}, {}, {}, {}}),
     HORRIBLIN("horriblin", 0.6f, 1.7f, 30, 3, 0.3, 0.4, 1.9, 1.0f, AttackKind.SLASH, 0f, false, new String[][]{
         {"boko_club", "boko_spear"}, {"spiked_boko_club", "spiked_boko_spear"}, {"dragonbone_boko_club"}, {"dragonbone_boko_spear"}, {"dragonbone_boko_club"}});
 

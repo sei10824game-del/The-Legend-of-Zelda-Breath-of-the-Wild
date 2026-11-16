@@ -26,6 +26,7 @@ public abstract class HyruleMob extends Monster {
     static final EntityDataAccessor<Integer> DOWN = SynchedEntityData.defineId(HyruleMob.class, EntityDataSerializers.INT);
     public static final int DOWN_TIME = 80;
 
+    protected boolean rankFixed;
     private float stagger;
     private int streak, lastHit, cooldown;
 
@@ -37,7 +38,7 @@ public abstract class HyruleMob extends Monster {
         entityData.define(COMBO, 0); entityData.define(MINI, false); entityData.define(GUARD, false); entityData.define(AUX, 0); entityData.define(DOWN, 0);
     }
     @Override public void addAdditionalSaveData(CompoundTag t) { super.addAdditionalSaveData(t); t.putInt("Rank", rank()); t.putBoolean("Mini", isMini()); }
-    @Override public void readAdditionalSaveData(CompoundTag t) { super.readAdditionalSaveData(t); setRank(t.getInt("Rank")); setMini(t.getBoolean("Mini")); }
+    @Override public void readAdditionalSaveData(CompoundTag t) { super.readAdditionalSaveData(t); setRank(t.getInt("Rank")); rankFixed = t.contains("Rank"); setMini(t.getBoolean("Mini")); }
 
     /** dev showcase only */
     public void debugPose(AttackKind k, int t, int down, boolean guard, int aux) {

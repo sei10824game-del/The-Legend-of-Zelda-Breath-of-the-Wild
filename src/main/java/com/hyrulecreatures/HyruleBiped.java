@@ -98,7 +98,7 @@ public class HyruleBiped extends HyruleMob {
 
     // ---------------------------------------------------------------- guardians: 8 legs with own HP, beam
     public boolean isLegged() { return species == Species.GUARDIAN || species == Species.DECAYED_GUARDIAN || species == Species.CALAMITY_GANON; }
-    private boolean longShooter() { return switch (species) { case LYNEL, HINOX, TALUS, FROX, STALHINOX, MASTER_KOHGA, FIREBLIGHT_GANON, WATERBLIGHT_GANON, WINDBLIGHT_GANON, THUNDERBLIGHT_GANON -> true; default -> false; }; }
+    private boolean longShooter() { return switch (species) { case LYNEL, HINOX, TALUS, FROX, STALHINOX, LIZALFOS_FIRE, LIZALFOS_ICE, LIZALFOS_ELEC, MASTER_KOHGA, FIREBLIGHT_GANON, WATERBLIGHT_GANON, WINDBLIGHT_GANON, THUNDERBLIGHT_GANON -> true; default -> false; }; }
     private boolean pureBeamer() { return switch (species) { case GUARDIAN, DECAYED_GUARDIAN, GUARDIAN_TURRET, GUARDIAN_SKYWATCHER, CALAMITY_GANON -> true; default -> false; }; }
     private float[] legHp;
 
@@ -312,7 +312,7 @@ public class HyruleBiped extends HyruleMob {
                 }
         } else {
             boolean boom = isBoomerang(h);
-            int ty = boom ? 4 : species == Species.FIREBLIGHT_GANON || species == Species.MASTER_KOHGA ? 1 : species == Species.WATERBLIGHT_GANON ? 2 : species == Species.WINDBLIGHT_GANON || species == Species.THUNDERBLIGHT_GANON ? 3 : species == Species.OCTOROK || species == Species.HINOX || species == Species.STALHINOX || species == Species.TALUS || species == Species.FROX ? 0 :  new int[]{1, 2, 3, 1, 3}[rank()];
+            int ty = boom ? 4 : species == Species.FIREBLIGHT_GANON || species == Species.MASTER_KOHGA || species == Species.LIZALFOS_FIRE ? 1 : species == Species.LIZALFOS_ICE ? 2 : species == Species.LIZALFOS_ELEC ? 3 : species == Species.WATERBLIGHT_GANON ? 2 : species == Species.WINDBLIGHT_GANON || species == Species.THUNDERBLIGHT_GANON ? 3 : species == Species.OCTOROK || species == Species.HINOX || species == Species.STALHINOX || species == Species.TALUS || species == Species.FROX ? 0 :  new int[]{1, 2, 3, 1, 3}[rank()];
             Shot s = new Shot(level(), this, ty, boom ? h.copy() : new ItemStack(ModRegistry.shotItem(ty)), dmg);
             s.shoot(dx, dy + h2 * (ty == 0 ? 0.05 : 0), dz, boom ? 1.1f : 1.2f, 1f);
             level().addFreshEntity(s);
@@ -325,7 +325,7 @@ public class HyruleBiped extends HyruleMob {
         g = super.finalizeSpawn(lv, d, r, g, tag);
         int roll = random.nextInt(100), rank = 0;
         for (int i = 0; i < 5 && roll >= RANK_WEIGHT[i]; i++) { roll -= RANK_WEIGHT[i]; rank = i + 1; }
-        setRank(Math.min(rank, 4));
+        if (!rankFixed) setRank(Math.min(rank, 4));
         getAttribute(Attributes.MAX_HEALTH).setBaseValue(species.isStal() ? 1 : species.hp * Species.HP_MUL[rank()]);
         getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(species.dmg * Species.DMG_MUL[rank()]);
         setHealth(getMaxHealth());
@@ -364,11 +364,14 @@ public class HyruleBiped extends HyruleMob {
 
     @Override public boolean doHurtTarget(Entity t) {
         boolean ok = super.doHurtTarget(t);
-        if (ok && species == Species.CHUCHU && t instanceof LivingEntity e) switch (rank()) {
-            case 0 -> e.setSecondsOnFire(4);
-            case 1 -> { e.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.MOVEMENT_SLOWDOWN, 100, 2)); e.setTicksFrozen(e.getTicksRequiredToFreeze() + 80); }
-            case 2, 4 -> e.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.WEAKNESS, 100, 1));
-            default -> {}
+        if (ok && t instanceof LivingEntity e) {
+            int el = switch (species) { case KEESE_FIRE -> 1; case KEESE_ICE -> 2; case KEESE_ELEC -> 3; case CHUCHU -> rank() >= 1 && rank() <= 3 ? rank() : 0; default -> 0; };
+            switch (el) {
+                case 1 -> e.setSecondsOnFire(4);
+                case 2 -> { e.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.MOVEMENT_SLOWDOWN, 100, 2)); e.setTicksFrozen(e.getTicksRequiredToFreeze() + 80); }
+                case 3 -> e.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.WEAKNESS, 100, 1));
+                default -> {}
+            }
         }
         return ok;
     }

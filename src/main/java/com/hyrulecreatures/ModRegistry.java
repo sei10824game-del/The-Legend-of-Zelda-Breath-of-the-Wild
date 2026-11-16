@@ -29,7 +29,8 @@ public final class ModRegistry {
                 case LYNEL -> new int[]{0xc89a5a, 0xb8402a}; case CHUCHU -> new int[]{0xd84a30, 0xffd060}; case GUARDIAN -> new int[]{0x6a8a8a, 0x3ae0ff};
                 case GIBDO -> new int[]{0xb8a888, 0xff3030}; case HORRIBLIN -> new int[]{0x8a9a78, 0xff3030}; default -> new int[]{0x3a3040, 0xff4040}; };
             for (String suf : new String[]{"horn", "fang", "guts"}) ITEMS.register(s.id + "_" + suf, () -> new Item(new Item.Properties()));
-            ITEMS.register(s.id + "_spawn_egg", () -> new ForgeSpawnEggItem(TYPES.get(s), c[0], c[1], new Item.Properties()));
+            ITEMS.register(s.id + "_spawn_egg", () -> new ForgeSpawnEggItem(TYPES.get(s), 0xFFFFFF, 0xFFFFFF, new Item.Properties()));
+            for (int r = 0; r < 5; r++) { int rr = r; ITEMS.register(s.id + "_" + Species.RANKS[r] + "_spawn_egg", () -> new VariantEgg(TYPES.get(s), rr)); }
         }
         JsonObject[] ws = new Gson().fromJson(new InputStreamReader(ModRegistry.class.getResourceAsStream(
                 "/assets/" + HyruleCreatures.ID + "/weapons.json")), JsonObject[].class);
@@ -59,10 +60,17 @@ public final class ModRegistry {
     /** type 0 rock, 1 fire, 2 ice, 3 elec */
     public static Item shotItem(int type) { return SHOT_ITEMS.get(Math.max(0, Math.min(3, type))).get(); }
 
+    private static boolean isVariantEgg(String path) { return path.endsWith("_spawn_egg") && java.util.Arrays.stream(Species.RANKS).anyMatch(r -> path.contains("_" + r + "_spawn_egg")); }
     public static final RegistryObject<CreativeModeTab> TAB = TABS.register("main", () -> CreativeModeTab.builder()
             .title(Component.translatable("itemGroup." + HyruleCreatures.ID))
             .icon(() -> new ItemStack(ITEMS.getEntries().stream().filter(e -> e.getId().getPath().equals("master_sword")).findFirst().get().get()))
-            .displayItems((p, o) -> ITEMS.getEntries().stream().filter(e -> !e.getId().getPath().startsWith("shot_")).forEach(e -> o.accept(e.get()))).build());
+            .displayItems((p, o) -> ITEMS.getEntries().stream().filter(e -> !e.getId().getPath().startsWith("shot_") && !isVariantEgg(e.getId().getPath()))
+                    .forEach(e -> o.accept(e.get().getDefaultInstance()))).build());
+    public static final RegistryObject<CreativeModeTab> TAB_VARIANTS = TABS.register("variants", () -> CreativeModeTab.builder()
+            .title(Component.translatable("itemGroup." + HyruleCreatures.ID + ".variants"))
+            .icon(() -> new ItemStack(ITEMS.getEntries().stream().filter(e -> e.getId().getPath().equals("lynel_silver_spawn_egg")).findFirst().get().get()))
+            .displayItems((p, o) -> ITEMS.getEntries().stream().filter(e -> isVariantEgg(e.getId().getPath()))
+                    .forEach(e -> o.accept(e.get().getDefaultInstance()))).build());
 
     private ModRegistry() {}
 }

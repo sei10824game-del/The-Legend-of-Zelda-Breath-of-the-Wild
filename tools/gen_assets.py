@@ -238,7 +238,18 @@ PAL = {
               pal("#e0b83a", "#b8912a", "#f8e8a0", "#000000", "#fff2c0", wing="#ffe27a", eye="#ff3030")],
 }
 
-SPECIES["horriblin"] = SPECIES["bokoblin"]
+import copy
+_h = copy.deepcopy(SPECIES["bokoblin"]); _h["hunch"] = 0.7
+_h["parts"] = [q for q in _h["parts"] if q["n"] not in ("horn", "jaw", "wrapR", "wrapL", "belly")] + [
+    P("jaw", "head", (-3, 0, -8, 6, 3, 6), (0, 1, 0), (0.5, 0, 0), c="nose"),
+    P("teeth", "head", (-2.5, -0.5, -8, 5, 1, 1), (0, 0, 0), c="bandage"),
+    P("ribs", "body", (-3.5, 1, -2.5, 7, 9, 1), (0, 0, 0), c="belly", f=["stripes"]),
+    P("gloomA", "body", (-6, -3, -1, 5, 6, 5), (0, 0, 0), c="horn"),
+    P("gloomB", "body", (1, -2, 0, 4, 5, 4), (0, 0, 0), c="horn"),
+    P("gloomC", "head", (-3, -11, -2, 4, 4, 4), (0, 0, 0), c="horn"),
+    P("tatterR", "rightArm", (-4.5, 6, -3, 6, 7, 6), (0, 0, 0), c="cloth", f=["stripes"]),
+    P("tatterL", "leftArm", (-1.5, 6, -3, 6, 7, 6), (0, 0, 0), c="cloth", f=["stripes"])]
+SPECIES["horriblin"] = _h
 SPECIES["stalkoblin"] = SPECIES["bokoblin"]
 SPECIES["stalmoblin"] = SPECIES["moblin"]
 SPECIES["stalizalfos"] = SPECIES["lizalfos"]
@@ -478,6 +489,29 @@ def cons2(glow): return pal("#5a8a78", "#3a6a58", "#5a8a78", "#000000", "#707882
 PAL["soldier_construct"] = [cons2("#40ffc0"), cons2("#80ffe0"), cons2("#ff8a30"), cons2("#ffffff"), cons2("#fff2a0")]
 PAL["captain_construct"] = PAL["soldier_construct"]
 
+def horri(skin, gloom, eye="#ff2a2a"):
+    return pal(skin, "#4a4a42", "#7a7a68", "#2a2420", gloom, eye=eye)
+PAL["horriblin"] = [horri("#8a8a74", "#a01818"), horri("#7a8a98", "#7a18a0"), horri("#5a5a62", "#a01860"), horri("#b8bcb0", "#c04020"), horri("#c0a860", "#d02020")]
+for _p in PAL["horriblin"]: _p["nose"] = "#6a5a50"
+# --- elemental variants
+for _id, _src in (("lizalfos_fire", "lizalfos"), ("lizalfos_ice", "lizalfos"), ("lizalfos_elec", "lizalfos"),
+                  ("keese_fire", "keese"), ("keese_ice", "keese"), ("keese_elec", "keese")):
+    SPECIES[_id] = SPECIES[_src]
+def tint(base, skin, skin2, belly, horn):
+    d = dict(base); d.update(skin=skin, skin2=skin2, belly=belly, horn=horn); return d
+_el = {"fire": ("#d8602a", "#a84418", "#f0b070", "#ff7a20", "#ff6a20"), "ice": ("#7ab8d8", "#5a98b8", "#e0f0f8", "#bfe8ff", "#60d8ff"),
+       "elec": ("#d8c030", "#a89020", "#f8f0a0", "#fff040", "#ffee40")}
+for _k, (_sk, _s2, _bl, _hn, _ey) in _el.items():
+    PAL["lizalfos_" + _k] = [tint(PAL["lizalfos"][i], _sk, _s2, _bl, _hn) for i in range(5)]
+    for _p in PAL["lizalfos_" + _k]: _p["eye"] = _ey
+    PAL["keese_" + _k] = [dict(tint(PAL["keese"][i], _s2, _sk, _bl, _hn), wing=_sk, eye=_ey) for i in range(5)]
+# chuchu: 0 normal, 1 fire, 2 ice, 3 electric, 4 gold(rare)
+PAL["chuchu"] = [pal("#58b0f0", "#3a88c8", "#a8d8ff", "#000000", "#ff8a20", eye="#202020"),
+                 pal("#e0502a", "#b03418", "#ff9a70", "#000000", "#ff8a20", eye="#202020"),
+                 pal("#d8f0ff", "#a8d0e8", "#ffffff", "#000000", "#ff8a20", eye="#202020"),
+                 pal("#f0d838", "#c8b020", "#fff8a0", "#000000", "#ff8a20", eye="#202020"),
+                 pal("#e8c830", "#b8a020", "#fff080", "#000000", "#ff4a20", eye="#202020")]
+
 TEX = 128
 
 
@@ -716,6 +750,8 @@ def gen_weapons():
 NAMES = {"bokoblin": ("Bokoblin", "ボコブリン"), "moblin": ("Moblin", "モリブリン"),
          "lizalfos": ("Lizalfos", "リザルフォス"), "keese": ("Keese", "キース"), "hinox": ("Hinox", "ヒノックス"), "talus": ("Talus", "イワロック"),
          "gibdo": ("Gibdo", "ガイブドー"), "horriblin": ("Horriblin", "ホラブリン"),
+         "lizalfos_fire": ("Fire Breath Lizalfos", "火吹きリザルフォス"), "lizalfos_ice": ("Ice Breath Lizalfos", "雹吐きリザルフォス"), "lizalfos_elec": ("Shock Lizalfos", "シビレリザルフォス"),
+         "keese_fire": ("Fire Keese", "ファイアキース"), "keese_ice": ("Ice Keese", "アイスキース"), "keese_elec": ("Electric Keese", "エレキース"),
          "octorok": ("Octorok", "オクタロック"), "wizzrobe": ("Wizzrobe", "ウィズローブ"),
          "lynel": ("Lynel", "ライネル"), "chuchu": ("Chuchu", "チュチュ"), "guardian": ("Guardian Stalker", "ガーディアン"), "decayed_guardian": ("Decayed Guardian", "朽ちたガーディアン"),
          "guardian_turret": ("Guardian Turret", "ガーディアン・タレット"), "guardian_skywatcher": ("Guardian Skywatcher", "ガーディアン・スカイウォッチャー"),
@@ -735,6 +771,7 @@ def gen_lang():
     os.makedirs(f"{A}/lang", exist_ok=True)
     for code, idx in (("en_us", 0), ("ja_jp", 1)):
         L = {"itemGroup." + MOD: "Hyrule Creatures" if idx == 0 else "ハイラルの魔物"}
+        L["itemGroup." + MOD + ".variants"] = "Hyrule Creatures: Variants" if idx == 0 else "ハイラルの魔物:色違い"
         for i, r in enumerate(RANKS):
             L[f"rank.{MOD}.{r}"] = RANK_EN[i] if idx == 0 else RANK_JA[i]
         for sid, n in NAMES.items():
@@ -746,6 +783,9 @@ def gen_lang():
             L[f"item.{MOD}.{i}"] = (en, ja)[idx]
         L[f"entity.{MOD}.shot"] = ("Projectile", "飛び道具")[idx]
         L[f"entity.{MOD}.stal_head"] = ("Stal Skull", "スタルの頭")[idx]
+        for sid, n in NAMES.items():
+            for r, rn in enumerate(RANKS):
+                L[f"item.{MOD}.{sid}_{rn}_spawn_egg"] = (f"{RANK_EN[r]} {n[0]} Spawn Egg" if idx == 0 else f"{RANK_JA[r]}の{n[1]}のスポーンエッグ")
         for w in W:
             L[f"item.{MOD}.{w[0]}"] = w[1 + idx]
         json.dump(L, open(f"{A}/lang/{code}.json", "w"), ensure_ascii=False, indent=1)
@@ -772,11 +812,33 @@ def gen_parts():
         json.dump({"type": "minecraft:entity", "pools": pools}, open(f"{ld}/{sid}.json", "w"))
 
 
+def gen_eggs():
+    from PIL import Image as I
+    import json as J
+    mdl = f"{A}/models/item"
+    for sid, sp in SPECIES.items():
+        parts = J.load(open(f"{A}/specs/{sid}.json"))["parts"]
+        hp = next((q for q in parts if q["n"] == "head"), None) or next(q for q in parts if q["n"] == "body")
+        u, v = hp["uv"]; w, h, d = [int(round(t)) for t in hp["box"][3:6]]
+        for r, rn in enumerate(RANKS):
+            tex = I.open(f"{A}/textures/entity/{sid}_{rn}.png").convert("RGBA")
+            face = tex.crop((u + d, v + d, u + d + w, v + d + h)).resize((10, 10), I.NEAREST)
+            base = hexc(PAL[sid][r]["skin"])
+            egg = I.new("RGBA", (16, 16), (0, 0, 0, 0)); dr = ImageDraw.Draw(egg)
+            dr.ellipse([1, 0, 14, 15], fill=shade(base, 0.85) + (255,), outline=(30, 30, 30, 255))
+            egg.alpha_composite(face, (3, 3))
+            dr.arc([1, 0, 14, 15], 200, 340, fill=(255, 255, 255, 120))
+            for name in ([f"{sid}_spawn_egg"] if r == 0 else []) + [f"{sid}_{rn}_spawn_egg"]:
+                egg.save(f"{A}/textures/item/{name}.png")
+                J.dump({"parent": "minecraft:item/generated", "textures": {"layer0": f"{MOD}:item/{name}"}}, open(f"{mdl}/{name}.json", "w"))
+    J.dump({sid: [[PAL[sid][r]["skin"], PAL[sid][r]["horn"]] for r in range(5)] for sid in SPECIES}, open(f"{A}/eggs.json", "w"))
+
+
 def gen_data():
     d = os.path.join(RES, "data", MOD, "forge", "biome_modifier")
     os.makedirs(d, exist_ok=True)
     for f in os.listdir(d): os.remove(os.path.join(d, f))  # bosses (gleeok, phantom ganon, captain construct) are spawn-egg/command only
-    spawns = {"bokoblin": (40, 2, 4), "moblin": (20, 1, 2), "lizalfos": (25, 1, 3), "keese": (30, 2, 4), "hinox": (4, 1, 1), "talus": (8, 1, 1), "gibdo": (14, 1, 3), "horriblin": (14, 2, 3), "octorok": (12, 1, 2), "wizzrobe": (6, 1, 1), "lynel": (3, 1, 1), "chuchu": (30, 2, 4), "guardian": (3, 1, 1), "decayed_guardian": (4, 1, 1), "stalkoblin": (10, 2, 3), "stalmoblin": (5, 1, 2), "stalizalfos": (6, 1, 2), "yiga_footsoldier": (6, 1, 3), "yiga_blademaster": (2, 1, 1), "soldier_construct": (4, 1, 2), "frox": (2, 1, 1)}
+    spawns = {"bokoblin": (40, 2, 4), "moblin": (20, 1, 2), "lizalfos": (25, 1, 3), "keese": (30, 2, 4), "hinox": (4, 1, 1), "talus": (8, 1, 1), "gibdo": (14, 1, 3), "horriblin": (14, 2, 3), "octorok": (12, 1, 2), "wizzrobe": (6, 1, 1), "lynel": (3, 1, 1), "chuchu": (30, 2, 4), "guardian": (3, 1, 1), "decayed_guardian": (4, 1, 1), "stalkoblin": (10, 2, 3), "stalmoblin": (5, 1, 2), "stalizalfos": (6, 1, 2), "yiga_footsoldier": (6, 1, 3), "yiga_blademaster": (2, 1, 1), "soldier_construct": (4, 1, 2), "frox": (2, 1, 1), "lizalfos_fire": (4, 1, 2), "lizalfos_ice": (4, 1, 2), "lizalfos_elec": (4, 1, 2), "keese_fire": (6, 2, 3), "keese_ice": (6, 2, 3), "keese_elec": (6, 2, 3)}
     for sid, (wt, lo, hi) in spawns.items():
         json.dump({"type": "forge:add_spawns", "biomes": "#minecraft:is_overworld",
                    "spawners": {"type": f"{MOD}:{sid}", "weight": wt, "minCount": lo, "maxCount": hi}},
@@ -784,5 +846,5 @@ def gen_data():
 
 
 if __name__ == "__main__":
-    gen_species(); gen_weapons(); gen_shots(); gen_parts(); gen_lang(); gen_data()
+    gen_species(); gen_weapons(); gen_shots(); gen_parts(); gen_lang(); gen_eggs(); gen_data()
     print("ok", len(W), "weapons")

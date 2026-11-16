@@ -14,3 +14,6 @@ Remaining creatures (Lynel, Guardian, Chuchu, Wizzrobe, Octorok, Gleeok, Gibdo, 
 
 ## Visual check (dev)
 `./gradlew runClient -Pshowcase` (needs a world copied to `run/saves/showcase`, e.g. from `runServer`) screenshots every creature/pose to `run/screenshots` (client-side only, no server mobs). Under Xvfb: `Xvfb :99 &; DISPLAY=:99 LIBGL_ALWAYS_SOFTWARE=1 ...`.
+
+## Variants
+Every species has 5 colour ranks (red/blue/black/silver/gold). Creative tab "Hyrule Creatures: Variants" holds one spawn egg per species and rank (e.g. Silver Lynel). Elemental variants (Fire/Ice/Shock Lizalfos, Fire/Ice/Electric Keese) are separate species. `/summon hyrulecreatures:lynel ~ ~ ~ {Rank:3}` also fixes the rank.
