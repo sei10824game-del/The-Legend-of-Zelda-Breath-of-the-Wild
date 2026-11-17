@@ -70,6 +70,21 @@ public enum Species {
     KEESE_ELEC("keese_elec", 0.5f, 0.5f, 6, 2, 0.5, 0.1, 1.4, 1.0f, AttackKind.BITE, 0f, true, new String[][]{{}, {}, {}, {}, {}}),
     BLIZZROBE("blizzrobe", 0.6f, 1.8f, 40, 5, 0.2, 0.1, 14, 1.0f, AttackKind.SHOOT, 0f, true, new String[][]{{}, {}, {}, {}, {}}),
     THUNDER_WIZZROBE("thunder_wizzrobe", 0.6f, 1.8f, 40, 6, 0.2, 0.1, 14, 1.0f, AttackKind.SHOOT, 0f, true, new String[][]{{}, {}, {}, {}, {}}),
+    STALFOS("stalfos", 0.6f, 1.8f, 30, 4, 0.28, 0.5, 2.0, 1.1f, AttackKind.SLASH, 0f, false, new String[][]{{"stalfos_sword"}, {"stalfos_sword"}, {"stalfos_sword"}, {"stalfos_sword"}, {"stalfos_sword"}}),
+    STALMASTER("stalmaster", 1.0f, 3.2f, 200, 9, 0.26, 1.8, 3.2, 1.9f, AttackKind.SMASH, 0.3f, false, new String[][]{{"stalmaster_sword"}, {"stalmaster_sword"}, {"stalmaster_sword"}, {"stalmaster_sword"}, {"stalmaster_sword"}}),
+    DINOLFOS("dinolfos", 0.7f, 2.0f, 80, 6, 0.34, 0.8, 2.2, 1.2f, AttackKind.SLASH, 0f, false, new String[][]{{"dinolfos_sword"}, {"dinolfos_sword"}, {"dinolfos_sword"}, {"dinolfos_sword"}, {"dinolfos_sword"}}),
+    AERALFOS("aeralfos", 0.7f, 1.8f, 70, 6, 0.3, 0.5, 2.2, 1.2f, AttackKind.SLASH, 0f, true, new String[][]{{}, {}, {}, {}, {}}),
+    ARMOS("armos", 0.9f, 2.4f, 120, 8, 0.2, 1.5, 2.6, 1.4f, AttackKind.SMASH, 0.2f, false, new String[][]{{"armos_sword"}, {"armos_sword"}, {"armos_sword"}, {"armos_sword"}, {"armos_sword"}}),
+    BEAMOS("beamos", 1.0f, 2.4f, 100, 9, 0.0, 0.0, 3.0, 1.5f, AttackKind.BEAM, 0f, false, new String[][]{{}, {}, {}, {}, {}}),
+    SKULLTULA("skulltula", 1.0f, 0.9f, 24, 4, 0.3, 0.3, 1.8, 1.2f, AttackKind.SLASH, 0f, false, new String[][]{{}, {}, {}, {}, {}}),
+    DEKU_BABA("deku_baba", 0.8f, 1.8f, 30, 5, 0.0, 0.3, 4.0, 1.2f, AttackKind.BITE, 0f, false, new String[][]{{}, {}, {}, {}, {}}),
+    CURSED_BOKOBLIN("cursed_bokoblin", 0.6f, 1.7f, 40, 4, 0.3, 0.4, 1.9, 1.0f, AttackKind.SMASH, 0f, false, new String[][]{{"boko_club", "boko_spear"}, {"spiked_boko_club", "spiked_boko_spear"}, {"dragonbone_boko_club"}, {"dragonbone_boko_spear"}, {"dragonbone_boko_club"}}),
+    GHIRAHIM("ghirahim", 0.7f, 2.2f, 500, 10, 0.34, 1.0, 2.8, 1.3f, AttackKind.SLASH, 0f, false, new String[][]{{"ghirahim_sword"}, {"ghirahim_sword"}, {"ghirahim_sword"}, {"ghirahim_sword"}, {"ghirahim_sword"}}),
+    DEMISE("demise", 1.6f, 5.0f, 1800, 22, 0.26, 3.0, 5.0, 3.0f, AttackKind.SMASH, 0.25f, false, new String[][]{{"demise_sword"}, {"demise_sword"}, {"demise_sword"}, {"demise_sword"}, {"demise_sword"}}),
+    MOLDARACH("moldarach", 2.4f, 1.8f, 500, 12, 0.22, 2.0, 3.8, 2.2f, AttackKind.SMASH, 0.2f, false, new String[][]{{}, {}, {}, {}, {}}),
+    KOLOKTOS("koloktos", 1.8f, 5.0f, 700, 14, 0.22, 2.5, 4.2, 2.6f, AttackKind.SMASH, 0.3f, false, new String[][]{{"koloktos_sword"}, {"koloktos_sword"}, {"koloktos_sword"}, {"koloktos_sword"}, {"koloktos_sword"}}),
+    SCALDERA("scaldera", 2.2f, 2.4f, 500, 12, 0.2, 2.0, 3.6, 2.2f, AttackKind.SMASH, 0f, false, new String[][]{{}, {}, {}, {}, {}}),
+    THE_IMPRISONED("the_imprisoned", 2.6f, 6.0f, 2500, 25, 0.18, 3.5, 5.5, 3.5f, AttackKind.SMASH, 0.25f, false, new String[][]{{}, {}, {}, {}, {}}),
     HORRIBLIN("horriblin", 0.6f, 1.7f, 30, 3, 0.3, 0.4, 1.9, 1.0f, AttackKind.SLASH, 0f, false, new String[][]{
         {"boko_club", "boko_spear"}, {"spiked_boko_club", "spiked_boko_spear"}, {"dragonbone_boko_club"}, {"dragonbone_boko_spear"}, {"dragonbone_boko_club"}});
 
@@ -88,7 +103,7 @@ public enum Species {
 
     public boolean isStal() { return this == STALKOBLIN || this == STALMOBLIN || this == STALIZALFOS; }
     public boolean teleports() {
-        return switch (this) { case WIZZROBE, BLIZZROBE, THUNDER_WIZZROBE, FIREBLIGHT_GANON, WATERBLIGHT_GANON, WINDBLIGHT_GANON, THUNDERBLIGHT_GANON, PHANTOM_GANON, MASTER_KOHGA, YIGA_FOOTSOLDIER, YIGA_BLADEMASTER -> true; default -> false; };
+        return switch (this) { case GHIRAHIM, WIZZROBE, BLIZZROBE, THUNDER_WIZZROBE, FIREBLIGHT_GANON, WATERBLIGHT_GANON, WINDBLIGHT_GANON, THUNDERBLIGHT_GANON, PHANTOM_GANON, MASTER_KOHGA, YIGA_FOOTSOLDIER, YIGA_BLADEMASTER -> true; default -> false; };
     }
 
     public static final String[] RANKS = {"red", "blue", "black", "silver", "gold"};

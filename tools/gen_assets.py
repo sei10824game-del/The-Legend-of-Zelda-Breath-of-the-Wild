@@ -518,6 +518,140 @@ for _k, _rows in (("blizzrobe", (("#f0f4f8", "#9ad8f8", "#aaffff"), ("#e8f0f8", 
                   ("thunder_wizzrobe", (("#e8e0b0", "#d8c020", "#ffff66"), ("#e0dcc0", "#c8a818", "#ffee44"), ("#d8d0a0", "#a88810", "#ffff88"), ("#f0ecd0", "#e8d848", "#ffffff"), ("#f0e4a8", "#e8b820", "#ffffff")))):
     PAL[_k] = [pal("#d9b48a", "#b08a62", "#241a1a", r, "#e8dcb8", hair=h, eye=e) for (r, h, e) in _rows]
 
+def _rc(hexs, f):
+    r, g, b = hexc(hexs); r, g, b = f(r, g, b); return "#%02x%02x%02x" % (max(0, min(255, int(r))), max(0, min(255, int(g))), max(0, min(255, int(b))))
+def ranks5(base):
+    """derive 5 rank palettes from one: orig, blue-swap, dark, pale, gold-tinted"""
+    fs = [lambda r, g, b: (r, g, b), lambda r, g, b: (b, g * 0.95, r), lambda r, g, b: (r * .5, g * .5, b * .55),
+          lambda r, g, b: (r * .45 + 140, g * .45 + 140, b * .45 + 145), lambda r, g, b: (r * .55 + 100, g * .55 + 80, b * .55 + 20)]
+    out = []
+    for f in fs:
+        d = {k: (v if k in ("eye",) else _rc(v, f)) for k, v in base.items()}
+        out.append(d)
+    return out
+
+# ================= Skyward Sword creatures =================
+SPECIES["stalfos"] = dict(hunch=0.3, parts=[
+    P("body", None, (-4, 0, -2, 8, 12, 4), (0, 0, 0), c="skin2"),
+    P("ribs", "body", (-4.5, 1, -2.5, 9, 8, 5), (0, 0, 0), c="skin", f=["stripes"]),
+    P("pelvis", "body", (-4, 10, -2, 8, 3, 4), (0, 0, 0), c="cloth"),
+    P("head", None, (-4, -8, -4, 8, 8, 8), (0, 0, -1), c="skin", f=["eyes"]),
+    P("helm", "head", (-4.5, -9, -4.5, 9, 4, 9), (0, 0, 0), c="horn"),
+    P("hornL", "head", (0, -5, -1, 2, 5, 2), (4, -8, 0), (0, 0, -0.5), c="horn"),
+    P("hornR", "head", (-2, -5, -1, 2, 5, 2), (-4, -8, 0), (0, 0, 0.5), c="horn"),
+    P("jaw", "head", (-3, 0, -4, 6, 2, 4), (0, -1, 0), c="skin2"),
+] + biped_legs(3, 13, 4.5, 3, 12, 2, 12))
+SPECIES["stalmaster"] = dict(hunch=0.3, parts=[q for q in SPECIES["stalfos"]["parts"]] + [
+    P("padL", "body", (0, -3, -3.5, 5, 4, 7), (4, 0, 0), c="cloth"), P("padR", "body", (-5, -3, -3.5, 5, 4, 7), (-4, 0, 0), c="cloth"),
+    P("cape", "body", (-5, 0, 2.5, 10, 20, 1), (0, 0, 0), c="cloth")])
+SPECIES["dinolfos"] = dict(hunch=0.4, parts=[q for q in SPECIES["lizalfos"]["parts"]] + [
+    P("padL", "body", (0, -2, -3.5, 5, 4, 7), (4, 0, 0), c="horn"), P("padR", "body", (-5, -2, -3.5, 5, 4, 7), (-4, 0, 0), c="horn"),
+    P("crown", "head", (-3.5, -2, -3.5, 7, 2, 7), (0, -6, 0), c="horn")])
+_ae = [q for q in SPECIES["lizalfos"]["parts"] if q["n"] not in ("rightLeg", "leftLeg")]
+SPECIES["aeralfos"] = dict(hunch=0.2, parts=_ae + [
+    P("wingL", "body", (0, -0.5, -3, 18, 1, 12), (4, 3, 3), c="wing"), P("wingR", "body", (-18, -0.5, -3, 18, 1, 12), (-4, 3, 3), c="wing"),
+    P("footL", "body", (-1.5, 0, -1.5, 3, 8, 3), (2, 12, 0), c="skin2"), P("footR", "body", (-1.5, 0, -1.5, 3, 8, 3), (-2, 12, 0), c="skin2")])
+SPECIES["armos"] = dict(hunch=0.15, parts=[
+    P("body", None, (-6, 0, -4, 12, 14, 8), (0, 0, 0), f=["circuit"]),
+    P("chest", "body", (-4, 3, -5, 8, 6, 1), (0, 0, 0), c="horn"),
+    P("head", None, (-4.5, -8, -4.5, 9, 8, 9), (0, 0, -1), c="skin2", f=["eyes"]),
+    P("visor", "head", (-4, -5, -5, 8, 2, 1), (0, 0, 0), c="horn"),
+    P("crest", "head", (-1, -4, -4, 2, 4, 8), (0, -8, 0), c="skin"),
+    P("rightArm", None, (-5, -2, -3, 6, 15, 6), (-9, 2, 0), c="skin2", f=["hand"]),
+    P("leftArm", None, (-1, -2, -3, 6, 15, 6), (9, 2, 0), c="skin2", f=["hand"]),
+    P("rightLeg", None, (-3, 0, -3, 6, 10, 6), (-3.5, 14, 0), c="skin"), P("leftLeg", None, (-3, 0, -3, 6, 10, 6), (3.5, 14, 0), c="skin")])
+SPECIES["beamos"] = dict(hunch=0.0, parts=[
+    P("base", None, (-7, 0, -7, 14, 4, 14), (0, 20, 0), c="skin2", f=["circuit"]),
+    P("body", None, (-4, 0, -4, 8, 14, 8), (0, 8, 0), f=["circuit"]),
+    P("head", None, (-7, -7, -7, 14, 14, 14), (0, 4, 0), c="skin2", f=["bigeye"]),
+    P("ringL", "head", (7, -3, -3, 2, 6, 6), (0, 0, 0), c="horn"), P("ringR", "head", (-9, -3, -3, 2, 6, 6), (0, 0, 0), c="horn"),
+    P("crest", "head", (-1, -10, -3, 2, 3, 6), (0, 0, 0), c="horn")])
+SPECIES["skulltula"] = dict(hunch=0.0, parts=[
+    P("body", None, (-5, -4, -6, 10, 8, 12), (0, 17, 0), c="skin"),
+    P("head", None, (-3.5, -3.5, -6, 7, 7, 6), (0, 17, -6), c="skin2", f=["eyes"]),
+    P("fangL", "head", (0, 2, -6.5, 1, 4, 1), (1.5, 0, 0), c="bandage"), P("fangR", "head", (-1, 2, -6.5, 1, 4, 1), (-1.5, 0, 0), c="bandage"),
+    P("mark", "body", (-2, -4.5, 0, 4, 1, 5), (0, 0, 0), c="horn")] + spider_legs(8, 17, 4, 1.15, 6, 6, math.pi / 8))
+SPECIES["deku_baba"] = dict(hunch=0.0, parts=[
+    P("body", None, (-1.5, 0, -1.5, 3, 16, 3), (0, 8, 0), c="skin2"),
+    P("leafL", "body", (0, 8, -1, 7, 1, 4), (1.5, 0, 0), (0, 0, -0.4), c="skin2"), P("leafR", "body", (-7, 8, -1, 7, 1, 4), (-1.5, 0, 0), (0, 0, 0.4), c="skin2"),
+    P("head", None, (-5, -5, -5, 10, 8, 10), (0, 7, 0), c="skin", f=["eyes"]),
+    P("jaw", "head", (-4, 3, -9, 8, 3, 8), (0, 0, 0), c="belly"),
+    P("lip", "head", (-4.5, -1, -9.5, 9, 2, 5), (0, 0, 0), c="horn"),
+    P("teeth", "head", (-3.5, 2, -9, 7, 1, 1), (0, 0, 0), c="bandage"),
+    P("petal", "head", (-1, -9, -1, 2, 4, 2), (0, 0, 0), c="horn")])
+_cb = [dict(q) for q in SPECIES["horriblin"]["parts"] if q["n"] not in ("ribs", "tatterR", "tatterL")]
+SPECIES["cursed_bokoblin"] = dict(hunch=0.55, parts=_cb + [P("aura", "body", (-5, -1, -3, 10, 14, 6), (0, 0, 0), c="horn")])
+SPECIES["ghirahim"] = dict(hunch=0.0, parts=[
+    P("body", None, (-4, 0, -2.5, 8, 14, 5), (0, 0, 0), c="cloth"),
+    P("collar", "body", (-6, -2, -3, 12, 4, 6), (0, 0, 0), c="horn"),
+    P("diamond", "body", (-2, 4, -3, 4, 4, 1), (0, 0, 0), c="horn"),
+    P("cape", "body", (-6, -1, 2.5, 12, 26, 1), (0, 0, 0), c="cloth"),
+    P("head", None, (-4, -8, -4, 8, 8, 8), (0, 0, -0.5), c="skin", f=["eyes"]),
+    P("hair", "head", (-4.5, -9, -4.5, 9, 3, 9), (0, 0, 0), c="hair"),
+    P("spike", "head", (-1.5, -6, 3, 3, 6, 3), (0, -4, 0), (0.5, 0, 0), c="hair"),
+] + biped_legs(3, 15, 5.5, 4, 12, 2, 14))
+SPECIES["demise"] = dict(hunch=0.25, parts=[
+    P("body", None, (-8, 0, -5, 16, 16, 10), (0, 0, 0), c="cloth"),
+    P("chest", "body", (-6, 3, -6, 12, 8, 1), (0, 0, 0), c="horn"),
+    P("padL", "body", (0, -4, -6, 9, 6, 12), (7, 0, 0), c="skin2"), P("padR", "body", (-9, -4, -6, 9, 6, 12), (-7, 0, 0), c="skin2"),
+    P("head", None, (-5, -10, -5, 10, 10, 10), (0, 0, -1), c="skin", f=["eyes"]),
+    P("mane", "head", (-6, -12, -2, 12, 14, 6), (0, 0, 0), c="hair"),
+    P("hornL", "head", (0, -9, -1, 3, 9, 3), (4, -10, 0), (0, 0, -0.5), c="horn"), P("hornR", "head", (-3, -9, -1, 3, 9, 3), (-4, -10, 0), (0, 0, 0.5), c="horn"),
+    P("rightArm", None, (-6, -2, -3, 7, 18, 7), (-11, 2, 0), c="skin", f=["hand"]), P("leftArm", None, (-1, -2, -3, 7, 18, 7), (11, 2, 0), c="skin", f=["hand"]),
+    P("rightLeg", None, (-4, 0, -4, 8, 10, 8), (-4.5, 14, 0), c="skin2"), P("leftLeg", None, (-4, 0, -4, 8, 10, 8), (4.5, 14, 0), c="skin2")])
+SPECIES["moldarach"] = dict(hunch=0.0, parts=[
+    P("body", None, (-8, -4, -10, 16, 9, 20), (0, 16, 0), c="skin"),
+    P("shell", "body", (-6, -7, -7, 12, 3, 14), (0, 0, 0), c="skin2", f=["circuit"]),
+    P("head", None, (-4, -4, -5, 8, 7, 6), (0, 15, -10), c="skin2", f=["eyes"]),
+    P("rightArm", None, (-3, -2, -9, 6, 4, 10), (-10, 14, -8), c="skin2"), P("leftArm", None, (-3, -2, -9, 6, 4, 10), (10, 14, -8), c="skin2"),
+    P("clawR", "rightArm", (-4, -3, -14, 8, 6, 5), (0, 0, 0), c="horn"), P("clawL", "leftArm", (-4, -3, -14, 8, 6, 5), (0, 0, 0), c="horn"),
+    P("tail1", "body", (-2.5, -2.5, 0, 5, 5, 8), (0, -1, 10), (-0.5, 0, 0), c="skin"),
+    P("tail2", "tail1", (-2, -2, 0, 4, 4, 8), (0, 0, 8), (-0.5, 0, 0), c="skin"),
+    P("tail3", "tail2", (-3, -3, 0, 6, 6, 6), (0, 0, 8), (-0.5, 0, 0), c="horn")] + spider_legs(8, 18, 6, 1.0, 5, 5, math.pi / 8))
+SPECIES["koloktos"] = dict(hunch=0.0, parts=[
+    P("body", None, (-7, 0, -5, 14, 16, 10), (0, 0, 0), f=["circuit"]),
+    P("core", "body", (-3, 5, -6, 6, 6, 1), (0, 0, 0), c="horn"),
+    P("head", None, (-5, -9, -5, 10, 9, 10), (0, 0, -1), c="skin2", f=["bigeye"]),
+    P("crown", "head", (-6, -12, -6, 12, 3, 12), (0, 0, 0), c="horn"),
+    P("rightArm", None, (-5, -2, -3, 6, 18, 6), (-10, 2, 0), c="skin2"), P("leftArm", None, (-1, -2, -3, 6, 18, 6), (10, 2, 0), c="skin2"),
+    P("arm3", "body", (-4, -1, -3, 5, 16, 5), (-10, 8, 2), (0, 0, 0.5), c="skin2"), P("arm4", "body", (-1, -1, -3, 5, 16, 5), (10, 8, 2), (0, 0, -0.5), c="skin2"),
+    P("arm5", "body", (-4, -1, -3, 5, 14, 5), (-9, 12, 3), (0, 0, 0.9), c="skin2"), P("arm6", "body", (-1, -1, -3, 5, 14, 5), (9, 12, 3), (0, 0, -0.9), c="skin2"),
+    P("rightLeg", None, (-3.5, 0, -3.5, 7, 10, 7), (-4, 14, 0), c="skin"), P("leftLeg", None, (-3.5, 0, -3.5, 7, 10, 7), (4, 14, 0), c="skin")])
+SPECIES["scaldera"] = dict(hunch=0.0, parts=[
+    P("body", None, (-9, -6, -9, 18, 12, 18), (0, 14, 0), c="skin", f=["circuit"]),
+    P("magma", "body", (-7, -8, -7, 14, 3, 14), (0, 0, 0), c="horn"),
+    P("head", None, (-5, -5, -6, 10, 8, 8), (0, 13, -9), c="skin2", f=["eyes"]),
+    P("rightArm", None, (-4, -2, -6, 8, 6, 10), (-11, 13, -5), c="skin2"), P("leftArm", None, (-4, -2, -6, 8, 6, 10), (11, 13, -5), c="skin2"),
+    P("hornL", "head", (0, -8, -1, 3, 8, 3), (3, -5, -3), (0, 0, -0.4), c="horn"), P("hornR", "head", (-3, -8, -1, 3, 8, 3), (-3, -5, -3), (0, 0, 0.4), c="horn")]
+    + spider_legs(8, 18, 7, 0.9, 4, 4, math.pi / 8))
+SPECIES["the_imprisoned"] = dict(hunch=0.2, parts=[
+    P("body", None, (-10, 0, -8, 20, 22, 16), (0, 0, 0)),
+    P("belly", "body", (-8, 6, -9, 16, 12, 2), (0, 0, 0), c="belly"),
+    P("head", None, (-7, -12, -7, 14, 12, 14), (0, 0, -2), c="skin", f=["bigeye"]),
+    P("horn", "head", (-2, -16, -2, 4, 16, 4), (0, -12, -1), (0.2, 0, 0), c="horn"),
+    P("jaw", "head", (-6, 0, -9, 12, 4, 8), (0, -1, 0), c="belly"),
+    P("rightArm", None, (-7, -2, -4, 9, 22, 9), (-15, 2, 0), c="skin2", f=["hand"]), P("leftArm", None, (-2, -2, -4, 9, 22, 9), (15, 2, 0), c="skin2", f=["hand"]),
+    P("rightLeg", None, (-5, 0, -5, 10, 8, 10), (-6, 22, 0), c="skin2"), P("leftLeg", None, (-5, 0, -5, 10, 8, 10), (6, 22, 0), c="skin2")])
+
+def sp(**k): return pal(**k)
+PAL["stalfos"] = ranks5(pal("#dcd8c4", "#b8b49c", "#e8e4d0", "#6a4a3a", "#8a7a60", eye="#ff4020"))
+PAL["stalmaster"] = ranks5(pal("#d0ccb8", "#a8a490", "#e0dcc8", "#5a3a6a", "#a89060", eye="#ff4020"))
+PAL["dinolfos"] = ranks5(pal("#8a3a2a", "#6a2a1e", "#d8b878", "#4a3a2a", "#d8c070", eye="#ffd030"))
+PAL["aeralfos"] = ranks5(pal("#9a5a3a", "#7a4228", "#e0c890", "#6a4a3a", "#e8dcb8", wing="#7a3a28", eye="#ffd030"))
+PAL["armos"] = ranks5(pal("#8a8a78", "#6a6a5a", "#a0a090", "#000000", "#48d8e8", eye="#48d8e8"))
+PAL["beamos"] = ranks5(pal("#7a7a8a", "#5a5a6a", "#9a9aa8", "#000000", "#ff3030", eye="#ff3030"))
+PAL["skulltula"] = ranks5(pal("#4a3a2a", "#2a2018", "#6a5a44", "#000000", "#d8a020", eye="#ff3030"))
+PAL["deku_baba"] = ranks5(pal("#c04a3a", "#3a7a2a", "#8a2a2a", "#000000", "#e8d84a", eye="#ffee60"))
+PAL["cursed_bokoblin"] = ranks5(pal("#5a2a6a", "#3a1a4a", "#8a5a98", "#2a1a30", "#d02a8a", eye="#ff2a6a"))
+PAL["ghirahim"] = ranks5(pal("#f0f0f4", "#d0d0dc", "#ffffff", "#2a2a38", "#8a2ad8", hair="#f4f4f8", eye="#ffcc20"))
+PAL["demise"] = ranks5(pal("#4a2a2a", "#2e1a1a", "#7a4a3a", "#2a2028", "#ff5a20", hair="#d83a1a", eye="#ffcc20"))
+PAL["moldarach"] = ranks5(pal("#c8a060", "#a07a40", "#d8b878", "#000000", "#e8e0c0", eye="#ff4020"))
+PAL["koloktos"] = ranks5(pal("#8a7a50", "#6a5a38", "#a89868", "#000000", "#48d8e8", eye="#48d8e8"))
+PAL["scaldera"] = ranks5(pal("#5a3a2a", "#3a2418", "#7a5a3a", "#000000", "#ff6a10", eye="#ffcc20"))
+PAL["the_imprisoned"] = ranks5(pal("#6a5a78", "#4a3a58", "#8a7a98", "#000000", "#e8e0d0", eye="#ff4a20"))
+for _k in ("stalfos", "stalmaster", "dinolfos", "aeralfos", "armos", "beamos", "skulltula", "deku_baba", "cursed_bokoblin", "ghirahim", "demise", "moldarach", "koloktos", "scaldera", "the_imprisoned"):
+    for _p in PAL[_k]: _p.setdefault("nose", "#c4bca4"); _p.setdefault("bandage", "#ece8d8"); _p.setdefault("bone", _p["skin2"]); _p.setdefault("joint", _p["horn"])
+
 TEX = 128
 
 
@@ -655,6 +789,15 @@ W = [
     ("guardian_sword_plus", "Guardian Sword++", "ガーディアンソード++", "claymore", 22, 160, "#4ac8ff", "#2a6a9a"),
     ("guardian_spear", "Guardian Spear", "ガーディアンスピア", "spear", 14, 120, "#2a6a9a", "#4ac8ff"),
     ("guardian_shield", "Guardian Shield", "ガーディアンシールド", "shield", 0, 300, "#4a6a78", "#ff7a20"),
+    ("stalfos_sword", "Stalfos Sword", "スタルフォスの剣", "sword", 6, 70, "#d8d4c0", "#6a4a3a"),
+    ("stalmaster_sword", "Stalmaster Greatsword", "スタルマスターの大剣", "claymore", 12, 120, "#c8c4b0", "#5a3a6a"),
+    ("dinolfos_sword", "Dinolfos Sword", "ディノルフォスの剣", "sword", 9, 90, "#a8b0b8", "#8a3a2a"),
+    ("armos_sword", "Armos Blade", "アーモスの剣", "claymore", 10, 110, "#9a9a8a", "#6a6a5a"),
+    ("ghirahim_sword", "Ghirahim's Sword", "ギラヒムの剣", "sword", 16, 200, "#f4f4f8", "#3a2a5a"),
+    ("demise_sword", "Demise's Greatsword", "魔王の大剣", "claymore", 26, 300, "#3a2a2a", "#d83a20"),
+    ("koloktos_sword", "Koloktos Scimitar", "コロクトスの曲刀", "claymore", 14, 140, "#c8a850", "#7a5a20"),
+    ("stalfos_shield", "Stalfos Shield", "スタルフォスの盾", "shield", 0, 120, "#c8c4b0", "#6a4a3a"),
+    ("dinolfos_shield", "Dinolfos Shield", "ディノルフォスの盾", "shield", 0, 160, "#8a9aa8", "#8a3a2a"),
     ("lizal_boomerang", "Lizal Boomerang", "リザルブーメラン", "boomerang", 5, 30, "#7a9a3a", "#e0d08a"),
     ("lizal_forked_boomerang", "Lizal Forked Boomerang", "リザルフォーク", "boomerang", 7, 40, "#3a8ac0", "#bfe0ee"),
     ("lizal_tri_boomerang", "Lizal Tri-Boomerang", "リザルトライブーメラン", "boomerang", 10, 60, "#4a4a5a", "#aaaabb"),
@@ -756,6 +899,10 @@ def gen_weapons():
 NAMES = {"bokoblin": ("Bokoblin", "ボコブリン"), "moblin": ("Moblin", "モリブリン"),
          "lizalfos": ("Lizalfos", "リザルフォス"), "keese": ("Keese", "キース"), "hinox": ("Hinox", "ヒノックス"), "talus": ("Talus", "イワロック"),
          "gibdo": ("Gibdo", "ガイブドー"), "horriblin": ("Horriblin", "ホラブリン"),
+         "stalfos": ("Stalfos", "スタルフォス"), "stalmaster": ("Stalmaster", "スタルマスター"), "dinolfos": ("Dinolfos", "ディノルフォス"), "aeralfos": ("Aeralfos", "エアロルフォス"),
+         "armos": ("Armos", "アーモス"), "beamos": ("Beamos", "ビーモス"), "skulltula": ("Skulltula", "スタルチュラ"), "deku_baba": ("Deku Baba", "デクババ"),
+         "cursed_bokoblin": ("Cursed Bokoblin", "呪われたボコブリン"), "ghirahim": ("Ghirahim", "ギラヒム"), "demise": ("Demise", "魔王"), "moldarach": ("Moldarach", "モルダラクネ"),
+         "koloktos": ("Koloktos", "コロクトス"), "scaldera": ("Scaldera", "スカルデラ"), "the_imprisoned": ("The Imprisoned", "封印されし者"),
          "lizalfos_fire": ("Fire Breath Lizalfos", "火吹きリザルフォス"), "lizalfos_ice": ("Ice Breath Lizalfos", "雹吐きリザルフォス"), "lizalfos_elec": ("Shock Lizalfos", "シビレリザルフォス"),
          "keese_fire": ("Fire Keese", "ファイアキース"), "keese_ice": ("Ice Keese", "アイスキース"), "keese_elec": ("Electric Keese", "エレキース"),
          "octorok": ("Octorok", "オクタロック"), "wizzrobe": ("Wizzrobe", "ウィズローブ"), "blizzrobe": ("Blizzrobe", "フリーズウィズローブ"), "thunder_wizzrobe": ("Thunder Wizzrobe", "ボルトウィズローブ"),
@@ -844,7 +991,7 @@ def gen_data():
     d = os.path.join(RES, "data", MOD, "forge", "biome_modifier")
     os.makedirs(d, exist_ok=True)
     for f in os.listdir(d): os.remove(os.path.join(d, f))  # bosses (gleeok, phantom ganon, captain construct) are spawn-egg/command only
-    spawns = {"bokoblin": (40, 2, 4), "moblin": (20, 1, 2), "lizalfos": (25, 1, 3), "keese": (30, 2, 4), "hinox": (4, 1, 1), "talus": (8, 1, 1), "gibdo": (14, 1, 3), "horriblin": (14, 2, 3), "octorok": (12, 1, 2), "wizzrobe": (6, 1, 1), "blizzrobe": (3, 1, 1), "thunder_wizzrobe": (3, 1, 1), "lynel": (3, 1, 1), "chuchu": (30, 2, 4), "guardian": (3, 1, 1), "decayed_guardian": (4, 1, 1), "stalkoblin": (10, 2, 3), "stalmoblin": (5, 1, 2), "stalizalfos": (6, 1, 2), "yiga_footsoldier": (6, 1, 3), "yiga_blademaster": (2, 1, 1), "soldier_construct": (4, 1, 2), "frox": (2, 1, 1), "lizalfos_fire": (4, 1, 2), "lizalfos_ice": (4, 1, 2), "lizalfos_elec": (4, 1, 2), "keese_fire": (6, 2, 3), "keese_ice": (6, 2, 3), "keese_elec": (6, 2, 3)}
+    spawns = {"bokoblin": (40, 2, 4), "moblin": (20, 1, 2), "lizalfos": (25, 1, 3), "keese": (30, 2, 4), "hinox": (4, 1, 1), "talus": (8, 1, 1), "gibdo": (14, 1, 3), "horriblin": (14, 2, 3), "octorok": (12, 1, 2), "wizzrobe": (6, 1, 1), "blizzrobe": (3, 1, 1), "thunder_wizzrobe": (3, 1, 1), "lynel": (3, 1, 1), "chuchu": (30, 2, 4), "guardian": (3, 1, 1), "decayed_guardian": (4, 1, 1), "stalkoblin": (10, 2, 3), "stalmoblin": (5, 1, 2), "stalizalfos": (6, 1, 2), "yiga_footsoldier": (6, 1, 3), "yiga_blademaster": (2, 1, 1), "soldier_construct": (4, 1, 2), "frox": (2, 1, 1), "stalfos": (6, 1, 2), "dinolfos": (3, 1, 2), "aeralfos": (3, 1, 2), "armos": (2, 1, 1), "skulltula": (8, 1, 3), "deku_baba": (6, 1, 2), "cursed_bokoblin": (4, 1, 2), "lizalfos_fire": (4, 1, 2), "lizalfos_ice": (4, 1, 2), "lizalfos_elec": (4, 1, 2), "keese_fire": (6, 2, 3), "keese_ice": (6, 2, 3), "keese_elec": (6, 2, 3)}
     for sid, (wt, lo, hi) in spawns.items():
         json.dump({"type": "forge:add_spawns", "biomes": "#minecraft:is_overworld",
                    "spawners": {"type": f"{MOD}:{sid}", "weight": wt, "minCount": lo, "maxCount": hi}},
