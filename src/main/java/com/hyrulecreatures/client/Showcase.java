@@ -67,7 +67,7 @@ public class Showcase {
             default -> "{Rank:0}";
         };
         String y = id.equals("gleeok") || id.equals("wizzrobe") ? "~2" : "~";
-        return "execute as @a at @s run summon hyrulecreatures:" + id + " ~ " + y + " ~" + (id.equals("bokoblin") ? 9 : 16) + " " + nbt;
+        return "execute as @a at @s run summon hyrulecreatures:" + id + " ~ " + y + " ~" + (id.equals("bokoblin") ? 9 : id.startsWith("frog") ? 10 : 16) + " " + nbt;
     }
     /** -Pbeam: spawn a real Guardian on the integrated server and screenshot its lock-on / beam / explosion. */
     static void beamTick(Minecraft mc) {
