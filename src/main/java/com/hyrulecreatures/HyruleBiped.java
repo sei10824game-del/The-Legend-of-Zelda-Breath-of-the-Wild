@@ -95,8 +95,16 @@ public class HyruleBiped extends HyruleMob {
         });
     }
 
+    private boolean enraged;
     @Override public void aiStep() {
         super.aiStep();
+        if (!level().isClientSide && !enraged && getMaxHealth() >= 300 && getHealth() < getMaxHealth() * 0.5f) { // boss phase 2
+            enraged = true;
+            getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(getAttribute(Attributes.MOVEMENT_SPEED).getBaseValue() * 1.3);
+            getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(getAttribute(Attributes.ATTACK_DAMAGE).getBaseValue() * 1.25);
+            playSound(SoundEvents.ENDER_DRAGON_GROWL, 2f, 0.8f);
+            if (level() instanceof ServerLevel sl) sl.sendParticles(ParticleTypes.ANGRY_VILLAGER, getX(), getY() + getBbHeight(), getZ(), 20, 1, 0.5, 1, 0);
+        }
         if (!level().isClientSide && species.isStal() && headless() && tickCount % 20 == 0 && head() == null) setAux(aux() & ~1); // head lost: grow back
     }
 
@@ -264,6 +272,8 @@ public class HyruleBiped extends HyruleMob {
     }
 
     @Override public boolean hurt(net.minecraft.world.damagesource.DamageSource src, float a) {
+        if ((species == Species.SKULLTULA || species == Species.WALL_SKULLTULA) && !level().isClientSide && src.getEntity() != null // hard back: only the front takes damage
+                && getViewVector(1).dot(src.getEntity().position().subtract(position()).normalize()) < 0.2) { playSound(SoundEvents.ANVIL_LAND, 0.6f, 1.6f); return false; }
         if (species.isStal() && !level().isClientSide && !src.is(net.minecraft.tags.DamageTypeTags.BYPASSES_INVULNERABILITY)) {
             if (headless()) return false;          // headless body cannot be hurt: smash the skull
             if (a > 0 && src.getEntity() != null) { popHead(src); return true; }
@@ -293,7 +303,9 @@ public class HyruleBiped extends HyruleMob {
     @Override protected AttackKind chooseAttack() {
         ItemStack h = getMainHandItem(); LivingEntity t = getTarget();
         double d = t == null ? 0 : distanceTo(t);
-        if (areaUser() && d > 4 && d < 22 && random.nextFloat() < (species == Species.CALAMITY_GANON ? 0.03f : 0.02f)) return AttackKind.AREA;
+        if (areaUser() && d > 4 && d < 22 && random.nextFloat() < (species == Species.CALAMITY_GANON ? 0.03f : 0.02f) * (enraged ? 2.5f : 1f)) return AttackKind.AREA;
+        if ((species == Species.LIZALFOS || species == Species.DARK_LIZALFOS || species == Species.LIZALFOS_FIRE || species == Species.LIZALFOS_ICE || species == Species.LIZALFOS_ELEC) // tail sweep
+                && d <= reach() + 0.4 && getMainHandItem().isEmpty() && random.nextFloat() < 0.15f) return AttackKind.SPIN;
         if (pureBeamer()) return d > 5 ? AttackKind.BEAM : isLegged() && random.nextFloat() < 0.4f ? AttackKind.STOMP : null;
         if (longShooter() && !(h.getItem() instanceof HyruleBowItem) && d > 6 && d < 18 && random.nextFloat() < 0.06f) return AttackKind.SHOOT;
         if (species == Species.GUARDIAN_SCOUT_4 && d > 6 && random.nextFloat() < 0.02f) return AttackKind.BEAM;
