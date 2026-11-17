@@ -633,6 +633,12 @@ SPECIES["the_imprisoned"] = dict(hunch=0.2, parts=[
     P("rightArm", None, (-7, -2, -4, 9, 22, 9), (-15, 2, 0), c="skin2", f=["hand"]), P("leftArm", None, (-2, -2, -4, 9, 22, 9), (15, 2, 0), c="skin2", f=["hand"]),
     P("rightLeg", None, (-5, 0, -5, 10, 8, 10), (-6, 22, 0), c="skin2"), P("leftLeg", None, (-5, 0, -5, 10, 8, 10), (6, 22, 0), c="skin2")])
 
+SPECIES["tentalus"] = dict(hunch=0.0, parts=[
+    P("body", None, (-9, -9, -9, 18, 14, 18), (0, 12, 0), c="skin"),
+    P("head", None, (-7, -8, -7, 14, 9, 12), (0, 9, -2), c="skin2", f=["bigeye"]),
+    P("crest", "head", (-1, -11, -3, 2, 4, 6), (0, 0, 0), c="horn"),
+    P("spotL", "body", (4, -10, -3, 4, 1, 4), (0, 0, 0), c="horn"), P("spotR", "body", (-8, -10, -3, 4, 1, 4), (0, 0, 0), c="horn")]
+    + spider_legs(8, 12, 7, 0.8, 6, 6, math.pi / 8))
 def sp(**k): return pal(**k)
 PAL["stalfos"] = ranks5(pal("#dcd8c4", "#b8b49c", "#e8e4d0", "#6a4a3a", "#8a7a60", eye="#ff4020"))
 PAL["stalmaster"] = ranks5(pal("#d0ccb8", "#a8a490", "#e0dcc8", "#5a3a6a", "#a89060", eye="#ff4020"))
@@ -648,8 +654,9 @@ PAL["demise"] = ranks5(pal("#4a2a2a", "#2e1a1a", "#7a4a3a", "#2a2028", "#ff5a20"
 PAL["moldarach"] = ranks5(pal("#c8a060", "#a07a40", "#d8b878", "#000000", "#e8e0c0", eye="#ff4020"))
 PAL["koloktos"] = ranks5(pal("#8a7a50", "#6a5a38", "#a89868", "#000000", "#48d8e8", eye="#48d8e8"))
 PAL["scaldera"] = ranks5(pal("#5a3a2a", "#3a2418", "#7a5a3a", "#000000", "#ff6a10", eye="#ffcc20"))
+PAL["tentalus"] = ranks5(pal("#4a7a8a", "#345a68", "#8ab8c8", "#000000", "#e8e0a0", eye="#ff4a30"))
 PAL["the_imprisoned"] = ranks5(pal("#6a5a78", "#4a3a58", "#8a7a98", "#000000", "#e8e0d0", eye="#ff4a20"))
-for _k in ("stalfos", "stalmaster", "dinolfos", "aeralfos", "armos", "beamos", "skulltula", "deku_baba", "cursed_bokoblin", "ghirahim", "demise", "moldarach", "koloktos", "scaldera", "the_imprisoned"):
+for _k in ("stalfos", "stalmaster", "dinolfos", "aeralfos", "armos", "beamos", "skulltula", "deku_baba", "cursed_bokoblin", "ghirahim", "demise", "moldarach", "koloktos", "scaldera", "the_imprisoned", "tentalus"):
     for _p in PAL[_k]: _p.setdefault("nose", "#c4bca4"); _p.setdefault("bandage", "#ece8d8"); _p.setdefault("bone", _p["skin2"]); _p.setdefault("joint", _p["horn"])
 
 TEX = 128
@@ -902,7 +909,7 @@ NAMES = {"bokoblin": ("Bokoblin", "ボコブリン"), "moblin": ("Moblin", "モ�
          "stalfos": ("Stalfos", "スタルフォス"), "stalmaster": ("Stalmaster", "スタルマスター"), "dinolfos": ("Dinolfos", "ディノルフォス"), "aeralfos": ("Aeralfos", "エアロルフォス"),
          "armos": ("Armos", "アーモス"), "beamos": ("Beamos", "ビーモス"), "skulltula": ("Skulltula", "スタルチュラ"), "deku_baba": ("Deku Baba", "デクババ"),
          "cursed_bokoblin": ("Cursed Bokoblin", "呪われたボコブリン"), "ghirahim": ("Ghirahim", "ギラヒム"), "demise": ("Demise", "魔王"), "moldarach": ("Moldarach", "モルダラクネ"),
-         "koloktos": ("Koloktos", "コロクトス"), "scaldera": ("Scaldera", "スカルデラ"), "the_imprisoned": ("The Imprisoned", "封印されし者"),
+         "koloktos": ("Koloktos", "コロクトス"), "scaldera": ("Scaldera", "スカルデラ"), "the_imprisoned": ("The Imprisoned", "封印されし者"), "tentalus": ("Tentalus", "テンタラス"),
          "lizalfos_fire": ("Fire Breath Lizalfos", "火吹きリザルフォス"), "lizalfos_ice": ("Ice Breath Lizalfos", "雹吐きリザルフォス"), "lizalfos_elec": ("Shock Lizalfos", "シビレリザルフォス"),
          "keese_fire": ("Fire Keese", "ファイアキース"), "keese_ice": ("Ice Keese", "アイスキース"), "keese_elec": ("Electric Keese", "エレキース"),
          "octorok": ("Octorok", "オクタロック"), "wizzrobe": ("Wizzrobe", "ウィズローブ"), "blizzrobe": ("Blizzrobe", "フリーズウィズローブ"), "thunder_wizzrobe": ("Thunder Wizzrobe", "ボルトウィズローブ"),

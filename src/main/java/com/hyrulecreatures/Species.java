@@ -85,6 +85,7 @@ public enum Species {
     KOLOKTOS("koloktos", 1.8f, 5.0f, 700, 14, 0.22, 2.5, 4.2, 2.6f, AttackKind.SMASH, 0.3f, false, new String[][]{{"koloktos_sword"}, {"koloktos_sword"}, {"koloktos_sword"}, {"koloktos_sword"}, {"koloktos_sword"}}),
     SCALDERA("scaldera", 2.2f, 2.4f, 500, 12, 0.2, 2.0, 3.6, 2.2f, AttackKind.SMASH, 0f, false, new String[][]{{}, {}, {}, {}, {}}),
     THE_IMPRISONED("the_imprisoned", 2.6f, 6.0f, 2500, 25, 0.18, 3.5, 5.5, 3.5f, AttackKind.SMASH, 0.25f, false, new String[][]{{}, {}, {}, {}, {}}),
+    TENTALUS("tentalus", 2.6f, 2.6f, 800, 14, 0.2, 2.0, 4.0, 2.4f, AttackKind.SMASH, 0.2f, false, new String[][]{{}, {}, {}, {}, {}}),
     HORRIBLIN("horriblin", 0.6f, 1.7f, 30, 3, 0.3, 0.4, 1.9, 1.0f, AttackKind.SLASH, 0f, false, new String[][]{
         {"boko_club", "boko_spear"}, {"spiked_boko_club", "spiked_boko_spear"}, {"dragonbone_boko_club"}, {"dragonbone_boko_spear"}, {"dragonbone_boko_club"}});
 

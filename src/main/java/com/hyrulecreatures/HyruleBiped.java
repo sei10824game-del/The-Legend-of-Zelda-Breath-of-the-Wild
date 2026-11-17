@@ -103,7 +103,7 @@ public class HyruleBiped extends HyruleMob {
 
     // ---------------------------------------------------------------- guardians: 8 legs with own HP, beam
     public boolean isLegged() { return species == Species.GUARDIAN || species == Species.DECAYED_GUARDIAN || species == Species.CALAMITY_GANON; }
-    private boolean longShooter() { return switch (species) { case LYNEL, HINOX, TALUS, FROX, STALHINOX, AERALFOS, LIZALFOS_FIRE, LIZALFOS_ICE, LIZALFOS_ELEC, MASTER_KOHGA, FIREBLIGHT_GANON, WATERBLIGHT_GANON, WINDBLIGHT_GANON, THUNDERBLIGHT_GANON -> true; default -> false; }; }
+    private boolean longShooter() { return switch (species) { case LYNEL, HINOX, TALUS, FROX, STALHINOX, AERALFOS, SCALDERA, THE_IMPRISONED, DEMISE, KOLOKTOS, LIZALFOS_FIRE, LIZALFOS_ICE, LIZALFOS_ELEC, MASTER_KOHGA, FIREBLIGHT_GANON, WATERBLIGHT_GANON, WINDBLIGHT_GANON, THUNDERBLIGHT_GANON -> true; default -> false; }; }
     private boolean pureBeamer() { return switch (species) { case GUARDIAN, DECAYED_GUARDIAN, GUARDIAN_TURRET, GUARDIAN_SKYWATCHER, CALAMITY_GANON, BEAMOS -> true; default -> false; }; }
     private float[] legHp;
 
@@ -154,9 +154,9 @@ public class HyruleBiped extends HyruleMob {
     private boolean isBlight() { return switch (species) { case FIREBLIGHT_GANON, WATERBLIGHT_GANON, WINDBLIGHT_GANON, THUNDERBLIGHT_GANON -> true; default -> false; }; }
     /** element of the ground-targeted magic: 1 fire, 2 water, 3 lightning, 4 wind */
     private int areaElement() {
-        return switch (species) { case GHIRAHIM -> 4; case DEMISE -> 3; case BLIZZROBE -> 5; case THUNDER_WIZZROBE -> 3; case WATERBLIGHT_GANON -> 2; case THUNDERBLIGHT_GANON -> 3; case WINDBLIGHT_GANON -> 4; default -> 1; };
+        return switch (species) { case TENTALUS -> 2; case GHIRAHIM -> 4; case DEMISE -> 3; case BLIZZROBE -> 5; case THUNDER_WIZZROBE -> 3; case WATERBLIGHT_GANON -> 2; case THUNDERBLIGHT_GANON -> 3; case WINDBLIGHT_GANON -> 4; default -> 1; };
     }
-    private boolean areaUser() { return isBlight() || species == Species.GHIRAHIM || species == Species.DEMISE || species == Species.SCALDERA || species == Species.THE_IMPRISONED || species == Species.BLIZZROBE || species == Species.THUNDER_WIZZROBE || (species == Species.WIZZROBE && rank() == 3) || species == Species.CALAMITY_GANON || species == Species.MASTER_KOHGA; }
+    private boolean areaUser() { return isBlight() || species == Species.TENTALUS || species == Species.GHIRAHIM || species == Species.DEMISE || species == Species.SCALDERA || species == Species.THE_IMPRISONED || species == Species.BLIZZROBE || species == Species.THUNDER_WIZZROBE || (species == Species.WIZZROBE && rank() == 3) || species == Species.CALAMITY_GANON || species == Species.MASTER_KOHGA; }
 
     private void fireSea(Vec3 center, int r) {
         if (!level().getGameRules().getBoolean(net.minecraft.world.level.GameRules.RULE_MOBGRIEFING)) return;
@@ -324,7 +324,7 @@ public class HyruleBiped extends HyruleMob {
                 }
         } else {
             boolean boom = isBoomerang(h);
-            int ty = boom ? 4 : species == Species.FIREBLIGHT_GANON || species == Species.MASTER_KOHGA || species == Species.LIZALFOS_FIRE || species == Species.AERALFOS ? 1 : species == Species.LIZALFOS_ICE || species == Species.BLIZZROBE ? 2 : species == Species.THUNDER_WIZZROBE ? 3 : species == Species.LIZALFOS_ELEC ? 3 : species == Species.WATERBLIGHT_GANON ? 2 : species == Species.WINDBLIGHT_GANON || species == Species.THUNDERBLIGHT_GANON ? 3 : species == Species.OCTOROK || species == Species.HINOX || species == Species.STALHINOX || species == Species.TALUS || species == Species.FROX ? 0 :  new int[]{1, 2, 3, 1, 3}[rank()];
+            int ty = boom ? 4 : species == Species.FIREBLIGHT_GANON || species == Species.MASTER_KOHGA || species == Species.LIZALFOS_FIRE || species == Species.AERALFOS || species == Species.SCALDERA || species == Species.THE_IMPRISONED ? 1 : species == Species.DEMISE ? 3 : species == Species.KOLOKTOS ? 0 : species == Species.LIZALFOS_ICE || species == Species.BLIZZROBE ? 2 : species == Species.THUNDER_WIZZROBE ? 3 : species == Species.LIZALFOS_ELEC ? 3 : species == Species.WATERBLIGHT_GANON ? 2 : species == Species.WINDBLIGHT_GANON || species == Species.THUNDERBLIGHT_GANON ? 3 : species == Species.OCTOROK || species == Species.HINOX || species == Species.STALHINOX || species == Species.TALUS || species == Species.FROX ? 0 :  new int[]{1, 2, 3, 1, 3}[rank()];
             Shot s = new Shot(level(), this, ty, boom ? h.copy() : new ItemStack(ModRegistry.shotItem(ty)), dmg);
             s.shoot(dx, dy + h2 * (ty == 0 ? 0.05 : 0), dz, boom ? 1.1f : 1.2f, 1f);
             level().addFreshEntity(s);
@@ -378,11 +378,12 @@ public class HyruleBiped extends HyruleMob {
     @Override public boolean doHurtTarget(Entity t) {
         boolean ok = super.doHurtTarget(t);
         if (ok && t instanceof LivingEntity e) {
-            int el = switch (species) { case KEESE_FIRE -> 1; case KEESE_ICE -> 2; case KEESE_ELEC -> 3; case CHUCHU -> rank() >= 1 && rank() <= 3 ? rank() : 0; default -> 0; };
+            int el = switch (species) { case MOLDARACH -> 6; case KEESE_FIRE -> 1; case KEESE_ICE -> 2; case KEESE_ELEC -> 3; case CHUCHU -> rank() >= 1 && rank() <= 3 ? rank() : 0; default -> 0; };
             switch (el) {
                 case 1 -> e.setSecondsOnFire(4);
                 case 2 -> { e.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.MOVEMENT_SLOWDOWN, 100, 2)); e.setTicksFrozen(e.getTicksRequiredToFreeze() + 80); }
                 case 3 -> e.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.WEAKNESS, 100, 1));
+                case 6 -> e.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.POISON, 120, 1));
                 default -> {}
             }
         }
