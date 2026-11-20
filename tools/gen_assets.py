@@ -1036,6 +1036,60 @@ def gen_damage():
 def _sh(c, f): return tuple(max(0, min(255, int(v * f))) for v in c[:3])
 
 
+def special(sid, p, fname, dr, gd, fw, fh, palette, rng):
+    """bespoke decals for the flagship creatures."""
+    n = p["n"]; col = hexc(palette[p["c"]]); dk = _sh(col, 0.45) + (230,); lt = _sh(col, 1.4) + (220,)
+    if sid in ("bokoblin", "horriblin", "techno_bokoblin", "cursed_bokoblin", "stalkoblin"):
+        if n == "belly" and fname == "front":
+            dr.ellipse([fw // 2 - 3, fh // 2, fw // 2 + 3, fh // 2 + 5], fill=dk)  # navel
+            for k in range(5): dr.point((fw // 2 + rng.randrange(-8, 9), fh // 2 + rng.randrange(-8, 9)), fill=dk)
+        if n in ("wrapR", "wrapL"):
+            for k in range(0, fh, 5): dr.line([(0, k), (fw, k + 3)], fill=(150, 140, 120, 200), width=1)  # diagonal binding
+            dr.rectangle([fw // 2 - 2, 2, fw // 2 + 2, 6], fill=(120, 110, 95, 255))  # knot
+        if n in ("earL", "earR") and fname in ("front", "back"):
+            dr.ellipse([fw * 0.2, fh * 0.2, fw * 0.8, fh * 0.8], fill=_sh(col, 1.25) + (200,))
+        if n == "head" and fname == "front":
+            for k in (-1, 1): dr.line([(fw // 2 + k * 3, 3), (fw // 2 + k * 6, 8)], fill=dk)  # forehead wrinkles
+        if n == "horn":
+            for k in range(3, fh, 5): dr.line([(0, k), (fw, k - 1)], fill=dk)  # horn ridges
+    elif sid in ("moblin", "stalmoblin"):
+        if n in ("wrapR", "wrapL"):
+            for k in range(0, fw, 4): dr.line([(k, 0), (fw - k, fh)], fill=(150, 140, 120, 190)); dr.line([(fw - k, 0), (k, fh)], fill=(150, 140, 120, 190))  # cross binding
+        if n == "body" and fname == "front":
+            dr.line([(fw // 4, 4), (fw * 3 // 4, fh // 2)], fill=lt, width=1); dr.line([(fw // 4 + 1, 4), (fw * 3 // 4 + 1, fh // 2)], fill=dk)  # scar
+        if n == "snout" and fname == "front":
+            for k in range(3): dr.arc([2, 2 + k * 3, fw - 2, 6 + k * 3], 200, 340, fill=dk)  # snout wrinkles
+    elif sid in ("lizalfos", "dark_lizalfos", "lizalfos_fire", "lizalfos_ice", "lizalfos_elec", "stalizalfos"):
+        if n == "vest":
+            for _ in range(fw * fh // 40):
+                x, y = rng.randrange(fw), rng.randrange(fh); dr.ellipse([x, y, x + 3, y + 2], outline=dk)  # leopard rosettes
+        if n == "belly" and fname == "front":
+            for k in range(2, fh, 4): dr.line([(0, k), (fw, k)], fill=dk)  # belly plates
+        if n in ("head", "snout") and fname == "top":
+            for k in range(0, fw, 4): dr.line([(k, 0), (k + 1, fh)], fill=dk)  # head ridges
+    elif sid in ("lynel", "shadow_beast"):
+        if n in ("belly", "body") and fname == "front":
+            for k in range(0, fh, 6):
+                dr.rectangle([1, k, fw - 2, k + 4], outline=dk); dr.point((3, k + 2), fill=lt); dr.point((fw - 4, k + 2), fill=lt)  # armor plates
+        if n == "mane":
+            for k in range(0, fw, 2): dr.line([(k, 0), (k + rng.randrange(-1, 2), fh)], fill=(_sh(col, rng.choice((0.7, 1.3))) + (170,)))  # strands
+    elif sid in ("hinox", "stalhinox"):
+        if n == "brow":
+            for k in range(0, fw, 2): dr.line([(k, fh), (k + rng.randrange(-2, 3), 0)], fill=_sh(col, rng.choice((0.8, 1.1))) + (230,))  # bushy brow
+        if n == "vest" and fname in ("front", "back"):
+            dr.line([(0, fh - 3), (fw, fh - 3)], fill=(150, 125, 80, 255), width=2)
+            for k in range(3, fw, 8): dr.ellipse([k, fh - 5, k + 3, fh - 2], fill=(110, 90, 55, 255))  # rope knots
+        if n == "belly" and fname == "front":
+            for _ in range(fw * fh // 30): x, y = rng.randrange(fw), rng.randrange(fh); dr.line([(x, y), (x + 1, y + 2)], fill=dk)  # sparse hair
+    elif sid in ("guardian", "decayed_guardian", "guardian_turret", "guardian_skywatcher", "calamity_ganon"):
+        if n == "eyeCyl" and fname == "front":
+            cx, cy = fw // 2, fh // 2
+            for r_ in range(min(fw, fh) // 2, 1, -2): dr.ellipse([cx - r_, cy - r_, cx + r_, cy + r_], outline=_sh(hexc(palette["eye"]), 0.4 + r_ / 14) + (255,)); gd.ellipse([cx - r_, cy - r_, cx + r_, cy + r_], outline=hexc(palette["eye"]) + (200,))
+        if n in ("body", "shell2", "dome", "head") and fname in ("top", "front"):
+            for k in range(2, fw - 4, 7):  # runic glyphs
+                y = fh // 2 + rng.randrange(-3, 4); dr.rectangle([k, y, k + 2, y + 3], outline=hexc(palette["horn"]) + (220,)); gd.rectangle([k, y, k + 2, y + 3], outline=hexc(palette["horn"]) + (220,))
+
+
 def paint2x(img, glow, parts, sid, palette, seed):
     """hand-painted style details at 2x: shading, ambient occlusion, material strokes, painted faces."""
     rng = random.Random(seed); st = STYLE.get(sid, "skin")
@@ -1120,6 +1174,7 @@ def paint2x(img, glow, parts, sid, palette, seed):
             if fname == "front" and "nostrils" in p["f"] and fw >= 8:
                 for nx in (int(fw * 0.28), int(fw * 0.72)):
                     dr.ellipse([nx - 2, fh - 6, nx + 2, fh - 2], fill=_sh(col, 0.25) + (255,)); dr.arc([nx - 3, fh - 7, nx + 3, fh - 1], 200, 340, fill=_sh(col, 1.4) + (200,))
+            special(sid, p, fname, dr, gd, fw, fh, palette, rng)
             img.alpha_composite(tile, (fx, fy)); glow.alpha_composite(gtile, (fx, fy))
     px = img.load(); gp = glow.load()
     for x, y, c in saved: px[x, y] = c; gp[x, y] = c  # keep original emissive pixels crisp
