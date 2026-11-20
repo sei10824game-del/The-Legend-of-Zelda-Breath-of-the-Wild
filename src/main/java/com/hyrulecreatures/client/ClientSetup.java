@@ -13,6 +13,9 @@ public class ClientSetup {
 
     @SubscribeEvent
     public static void clientSetup(net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent e) {
+        e.enqueueWork(() -> ModRegistry.ITEMS.getEntries().stream().filter(r -> r.get() instanceof net.minecraft.world.item.ShieldItem).forEach(r ->
+            net.minecraft.client.renderer.item.ItemProperties.register(r.get(), new net.minecraft.resources.ResourceLocation("blocking"),
+                    (st, lv, en, seed) -> en != null && en.isUsingItem() && en.getUseItem() == st ? 1f : 0f)));
         e.enqueueWork(() -> ModRegistry.ITEMS.getEntries().stream().filter(r -> r.get() instanceof HyruleBowItem).forEach(r -> {
             net.minecraft.client.renderer.item.ItemProperties.register(r.get(), new net.minecraft.resources.ResourceLocation("pull"),
                     (st, lv, en, seed) -> en == null || en.getUseItem() != st ? 0f : (st.getUseDuration() - en.getUseItemRemainingTicks()) / 20f);

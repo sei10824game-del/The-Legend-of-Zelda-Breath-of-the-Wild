@@ -875,6 +875,11 @@ def paint_box(img, p, col, rng, palette):
                     px[ex, ey + 1] = (20, 10, 10, 255); px[ex + 1, ey + 1] = (20, 10, 10, 255)
                 for ex in (fx, fx + 1, fx + fw - 3, fx + fw - 2):  # angry brow
                     px[ex, ey - 1] = shade(col, 0.45) + (255,)
+            if "eyes" in feat and fw >= 7 and fh >= 7: # mouth line with teeth
+                my = fy + fh - 2
+                for mx in range(fx + 2, fx + fw - 2):
+                    px[mx, my] = shade(col, 0.35) + (255,)
+                    if (mx - fx) % 2 == 0: px[mx, my - 1] = (236, 232, 218, 255)
             if "bigeye" in feat:
                 cx, cy = fx + fw // 2, fy + fh // 2
                 for i in range(-2, 2):
@@ -1244,6 +1249,14 @@ def gen_weapons():
                 {"predicate": {"pulling": 1}, "model": f"{MOD}:item/{i}_pulling_0"},
                 {"predicate": {"pulling": 1, "pull": 0.65}, "model": f"{MOD}:item/{i}_pulling_1"},
                 {"predicate": {"pulling": 1, "pull": 0.9}, "model": f"{MOD}:item/{i}_pulling_2"}]}, open(f"{A}/models/item/{i}.json", "w"))
+        elif kind == "shield":
+            tex = {"layer0": f"{MOD}:item/{i}"}
+            json.dump({"parent": "minecraft:item/handheld", "textures": tex, "display": {"thirdperson_righthand": {"rotation": [0, 90, 0], "translation": [0, 2, -3], "scale": [1.1, 1.1, 1.1]}, "thirdperson_lefthand": {"rotation": [0, 90, 0], "translation": [0, 2, -3], "scale": [1.1, 1.1, 1.1]}},
+                       "overrides": [{"predicate": {"blocking": 1}, "model": f"{MOD}:item/{i}_blocking"}]}, open(f"{A}/models/item/{i}.json", "w"))
+            json.dump({"parent": "minecraft:item/handheld", "textures": tex, "display": {
+                "firstperson_righthand": {"rotation": [0, 90, -15], "translation": [-3, 4, 2], "scale": [1.5, 1.5, 1.5]}, "firstperson_lefthand": {"rotation": [0, 90, -15], "translation": [-3, 4, 2], "scale": [1.5, 1.5, 1.5]},
+                "thirdperson_righthand": {"rotation": [0, 0, 0], "translation": [0, 3, -4], "scale": [1.3, 1.3, 1.3]}, "thirdperson_lefthand": {"rotation": [0, 0, 0], "translation": [0, 3, -4], "scale": [1.3, 1.3, 1.3]}}},
+                      open(f"{A}/models/item/{i}_blocking.json", "w"))
         else:
             json.dump({"parent": "minecraft:item/handheld", "textures": {"layer0": f"{MOD}:item/{i}"}}, open(f"{A}/models/item/{i}.json", "w"))
         wj.append(dict(id=i, kind=kind, dmg=dmg, dur=dur))
