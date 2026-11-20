@@ -95,6 +95,11 @@ public class Showcase {
         ClientLevel lv = mc.level;
         tick++;
         mc.options.hideGui = true;
+        if (tick == 20 && mc.getSingleplayerServer() != null) mc.getSingleplayerServer().execute(() -> {
+            var srv = mc.getSingleplayerServer(); var src = srv.createCommandSourceStack().withSuppressedOutput();
+            for (String c : new String[]{"gamerule doMobSpawning false", "time set day", "effect give @a minecraft:resistance 99999 255 true", "kill @e[type=!player]"})
+                srv.getCommands().performPrefixedCommand(src, c);
+        });
         if (tick < 120) return;
         if (phase == 0) { // set up next shot
             if (cur != null) cur.discard();

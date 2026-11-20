@@ -99,6 +99,30 @@ public enum Species {
     DON_KILLER("don_killer", 0.8f, 2.4f, 400, 11, 0.28, 1.0, 2.8, 1.4f, AttackKind.SLASH, 0f, false, new String[][]{{"don_cutlass"}, {"don_cutlass"}, {"don_cutlass"}, {"don_cutlass"}, {"don_cutlass"}}),
     GUMARM("gumarm", 2.0f, 1.2f, 300, 12, 0.2, 2.0, 3.6, 2.0f, AttackKind.SMASH, 0f, false, new String[][]{{}, {}, {}, {}, {}}),
     PARASPALAS("paraspalas", 2.0f, 2.4f, 900, 12, 0.22, 1.5, 16, 2.2f, AttackKind.SHOOT, 0f, true, new String[][]{{}, {}, {}, {}, {}}),
+    BULBLIN("bulblin", 0.7f, 2.0f, 40, 5, 0.28, 0.6, 2.2, 1.2f, AttackKind.SLASH, 0f, false, new String[][]{{"bulblin_club", "bulblin_spear", "bulblin_bow"}, {"bulblin_club", "bulblin_spear", "bulblin_bow"}, {"bulblin_club", "bulblin_spear", "bulblin_bow"}, {"bulblin_club", "bulblin_spear", "bulblin_bow"}, {"bulblin_club", "bulblin_spear", "bulblin_bow"}}),
+    KING_BULBLIN("king_bulblin", 1.3f, 3.8f, 500, 14, 0.24, 2.5, 3.6, 2.1f, AttackKind.SMASH, 0.25f, false, new String[][]{{"king_bulblin_club"}, {"king_bulblin_club"}, {"king_bulblin_club"}, {"king_bulblin_club"}, {"king_bulblin_club"}}),
+    STALHOUND("stalhound", 0.9f, 1.2f, 30, 5, 0.42, 0.5, 1.8, 1.0f, AttackKind.SLASH, 0f, false, new String[][]{{}, {}, {}, {}, {}}),
+    SHADOW_BEAST("shadow_beast", 1.2f, 1.6f, 120, 9, 0.4, 1.2, 2.4, 1.5f, AttackKind.SLASH, 0f, false, new String[][]{{}, {}, {}, {}, {}}),
+    REDEAD("redead", 0.6f, 1.8f, 50, 3, 0.2, 0.2, 1.8, 1.0f, AttackKind.SLASH, 0f, false, new String[][]{{}, {}, {}, {}, {}}),
+    POE("poe", 0.6f, 1.6f, 30, 4, 0.2, 0.1, 14, 1.0f, AttackKind.SHOOT, 0f, true, new String[][]{{}, {}, {}, {}, {}}),
+    TEKTITE("tektite", 0.8f, 0.8f, 24, 4, 0.3, 0.3, 1.6, 1.1f, AttackKind.SLASH, 0f, false, new String[][]{{}, {}, {}, {}, {}}),
+    PEAHAT("peahat", 0.8f, 1.0f, 30, 5, 0.35, 0.3, 1.6, 1.1f, AttackKind.BITE, 0f, true, new String[][]{{}, {}, {}, {}, {}}),
+    BUBBLE_FIRE("bubble_fire", 0.6f, 0.6f, 10, 3, 0.4, 0.1, 1.4, 1.0f, AttackKind.BITE, 0f, true, new String[][]{{}, {}, {}, {}, {}}),
+    BUBBLE_ICE("bubble_ice", 0.6f, 0.6f, 10, 3, 0.4, 0.1, 1.4, 1.0f, AttackKind.BITE, 0f, true, new String[][]{{}, {}, {}, {}, {}}),
+    BUBBLE_DARK("bubble_dark", 0.6f, 0.6f, 10, 3, 0.4, 0.1, 1.4, 1.0f, AttackKind.BITE, 0f, true, new String[][]{{}, {}, {}, {}, {}}),
+    DODONGO("dodongo", 1.8f, 1.8f, 300, 12, 0.24, 2.0, 3.2, 2.0f, AttackKind.SMASH, 0f, false, new String[][]{{}, {}, {}, {}, {}}),
+    HELMASAUR("helmasaur", 1.2f, 0.9f, 120, 8, 0.28, 1.0, 2.0, 1.5f, AttackKind.SMASH, 0f, false, new String[][]{{}, {}, {}, {}, {}}),
+    DARK_NUT("dark_nut", 0.9f, 2.4f, 250, 12, 0.24, 2.0, 3.0, 1.4f, AttackKind.SMASH, 0.2f, false, new String[][]{{"dark_nut_sword"}, {"dark_nut_sword"}, {"dark_nut_sword"}, {"dark_nut_sword"}, {"dark_nut_sword"}}),
+    DEATH_SWORD("death_sword", 1.0f, 3.4f, 700, 16, 0.3, 2.0, 4.0, 2.0f, AttackKind.SMASH, 0.3f, true, new String[][]{{"death_sword_blade"}, {"death_sword_blade"}, {"death_sword_blade"}, {"death_sword_blade"}, {"death_sword_blade"}}),
+    ZANT("zant", 0.7f, 2.2f, 700, 12, 0.34, 1.0, 2.8, 1.3f, AttackKind.SLASH, 0f, true, new String[][]{{"zant_sword"}, {"zant_sword"}, {"zant_sword"}, {"zant_sword"}, {"zant_sword"}}),
+    GANONDORF("ganondorf", 1.2f, 3.4f, 1200, 20, 0.28, 3.0, 4.2, 2.2f, AttackKind.SMASH, 0.25f, false, new String[][]{{"ganon_sword"}, {"ganon_sword"}, {"ganon_sword"}, {"ganon_sword"}, {"ganon_sword"}}),
+    DIABABA("diababa", 2.0f, 3.6f, 600, 12, 0.14, 1.5, 16, 1.8f, AttackKind.SHOOT, 0f, false, new String[][]{{}, {}, {}, {}, {}}),
+    ARGOROK("argorok", 2.4f, 3.0f, 1500, 16, 0.3, 2.5, 16, 2.6f, AttackKind.SHOOT, 0f, true, new String[][]{{}, {}, {}, {}, {}}),
+    FYRUS("fyrus", 1.4f, 4.0f, 1000, 18, 0.22, 2.5, 4.0, 2.2f, AttackKind.SMASH, 0.2f, false, new String[][]{{"fyrus_blade"}, {"fyrus_blade"}, {"fyrus_blade"}, {"fyrus_blade"}, {"fyrus_blade"}}),
+    ARMOGOHMA("armogohma", 2.2f, 2.4f, 900, 14, 0.22, 2.0, 16, 2.0f, AttackKind.SHOOT, 0f, false, new String[][]{{}, {}, {}, {}, {}}),
+    AERALFOS("aeralfos", 0.7f, 1.8f, 70, 6, 0.3, 0.5, 2.2, 1.2f, AttackKind.SLASH, 0f, true, new String[][]{{"aeralfos_spear"}, {"aeralfos_spear"}, {"aeralfos_spear"}, {"aeralfos_spear"}, {"aeralfos_spear"}}),
+    DINOLFOS("dinolfos", 0.7f, 2.0f, 80, 6, 0.34, 0.8, 2.2, 1.2f, AttackKind.SLASH, 0f, false, new String[][]{{"dinolfos_sword"}, {"dinolfos_sword"}, {"dinolfos_sword"}, {"dinolfos_sword"}, {"dinolfos_sword"}}),
+    KARGAROK("kargarok", 1.0f, 0.8f, 40, 5, 0.4, 0.3, 1.8, 1.4f, AttackKind.BITE, 0f, true, new String[][]{{}, {}, {}, {}, {}}),
     HORRIBLIN("horriblin", 0.6f, 1.7f, 30, 3, 0.3, 0.4, 1.9, 1.0f, AttackKind.SLASH, 0f, false, new String[][]{
         {"boko_club", "boko_spear"}, {"spiked_boko_club", "spiked_boko_spear"}, {"dragonbone_boko_club"}, {"dragonbone_boko_spear"}, {"dragonbone_boko_club"}});
 
@@ -117,7 +141,7 @@ public enum Species {
 
     public boolean isStal() { return this == STALKOBLIN || this == STALMOBLIN || this == STALIZALFOS; }
     public boolean teleports() {
-        return switch (this) { case GHIRAHIM, WIZZROBE, BLIZZROBE, THUNDER_WIZZROBE, FIREBLIGHT_GANON, WATERBLIGHT_GANON, WINDBLIGHT_GANON, THUNDERBLIGHT_GANON, PHANTOM_GANON, MASTER_KOHGA, YIGA_FOOTSOLDIER, YIGA_BLADEMASTER -> true; default -> false; };
+        return switch (this) { case ZANT, GHIRAHIM, WIZZROBE, BLIZZROBE, THUNDER_WIZZROBE, FIREBLIGHT_GANON, WATERBLIGHT_GANON, WINDBLIGHT_GANON, THUNDERBLIGHT_GANON, PHANTOM_GANON, MASTER_KOHGA, YIGA_FOOTSOLDIER, YIGA_BLADEMASTER -> true; default -> false; };
     }
 
     public static final String[] RANKS = {"red", "blue", "black", "silver", "gold"};
