@@ -1081,7 +1081,44 @@ def special(sid, p, fname, dr, gd, fw, fh, palette, rng):
             for k in range(3, fw, 8): dr.ellipse([k, fh - 5, k + 3, fh - 2], fill=(110, 90, 55, 255))  # rope knots
         if n == "belly" and fname == "front":
             for _ in range(fw * fh // 30): x, y = rng.randrange(fw), rng.randrange(fh); dr.line([(x, y), (x + 1, y + 2)], fill=dk)  # sparse hair
-    elif sid in ("guardian", "decayed_guardian", "guardian_turret", "guardian_skywatcher", "calamity_ganon"):
+    elif sid in ("talus", "frox", "stalhinox"):
+        if sid != "stalhinox" and n in ("body", "rock1", "rightArm", "leftArm"):
+            for _ in range(fw * fh // 60):  # lichen + quartz flecks
+                x, y = rng.randrange(fw), rng.randrange(fh); dr.ellipse([x, y, x + 2, y + 1], fill=(210, 205, 190, 200) if rng.random() < 0.5 else (95, 130, 70, 160))
+    elif sid in ("gibdo", "redead", "stalfos", "stalmaster", "death_sword"):
+        if n in ("body", "ribs") and fname == "front":
+            for k in range(2, fh - 2, 4): dr.arc([1, k, fw - 1, k + 6], 0, 180, fill=dk)  # rib arcs
+        if n == "head" and fname == "front":
+            dr.polygon([(fw // 2, fh // 2 + 1), (fw // 2 - 2, fh // 2 + 5), (fw // 2 + 2, fh // 2 + 5)], fill=dk)  # nose cavity
+        if sid in ("gibdo", "redead") and n in ("wrap", "wrap2", "body"):
+            for k in range(0, fh, 4): dr.line([(0, k), (fw, k + 2)], fill=(120, 110, 90, 220))  # mummy wraps
+    elif sid in ("wizzrobe", "blizzrobe", "thunder_wizzrobe", "zant", "ghirahim"):
+        if n in ("body", "hem", "robe") and fname in ("front", "back"):
+            dr.line([(fw // 2, 0), (fw // 2, fh)], fill=hexc(palette["hair"]) + (230,), width=2)  # center trim
+            for k in range(2, fh, 6): dr.line([(fw // 2 - 3, k), (fw // 2 + 3, k)], fill=lt)
+        if n in ("cone", "hood", "helm") and fname == "front":
+            dr.arc([2, fh // 3, fw - 2, fh + fh // 3], 180, 360, fill=dk)
+    elif sid in ("keese", "keese_fire", "keese_ice", "keese_elec", "keese_dark", "kargarok"):
+        if n.startswith("wing"):
+            for k in range(2, fw, 5): dr.line([(k, 0), (k + 3, fh)], fill=dk)  # wing veins
+            dr.rectangle([0, 0, fw - 1, 1], fill=lt)
+    elif sid in ("chuchu",):
+        if n == "body":
+            for _ in range(fw * fh // 40): x, y = rng.randrange(fw), rng.randrange(fh); dr.ellipse([x, y, x + 2, y + 2], fill=(255, 255, 255, 90))  # bubbles
+    elif sid in ("fireblight_ganon", "waterblight_ganon", "windblight_ganon", "thunderblight_ganon", "calamity_ganon", "ganondorf", "demise", "phantom_ganon"):
+        if n in ("body", "robe", "cape") and fname in ("front", "back"):
+            for k in range(3, fw - 3, 5):  # glowing vein cracks
+                y = rng.randrange(fh // 2); pts = [(k, y)]
+                for _ in range(4): pts.append((pts[-1][0] + rng.randrange(-2, 3), pts[-1][1] + rng.randrange(2, 5)))
+                dr.line(pts, fill=hexc(palette["horn"]) + (220,)); gd.line(pts, fill=hexc(palette["horn"]) + (220,))
+    elif sid in ("soldier_construct", "captain_construct", "armos", "koloktos", "dark_nut", "fyrus"):
+        if n in ("body", "chest", "core"):
+            dr.rectangle([fw // 2 - 3, fh // 2 - 3, fw // 2 + 3, fh // 2 + 3], outline=hexc(palette["horn"]) + (255,)); gd.rectangle([fw // 2 - 3, fh // 2 - 3, fw // 2 + 3, fh // 2 + 3], outline=hexc(palette["horn"]) + (255,))
+            dr.line([(fw // 2, 0), (fw // 2, fh)], fill=dk)  # chest seam
+    elif sid in ("octorok", "tentalus", "peahat", "deku_baba", "quadro_baba", "skulltula", "wall_skulltula", "tektite"):
+        if n == "body" and fname in ("top", "front"):
+            for _ in range(fw * fh // 50): x, y = rng.randrange(fw), rng.randrange(fh); dr.ellipse([x, y, x + 3, y + 3], outline=dk)  # warts / spots
+    elif sid in ("guardian", "decayed_guardian", "guardian_turret", "guardian_skywatcher"):
         if n == "eyeCyl" and fname == "front":
             cx, cy = fw // 2, fh // 2
             for r_ in range(min(fw, fh) // 2, 1, -2): dr.ellipse([cx - r_, cy - r_, cx + r_, cy + r_], outline=_sh(hexc(palette["eye"]), 0.4 + r_ / 14) + (255,)); gd.ellipse([cx - r_, cy - r_, cx + r_, cy + r_], outline=hexc(palette["eye"]) + (200,))
