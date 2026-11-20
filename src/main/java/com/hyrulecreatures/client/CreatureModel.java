@@ -16,11 +16,11 @@ import net.minecraft.world.item.Items;
 public class CreatureModel extends EntityModel<HyruleBiped> implements ArmedModel {
     private final ModelPart root;
     private final Map<String, ModelPart> p = new HashMap<>();
-    private final float hunch, hipY;
+    private final float hunch, hipY, splay, crouch;
     private final Map<String, Integer> minRank;
 
     public CreatureModel(ModelPart root, Spec spec) {
-        this.root = root; this.hunch = spec.hunch; this.hipY = spec.hipY(); this.minRank = spec.minRanks();
+        this.root = root; this.hunch = spec.hunch; this.splay = spec.splay; this.crouch = spec.crouch; this.hipY = spec.hipY(); this.minRank = spec.minRanks();
         for (String n : spec.names()) {
             String par = spec.parentOf(n);
             p.put(n, (par == null ? root : p.get(par)).getChild(n));
@@ -122,6 +122,7 @@ public class CreatureModel extends EntityModel<HyruleBiped> implements ArmedMode
             add("rightArm", (armed ? -.9f : -.15f) + Mth.cos(c + Mth.PI) * .8f * amt + Mth.sin(age * .09f) * .05f, 0, .1f);
             add("leftArm", (armed ? -.4f : -.15f) + Mth.cos(c) * 1.0f * amt - Mth.sin(age * .09f) * .05f, 0, -.1f);
             dip += Math.abs(Mth.sin(c)) * 1.2f * amt + Mth.sin(age * .1f) * .3f; // plodding bob
+            add("rightArm", 0, 0, splay); add("leftArm", 0, 0, -splay); dip += crouch;
             float g = Mth.cos(c) * amt, g2 = Mth.cos(c + Mth.PI) * amt;
             add("frontLeftLeg", g, 0, 0); add("backRightLeg", g, 0, 0); add("frontRightLeg", g2, 0, 0); add("backLeftLeg", g2, 0, 0);
             if (e.species == Species.CHUCHU) body.y -= Math.abs(Mth.sin(limb * .4f)) * 3 * amt;

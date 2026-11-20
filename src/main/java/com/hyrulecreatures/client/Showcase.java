@@ -40,6 +40,7 @@ public class Showcase {
         for (Species s : Species.values()) {
             if (s == B) continue;
             SHOTS.add(new Shot(s.id + "_idle", s, 0, null, null, null, 0, 0, false, 0));
+            if (!s.id.equals("lynel") && !s.id.equals("moblin") && !s.id.equals("hinox") && !s.id.equals("lizalfos") && !s.id.equals("octorok") && !s.id.equals("talus")) SHOTS.add(new Shot(s.id + "_side", s, 0, null, null, null, 0, 0, false, 0));
             AttackKind k = s.attack == AttackKind.SHOOT ? AttackKind.SHOOT : s == Species.GUARDIAN ? AttackKind.BEAM : s.attack;
             SHOTS.add(new Shot(s.id + "_atk", s, 0, null, null, k, k.hits[0], 0, false, 0));
         }

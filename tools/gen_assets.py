@@ -47,19 +47,23 @@ def spider_legs(n, attach_y, radius, th, l1, l2, off=0.0):
 
 
 def guardian_parts(legs=True):
-    """BotW Guardian Stalker: flat copper shell, turret head with big eye, 8 long bone-coloured legs."""
+    """BotW Guardian Stalker (compendium photo): wide flat copper shell, small turret head, thick bone-white legs splayed low."""
     parts = [
-        P("body", None, (-9, -3, -9, 18, 7, 18), (0, 8, 0), f=["circuit"]),
-        P("shell2", "body", (-7, -6, -7, 14, 3, 14), (0, 0, 0), c="skin2", f=["circuit"]),
-        P("rim", "body", (-9.5, 3, -9.5, 19, 1, 19), (0, 0, 0), c="horn"),
-        P("head", "body", (-5, -8, -5, 10, 8, 10), (0, -3, -2), c="skin", f=["circuit"]),
-        P("cap", "head", (-3, -3, -3, 6, 3, 6), (0, -8, 0), c="skin2"),
-        P("crest", "head", (-1, -5, -2, 2, 2, 4), (0, -8, 0), c="horn"),
-        P("eyeCyl", "head", (-3, -6, -8, 6, 5, 3), (0, 0, 0), c="skin2", f=["bigeye"]),
-        P("eyeRing", "head", (-4, -7, -6, 8, 7, 1), (0, 0, 0), c="horn"),
+        P("body", None, (-12, -3, -12, 24, 7, 24), (0, 9, 0), f=["circuit"]),
+        P("shell2", "body", (-9, -5, -9, 18, 2, 18), (0, 0, 0), c="skin2", f=["circuit"]),
+        P("rim", "body", (-12.5, 3, -12.5, 25, 1, 25), (0, 0, 0), c="horn"),
+        P("lobeL", "body", (9, -4, -5, 3, 4, 10), (0, 0, 0), c="skin2"), P("lobeR", "body", (-12, -4, -5, 3, 4, 10), (0, 0, 0), c="skin2"),
+        P("head", "body", (-4, -7, -4, 8, 7, 8), (0, -5, -3), c="skin", f=["circuit"]),
+        P("cap", "head", (-3, -3, -3, 6, 3, 6), (0, -7, 0), c="skin2"),
+        P("crest", "head", (-1, -5, -2, 2, 2, 4), (0, -7, 0), c="horn"),
+        P("eyeCyl", "head", (-3, -6, -7, 6, 5, 3), (0, 0, 0), c="skin2", f=["bigeye"]),
+        P("eyeRing", "head", (-4, -7, -5, 8, 7, 1), (0, 0, 0), c="horn"),
     ]
     if legs:
-        parts += spider_legs(8, 10, 8, 1.0, 9, 9, math.pi / 8)
+        for i in range(8):
+            a_ = i * math.pi / 4 + math.pi / 8; dx, dz = round(math.cos(a_), 3), round(math.sin(a_), 3); th = 1.2
+            parts.append(P(f"leg{i}", None, (-2, 0, -2, 4, 9, 4), (dx * 11, 12, dz * 11), (th * dz, 0, -th * dx), c="bone"))
+            parts.append(P(f"leg{i}b", f"leg{i}", (-1.5, 0, -1.5, 3, 9, 3), (0, 9, 0), (-th * dz * 0.9, 0, th * dx * 0.9), c="joint"))
     return parts
 
 
@@ -238,6 +242,45 @@ PAL = {
               pal("#e0b83a", "#b8912a", "#f8e8a0", "#000000", "#fff2c0", wing="#ffe27a", eye="#ff3030")],
 }
 
+def setp(sid, name, box=None, pose=None, rot=None):
+    for q in SPECIES[sid]["parts"]:
+        if q["n"] == name:
+            if box: q["box"] = list(box)
+            if pose: q["pose"] = list(pose)
+            if rot: q["rot"] = list(rot)
+# --- shape corrections from compendium photo comparison ---
+SPECIES["bokoblin"].update(hunch=0.7, splay=0.45, crouch=3)
+setp("bokoblin", "head", pose=(0, 4, -3.5)); setp("bokoblin", "rightArm", pose=(-8, 5, 0)); setp("bokoblin", "leftArm", pose=(8, 5, 0))
+SPECIES["moblin"].update(hunch=0.75, splay=0.1, crouch=1)
+setp("moblin", "head", pose=(0, 2, -4)); setp("moblin", "rightArm", box=(-4, -2, -2.5, 5, 20, 5)); setp("moblin", "leftArm", box=(-1, -2, -2.5, 5, 20, 5))
+setp("moblin", "hornL", box=(0, -10, -1, 2, 10, 2), rot=(-0.8, 0, -0.35)); setp("moblin", "hornR", box=(-2, -10, -1, 2, 10, 2), rot=(-0.8, 0, 0.35))
+SPECIES["lizalfos"].update(hunch=0.8, splay=0.12, crouch=1)
+setp("lizalfos", "rightArm", box=(-3, -2, -2, 4, 16, 4)); setp("lizalfos", "leftArm", box=(-1, -2, -2, 4, 16, 4))
+SPECIES["hinox"].update(hunch=0.55, splay=0.2, crouch=2)
+setp("hinox", "body", box=(-9, 0, -7, 18, 14, 14)); setp("hinox", "head", pose=(0, 5, -4)); setp("hinox", "rightArm", box=(-6, -2, -3, 7, 21, 7)); setp("hinox", "leftArm", box=(-1, -2, -3, 7, 21, 7))
+SPECIES["lynel"].update(hunch=0.15)
+setp("lynel", "body", box=(-7, -15, -5, 14, 15, 10)); setp("lynel", "belly", box=(-5, -10, -6, 10, 12, 1)); setp("lynel", "head", box=(-5, -9, -5, 10, 9, 10), pose=(0, -9, -3))
+setp("lynel", "rightArm", box=(-5, -2, -3, 6, 15, 6), pose=(-9.5, -6, -2)); setp("lynel", "leftArm", box=(-1, -2, -3, 6, 15, 6), pose=(9.5, -6, -2))
+SPECIES["wizzrobe"].update(hunch=0.0)
+setp("wizzrobe", "body", box=(-6, 0, -4, 12, 14, 8)); setp("wizzrobe", "hem", box=(-8, 12, -5, 16, 3, 10)); setp("wizzrobe", "head", box=(-5, -8, -5, 10, 8, 10))
+setp("wizzrobe", "rightArm", box=(-3, -2, -3, 6, 12, 6), pose=(-9, 10, 0)); setp("wizzrobe", "leftArm", box=(-3, -2, -3, 6, 12, 6), pose=(9, 10, 0))
+SPECIES["octorok"]["parts"] = [
+    P("body", None, (-8, 0, -8, 16, 14, 16), (0, 8, 0), f=["eyes"]),
+    P("balloon", "body", (-6, -7, -6, 12, 7, 12), (0, 0, 0), c="skin2"), P("knob", "body", (-1.5, -10, -1.5, 3, 3, 3), (0, 0, 0), c="horn"),
+    P("snout", "body", (-2.5, 6, -15, 5, 5, 8), (0, 0, 0), c="skin2", f=["nostrils"]), P("lip", "body", (-3.5, 5, -16, 7, 7, 2), (0, 0, 0), c="belly"),
+    P("rightLeg", None, (-2, 0, -2, 4, 3, 4), (-5, 21, -1), c="skin2"), P("leftLeg", None, (-2, 0, -2, 4, 3, 4), (5, 21, -1), c="skin2"),
+    P("legB1", None, (-2, 0, -2, 4, 3, 4), (-5, 21, 4), c="skin2"), P("legB2", None, (-2, 0, -2, 4, 3, 4), (5, 21, 4), c="skin2")]
+SPECIES["talus"]["parts"] = [
+    P("body", None, (-11, 0, -8, 22, 10, 16), (0, 10, 0), c="skin2"),
+    P("rock1", "body", (-8, -6, -6, 16, 6, 12), (0, 0, 0), c="skin"), P("rock2", "body", (2, -9, -3, 7, 4, 6), (0, 0, 0), c="skin2"),
+    P("ore", "body", (-2, -11, 1, 4, 6, 4), (-2, 0, 2), c="horn"), P("ore2", "body", (-1, 6, 7, 3, 5, 3), (3, 0, 0), c="horn"),
+    P("head", None, (-2, -2, -2, 4, 4, 4), (0, 12, -7), c="skin"),
+    P("rightArm", None, (-5, -2, -4, 8, 12, 8), (-14, 10, 0), c="skin", f=["hand"]), P("leftArm", None, (-3, -2, -4, 8, 12, 8), (14, 10, 0), c="skin", f=["hand"]),
+    P("rightLeg", None, (-4, 0, -4, 8, 6, 8), (-9, 18, -4), c="skin2"), P("leftLeg", None, (-4, 0, -4, 8, 6, 8), (9, 18, -4), c="skin2")]
+SPECIES["talus"].update(hunch=0.0, splay=0.5)
+setp("keese", "body", box=(-3.5, -3.5, -3.5, 7, 7, 7), pose=(0, 18, 0)); setp("keese", "wingL", box=(0, -0.5, -6, 22, 1, 13)); setp("keese", "wingR", box=(-22, -0.5, -6, 22, 1, 13))
+setp("keese", "earL", box=(0, -5, -0.5, 3, 5, 1)); setp("keese", "earR", box=(-3, -5, -0.5, 3, 5, 1))
+setp("chuchu", "body", box=(-8, 0, -8, 16, 7, 16), pose=(0, 17, 0)); setp("chuchu", "eyeL", box=(-2.5, -5, -2.5, 5, 5, 5), pose=(3.5, 0, -4)); setp("chuchu", "eyeR", box=(-2.5, -5, -2.5, 5, 5, 5), pose=(-3.5, 0, -4))
 import copy
 _h = copy.deepcopy(SPECIES["bokoblin"]); _h["hunch"] = 0.7
 _h["parts"] = [q for q in _h["parts"] if q["n"] not in ("horn", "jaw", "wrapR", "wrapL", "belly")] + [
@@ -1115,6 +1158,11 @@ def special(sid, p, fname, dr, gd, fw, fh, palette, rng):
         if n in ("body", "chest", "core"):
             dr.rectangle([fw // 2 - 3, fh // 2 - 3, fw // 2 + 3, fh // 2 + 3], outline=hexc(palette["horn"]) + (255,)); gd.rectangle([fw // 2 - 3, fh // 2 - 3, fw // 2 + 3, fh // 2 + 3], outline=hexc(palette["horn"]) + (255,))
             dr.line([(fw // 2, 0), (fw // 2, fh)], fill=dk)  # chest seam
+    elif sid == "chuchu" and n in ("eyeL", "eyeR") and fname == "front":
+        cx, cy = fw // 2, fh // 2; r_ = min(fw, fh) // 2 - 1
+        dr.ellipse([cx - r_, cy - r_, cx + r_, cy + r_], fill=(250, 250, 245, 255), outline=(230, 120, 30, 255), width=3)
+        dr.ellipse([cx - r_ // 2, cy - r_ // 2, cx + r_ // 2, cy + r_ // 2], fill=(235, 130, 20, 255)); dr.ellipse([cx - r_ // 3, cy - r_ // 3, cx + r_ // 3, cy + r_ // 3], fill=(20, 12, 10, 255))
+        dr.point((cx - 2, cy - 2), fill=(255, 255, 255, 255))
     elif sid in ("octorok", "tentalus", "peahat", "deku_baba", "quadro_baba", "skulltula", "wall_skulltula", "tektite"):
         if n == "body" and fname in ("top", "front"):
             for _ in range(fw * fh // 50): x, y = rng.randrange(fw), rng.randrange(fh); dr.ellipse([x, y, x + 3, y + 3], outline=dk)  # warts / spots
@@ -1228,7 +1276,7 @@ def gen_species():
         if sid in RANK_EXTRA: parts += rank_extras(parts)
         parts = order_parts(parts)
         pack(parts)
-        json.dump(dict(tex=[TEX, TEX], hunch=sp["hunch"], parts=parts),
+        json.dump(dict(tex=[TEX, TEX], hunch=sp["hunch"], splay=sp.get("splay", 0), crouch=sp.get("crouch", 0), parts=parts),
                   open(f"{A}/specs/{sid}.json", "w"), separators=(",", ":"))
         for ri, rname in enumerate(RANKS):
             palette = PAL[sid][ri]
