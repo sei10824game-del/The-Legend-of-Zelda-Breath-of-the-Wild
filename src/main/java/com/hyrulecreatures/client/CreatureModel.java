@@ -17,9 +17,10 @@ public class CreatureModel extends EntityModel<HyruleBiped> implements ArmedMode
     private final ModelPart root;
     private final Map<String, ModelPart> p = new HashMap<>();
     private final float hunch, hipY;
+    private final Map<String, Integer> minRank;
 
     public CreatureModel(ModelPart root, Spec spec) {
-        this.root = root; this.hunch = spec.hunch; this.hipY = spec.hipY();
+        this.root = root; this.hunch = spec.hunch; this.hipY = spec.hipY(); this.minRank = spec.minRanks();
         for (String n : spec.names()) {
             String par = spec.parentOf(n);
             p.put(n, (par == null ? root : p.get(par)).getChild(n));
@@ -107,6 +108,7 @@ public class CreatureModel extends EntityModel<HyruleBiped> implements ArmedMode
         root.getAllParts().forEach(ModelPart::resetPose);
         float pt = age - e.tickCount, rad = Mth.DEG_TO_RAD;
         ModelPart head = p.get("head"), body = p.get("body");
+        for (var en : minRank.entrySet()) p.get(en.getKey()).visible = e.rank() >= en.getValue(); // rank equipment
         boolean flier = e.species.flies;
         if (head != null) head.visible = !(e.species.isStal() && e.headless());
         float lean = hunch, twist = 0, dip = 0;

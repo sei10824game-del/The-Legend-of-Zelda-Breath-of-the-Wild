@@ -20,8 +20,8 @@ def shade(c, f):
     return tuple(max(0, min(255, int(v * f))) for v in c)
 
 
-def P(n, p, box, pose, rot=(0, 0, 0), c="skin", f=None):
-    return dict(n=n, p=p, box=list(box), pose=list(pose), rot=list(rot), c=c, f=f or [])
+def P(n, p, box, pose, rot=(0, 0, 0), c="skin", f=None, r=0):
+    return dict(n=n, p=p, box=list(box), pose=list(pose), rot=list(rot), c=c, f=f or [], r=r)
 
 
 # ---------------------------------------------------------------- species
@@ -903,21 +903,128 @@ def order_parts(parts):
     return out
 
 
+STYLE = {}
+for _s in ("bokoblin", "moblin", "lynel", "hinox", "horriblin", "techno_bokoblin", "cursed_bokoblin", "bulblin", "king_bulblin", "keese", "keese_fire", "keese_ice", "keese_elec",
+           "keese_dark", "kargarok", "gibdo", "redead", "stalhound", "shadow_beast", "demise", "ganondorf", "quadro_baba", "deku_baba", "skulltula", "wall_skulltula", "tektite"): STYLE[_s] = "fur"
+for _s in ("lizalfos", "lizalfos_fire", "lizalfos_ice", "lizalfos_elec", "dark_lizalfos", "dinolfos", "aeralfos", "dodongo", "helmasaur", "gleeok", "argorok", "diababa", "octorok", "shakomite", "moldarach"): STYLE[_s] = "scale"
+for _s in ("stalkoblin", "stalmoblin", "stalizalfos", "stalhinox", "stalfos", "stalmaster", "death_sword"): STYLE[_s] = "bone"
+for _s in ("guardian", "decayed_guardian", "guardian_turret", "guardian_skywatcher", "calamity_ganon", "guardian_scout_1", "guardian_scout_2", "guardian_scout_3", "guardian_scout_4",
+           "beamos", "armos", "soldier_construct", "captain_construct", "koloktos", "dark_nut", "don_gerar", "don_killer", "fyrus", "armogohma", "paraspalas"): STYLE[_s] = "metal"
+for _s in ("talus", "frox", "scaldera", "gumarm", "the_imprisoned", "tentalus"): STYLE[_s] = "stone"
+for _s in ("wizzrobe", "blizzrobe", "thunder_wizzrobe", "ghirahim", "zant", "poe", "yiga_footsoldier", "yiga_blademaster", "master_kohga", "phantom_ganon",
+           "fireblight_ganon", "waterblight_ganon", "windblight_ganon", "thunderblight_ganon"): STYLE[_s] = "cloth"
+ALPHA = {"chuchu": 175, "poe": 205, "bubble_fire": 225, "bubble_ice": 225, "bubble_dark": 225}
+GLOW_HORN = set("guardian decayed_guardian guardian_turret guardian_skywatcher calamity_ganon guardian_scout_1 guardian_scout_2 guardian_scout_3 guardian_scout_4 beamos armos koloktos "
+                "scaldera gumarm talus frox demise bubble_fire bubble_ice bubble_dark poe fireblight_ganon waterblight_ganon windblight_ganon thunderblight_ganon fyrus ghirahim "
+                "chuchu soldier_construct captain_construct shadow_beast cursed_bokoblin techno_bokoblin zant armogohma".split())
+RANK_EXTRA = set("bokoblin moblin lizalfos stalkoblin stalmoblin stalizalfos gibdo yiga_footsoldier yiga_blademaster soldier_construct armos bulblin dark_lizalfos techno_bokoblin "
+                 "cursed_bokoblin dark_nut stalfos horriblin lynel hinox".split())
+
+
+def rank_extras(parts):
+    """silver/black/gold variants get plates, helmet band and crown spikes."""
+    byn = {q["n"]: q for q in parts}
+    out = []
+    head, ra, la = byn.get("head"), byn.get("rightArm"), byn.get("leftArm")
+    for arm, nm in ((ra, "plateR"), (la, "plateL")):
+        if arm:
+            x, y, z, w, h, d = arm["box"]
+            out.append(P(nm, arm["n"], (x - 0.8, y - 1.5, z - 0.8, w + 1.6, 3, d + 1.6), (0, 0, 0), c="horn", r=2))
+    if head:
+        x, y, z, w, h, d = head["box"]
+        out.append(P("band", "head", (x - 0.6, y + h * 0.28, z - 0.6, w + 1.2, 1.6, d + 1.2), (0, 0, 0), c="horn", r=3))
+        for k, dx in enumerate((-0.28, 0.0, 0.28)):
+            out.append(P(f"crown{k}", "head", (x + w / 2 + dx * w - 0.75, y - 3.2, z + d / 2 - 0.75, 1.5, 3.4, 1.5), (0, 0, 0), c="horn", r=4))
+    return out
+
+
+def style_pass(img, glowmask, p, sid, rng, palette):
+    st = STYLE.get(sid, "skin")
+    u, v = p["uv"]
+    w, h, d = [int(round(t)) for t in p["box"][3:6]]
+    faces = [(u + d, v, w, d), (u + d + w, v, w, d), (u, v + d, d, h), (u + d, v + d, w, h), (u + d + w, v + d, d, h), (u + 2 * d + w, v + d, w, h)]
+    px = img.load(); gm = glowmask.load()
+    def mul(x, y, f):
+        if gm[x, y][3]: return
+        r, g, b, a = px[x, y]; px[x, y] = (min(255, int(r * f)), min(255, int(g * f)), min(255, int(b * f)), a)
+    for (fx, fy, fw, fh) in faces:
+        for i in range(fw):
+            for j in range(fh):
+                if st == "fur":
+                    if (i * 7 + 3) % 5 == 0 and rng.random() < 0.6: mul(fx + i, fy + j, 0.88)
+                    elif rng.random() < 0.05: mul(fx + i, fy + j, 1.14)
+                elif st == "scale":
+                    if (i + (j % 2) * 2) % 4 == 0 and j % 2 == 0: mul(fx + i, fy + j, 1.16)
+                    elif (i + (j % 2) * 2) % 4 == 3: mul(fx + i, fy + j, 0.88)
+                elif st == "bone":
+                    if rng.random() < 0.06: mul(fx + i, fy + j, 0.78)
+                    if (i * 3 + j * 5) % 11 == 0: mul(fx + i, fy + j, 0.85)
+                elif st == "metal":
+                    if i % 8 == 0 or j % 8 == 0: mul(fx + i, fy + j, 0.8)
+                    elif i % 8 == 1 and j % 8 == 1: mul(fx + i, fy + j, 1.25)
+                    elif rng.random() < 0.03: mul(fx + i, fy + j, 1.3)
+                elif st == "stone":
+                    if ((i // 3) * 5 + (j // 3) * 3) % 4 == 0: mul(fx + i, fy + j, 0.9)
+                    if rng.random() < 0.05: mul(fx + i, fy + j, 0.7)
+                elif st == "cloth":
+                    mul(fx + i, fy + j, 0.96 if (i + j) % 2 else 1.04)
+                if i in (0, fw - 1) or j in (0, fh - 1): mul(fx + i, fy + j, 0.86)  # edge shading
+
+
+def glow_pass(img, glowmask, p, sid, palette):
+    """copy glowing pixels (eyes, circuit lines, glowing parts) into the emissive mask."""
+    u, v = p["uv"]
+    w, h, d = [int(round(t)) for t in p["box"][3:6]]
+    eye, horn = hexc(palette["eye"]) + (255,), hexc(palette["horn"]) + (255,)
+    px = img.load(); gm = glowmask.load()
+    for (fx, fy, fw, fh) in [(u + d, v, w, d), (u + d + w, v, w, d), (u, v + d, d, h), (u + d, v + d, w, h), (u + d + w, v + d, d, h), (u + 2 * d + w, v + d, w, h)]:
+        for i in range(fw):
+            for j in range(fh):
+                c = px[fx + i, fy + j]
+                if c == eye or (c == horn and ("circuit" in p["f"] or (p["c"] == "horn" and sid in GLOW_HORN))) or (p["c"] == "horn" and sid in GLOW_HORN and c[3]):
+                    gm[fx + i, fy + j] = c
+
+
+def gen_damage():
+    rng = random.Random(7); im = Image.new("RGBA", (TEX, TEX), (0, 0, 0, 0)); d = ImageDraw.Draw(im)
+    for _ in range(46):  # cracks / scratches
+        x, y = rng.randrange(TEX), rng.randrange(TEX)
+        for _ in range(rng.randrange(3, 9)):
+            nx, ny = x + rng.choice((-1, 0, 1)) * rng.randrange(1, 3), y + rng.choice((0, 1)) * rng.randrange(1, 3)
+            d.line([(x, y), (nx, ny)], fill=(25, 10, 10, 200)); x, y = nx, ny
+    for _ in range(30):  # blood / scorch blotches
+        x, y = rng.randrange(TEX), rng.randrange(TEX); r = rng.randrange(1, 3)
+        d.ellipse([x, y, x + r, y + r], fill=(110, 12, 12, 170))
+    im.save(f"{A}/textures/entity/damage.png")
+
+
 def gen_species():
     os.makedirs(f"{A}/specs", exist_ok=True)
     os.makedirs(f"{A}/textures/entity", exist_ok=True)
+    gen_damage()
     for sid, sp in SPECIES.items():
         parts = order_parts([dict(q) for q in sp["parts"]])
+        if sid in RANK_EXTRA: parts += rank_extras(parts)
+        parts = order_parts(parts)
         pack(parts)
         json.dump(dict(tex=[TEX, TEX], hunch=sp["hunch"], parts=parts),
                   open(f"{A}/specs/{sid}.json", "w"), separators=(",", ":"))
         for ri, rname in enumerate(RANKS):
             palette = PAL[sid][ri]
-            img = Image.new("RGBA", (TEX, TEX), (0, 0, 0, 0))
+            img = Image.new("RGBA", (TEX, TEX), (0, 0, 0, 0)); glow = Image.new("RGBA", (TEX, TEX), (0, 0, 0, 0))
             rng = random.Random(zlib.crc32((sid + rname).encode()))
             for p in parts:
                 paint_box(img, p, hexc(palette[p["c"]]), rng, palette)
+                glow_pass(img, glow, p, sid, palette)
+                style_pass(img, glow, p, sid, rng, palette)
+            if sid in ALPHA:
+                px = img.load()
+                for x in range(TEX):
+                    for y in range(TEX):
+                        r_, g_, b_, a_ = px[x, y]
+                        if a_: px[x, y] = (r_, g_, b_, ALPHA[sid])
             img.save(f"{A}/textures/entity/{sid}_{rname}.png")
+            glow.save(f"{A}/textures/entity/{sid}_{rname}_glow.png")
 
 
 # ---------------------------------------------------------------- weapons
@@ -1064,12 +1171,27 @@ def gen_shots():
         json.dump({"parent": "minecraft:item/generated", "textures": {"layer0": f"{MOD}:item/{i}"}}, open(f"{A}/models/item/{i}.json", "w"))
 
 
+def enhance(im):
+    """16x16 -> 32x32 with dark outline and top-left highlight."""
+    big = im.resize((32, 32), Image.NEAREST); px = big.load(); out = big.copy(); o = out.load()
+    for x in range(32):
+        for y in range(32):
+            if px[x, y][3] == 0:
+                if any(0 <= x + dx < 32 and 0 <= y + dy < 32 and px[x + dx, y + dy][3] for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1))): o[x, y] = (20, 16, 24, 255)
+            else:
+                r, g, b, a = px[x, y]
+                up, left = (y > 0 and px[x, y - 1][3] == 0), (x > 0 and px[x - 1, y][3] == 0)
+                f = 1.18 if (up or left) else (0.84 if ((y < 31 and px[x, y + 1][3] == 0) or (x < 31 and px[x + 1, y][3] == 0)) else 1.0)
+                o[x, y] = (min(255, int(r * f)), min(255, int(g * f)), min(255, int(b * f)), a)
+    return out
+
+
 def gen_weapons():
     os.makedirs(f"{A}/textures/item", exist_ok=True)
     os.makedirs(f"{A}/models/item", exist_ok=True)
     wj = []
     for (i, en, ja, kind, dmg, dur, c1, c2) in W:
-        item_tex(kind, c1, c2, i).save(f"{A}/textures/item/{i}.png")
+        enhance(item_tex(kind, c1, c2, i)).save(f"{A}/textures/item/{i}.png")
         json.dump({"parent": "minecraft:item/handheld", "textures": {"layer0": f"{MOD}:item/{i}"}},
                   open(f"{A}/models/item/{i}.json", "w"))
         wj.append(dict(id=i, kind=kind, dmg=dmg, dur=dur))
@@ -1168,7 +1290,9 @@ def gen_eggs():
             face = tex.crop((u + d, v + d, u + d + w, v + d + h)).resize((10, 10), I.NEAREST)
             base = hexc(PAL[sid][r]["skin"])
             egg = I.new("RGBA", (16, 16), (0, 0, 0, 0)); dr = ImageDraw.Draw(egg)
-            dr.ellipse([1, 0, 14, 15], fill=shade(base, 0.85) + (255,), outline=(30, 30, 30, 255))
+            _bc = [(220, 60, 50), (60, 110, 230), (40, 40, 50), (225, 228, 235), (240, 200, 60)][r]
+            dr.ellipse([1, 0, 14, 15], fill=shade(base, 0.85) + (255,), outline=_bc + (255,))
+            dr.ellipse([2, 1, 13, 14], outline=(20, 20, 20, 255))
             egg.alpha_composite(face, (3, 3))
             dr.arc([1, 0, 14, 15], 200, 340, fill=(255, 255, 255, 120))
             for name in ([f"{sid}_spawn_egg"] if r == 0 else []) + [f"{sid}_{rn}_spawn_egg"]:

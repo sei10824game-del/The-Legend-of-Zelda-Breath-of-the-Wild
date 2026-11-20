@@ -11,6 +11,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
@@ -102,6 +103,8 @@ public class HyruleBiped extends HyruleMob {
     private boolean enraged;
     @Override public void aiStep() {
         super.aiStep();
+        if (!level().isClientSide && tickCount % 5 == 0 && level() instanceof ServerLevel asl && auraParticle() != null)
+            asl.sendParticles(auraParticle(), getX(), getY() + getBbHeight() * 0.6, getZ(), 2, getBbWidth() * 0.4, getBbHeight() * 0.3, getBbWidth() * 0.4, 0.01);
         if (!level().isClientSide && !enraged && getMaxHealth() >= 300 && getHealth() < getMaxHealth() * 0.5f) { // boss phase 2
             enraged = true;
             getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(getAttribute(Attributes.MOVEMENT_SPEED).getBaseValue() * 1.3);
@@ -383,8 +386,58 @@ public class HyruleBiped extends HyruleMob {
         }
     }
 
+    // ---------------------------------------------------------------- sounds & particles
+    private int soundGroup() { // 0 piglin-like, 1 lizard, 2 bat, 3 skeleton, 4 golem, 5 spirit, 6 slime, 7 zombie, 8 beast
+        return switch (species) {
+            case BOKOBLIN, MOBLIN, HORRIBLIN, TECHNO_BOKOBLIN, CURSED_BOKOBLIN, BULBLIN, KING_BULBLIN, QUADRO_BABA -> 0;
+            case LIZALFOS, LIZALFOS_FIRE, LIZALFOS_ICE, LIZALFOS_ELEC, DARK_LIZALFOS, DINOLFOS, AERALFOS, SKULLTULA, WALL_SKULLTULA, TEKTITE, SHAKOMITE, PETIT_MOLDORM, MOLDARACH -> 1;
+            case KEESE, KEESE_FIRE, KEESE_ICE, KEESE_ELEC, KEESE_DARK, KARGAROK, PEAHAT, GLEEOK, ARGOROK -> 2;
+            case STALKOBLIN, STALMOBLIN, STALIZALFOS, STALHINOX, STALFOS, STALMASTER, DEATH_SWORD, STALHOUND -> 3;
+            case TALUS, FROX, HINOX, ARMOS, BEAMOS, GUARDIAN, DECAYED_GUARDIAN, GUARDIAN_TURRET, GUARDIAN_SKYWATCHER, GUARDIAN_SCOUT_1, GUARDIAN_SCOUT_2, GUARDIAN_SCOUT_3, GUARDIAN_SCOUT_4,
+                 SOLDIER_CONSTRUCT, CAPTAIN_CONSTRUCT, KOLOKTOS, DARK_NUT, CALAMITY_GANON, SCALDERA, GUMARM, THE_IMPRISONED, TENTALUS, ARMOGOHMA, PARASPALAS -> 4;
+            case WIZZROBE, BLIZZROBE, THUNDER_WIZZROBE, GHIRAHIM, ZANT, POE, BUBBLE_FIRE, BUBBLE_ICE, BUBBLE_DARK, PHANTOM_GANON, FIREBLIGHT_GANON, WATERBLIGHT_GANON, WINDBLIGHT_GANON, THUNDERBLIGHT_GANON -> 5;
+            case CHUCHU -> 6;
+            case GIBDO, REDEAD, YIGA_FOOTSOLDIER, YIGA_BLADEMASTER, MASTER_KOHGA -> 7;
+            default -> 8;
+        };
+    }
+    @Override protected SoundEvent getAmbientSound() {
+        return switch (soundGroup()) { case 0 -> SoundEvents.ZOMBIFIED_PIGLIN_AMBIENT; case 1 -> SoundEvents.ENDERMITE_AMBIENT; case 2 -> SoundEvents.BAT_AMBIENT; case 3 -> SoundEvents.SKELETON_AMBIENT;
+            case 4 -> null; case 5 -> SoundEvents.VEX_AMBIENT; case 6 -> SoundEvents.SLIME_SQUISH_SMALL; case 7 -> SoundEvents.ZOMBIE_AMBIENT; default -> SoundEvents.RAVAGER_AMBIENT; };
+    }
+    @Override protected SoundEvent getHurtSound(net.minecraft.world.damagesource.DamageSource s) {
+        return switch (soundGroup()) { case 0 -> SoundEvents.ZOMBIFIED_PIGLIN_HURT; case 1 -> SoundEvents.ENDERMITE_HURT; case 2 -> SoundEvents.BAT_HURT; case 3 -> SoundEvents.SKELETON_HURT;
+            case 4 -> SoundEvents.IRON_GOLEM_HURT; case 5 -> SoundEvents.VEX_HURT; case 6 -> SoundEvents.SLIME_HURT_SMALL; case 7 -> SoundEvents.ZOMBIE_HURT; default -> SoundEvents.RAVAGER_HURT; };
+    }
+    @Override protected SoundEvent getDeathSound() {
+        return switch (soundGroup()) { case 0 -> SoundEvents.ZOMBIFIED_PIGLIN_DEATH; case 1 -> SoundEvents.ENDERMITE_DEATH; case 2 -> SoundEvents.BAT_DEATH; case 3 -> SoundEvents.SKELETON_DEATH;
+            case 4 -> SoundEvents.IRON_GOLEM_DEATH; case 5 -> SoundEvents.VEX_DEATH; case 6 -> SoundEvents.SLIME_DEATH_SMALL; case 7 -> SoundEvents.ZOMBIE_DEATH; default -> SoundEvents.RAVAGER_DEATH; };
+    }
+    private net.minecraft.core.particles.ParticleOptions deathParticle() {
+        return switch (soundGroup()) {
+            case 3 -> new net.minecraft.core.particles.BlockParticleOption(ParticleTypes.BLOCK, net.minecraft.world.level.block.Blocks.BONE_BLOCK.defaultBlockState());
+            case 4 -> new net.minecraft.core.particles.BlockParticleOption(ParticleTypes.BLOCK, (species == Species.TALUS || species == Species.FROX || species == Species.SCALDERA || species == Species.THE_IMPRISONED
+                    ? net.minecraft.world.level.block.Blocks.STONE : net.minecraft.world.level.block.Blocks.IRON_BLOCK).defaultBlockState());
+            case 5 -> ParticleTypes.SOUL; case 6 -> ParticleTypes.ITEM_SLIME; default -> ParticleTypes.POOF;
+        };
+    }
+    private net.minecraft.core.particles.ParticleOptions auraParticle() {
+        return switch (species) {
+            case FIREBLIGHT_GANON, SCALDERA, GUMARM, BUBBLE_FIRE, LIZALFOS_FIRE, KEESE_FIRE, FYRUS, DEMISE -> ParticleTypes.FLAME;
+            case WATERBLIGHT_GANON, TENTALUS -> ParticleTypes.DRIPPING_WATER;
+            case THUNDERBLIGHT_GANON, ZANT, THUNDER_WIZZROBE, KEESE_ELEC, LIZALFOS_ELEC, TECHNO_BOKOBLIN -> ParticleTypes.ELECTRIC_SPARK;
+            case WINDBLIGHT_GANON -> ParticleTypes.CLOUD;
+            case BLIZZROBE, BUBBLE_ICE, KEESE_ICE, LIZALFOS_ICE -> ParticleTypes.SNOWFLAKE;
+            case CALAMITY_GANON, SHADOW_BEAST, HORRIBLIN, CURSED_BOKOBLIN, BUBBLE_DARK, KEESE_DARK -> ParticleTypes.SMOKE;
+            case POE, GHIRAHIM -> ParticleTypes.SOUL_FIRE_FLAME;
+            default -> null;
+        };
+    }
+
     @Override public void die(net.minecraft.world.damagesource.DamageSource src) {
         super.die(src);
+        if (!level().isClientSide && level() instanceof ServerLevel dsl)
+            dsl.sendParticles(deathParticle(), getX(), getY() + getBbHeight() * 0.5, getZ(), 25 + (int) (getBbHeight() * 8), getBbWidth() * 0.5, getBbHeight() * 0.4, getBbWidth() * 0.5, 0.05);
         if (!level().isClientSide && head() != null) head().discard();
         if (!level().isClientSide && species == Species.CHUCHU && !isMini())
             for (int i = 0; i < 2; i++) {

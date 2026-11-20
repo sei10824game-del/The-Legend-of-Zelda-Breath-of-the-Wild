@@ -20,6 +20,7 @@ public class HyruleRenderer extends MobRenderer<HyruleBiped, CreatureModel> {
     public HyruleRenderer(EntityRendererProvider.Context ctx, Species s) {
         super(ctx, new CreatureModel(ctx.bakeLayer(layer(s)), Spec.get(s.id)), 0.4f * s.scale);
         species = s; side = Spec.get(s.id).names().contains("frontLeftLeg") || Spec.get(s.id).names().contains("leg0");
+        addLayer(new RankLayers.Glow(this)); addLayer(new RankLayers.Damage(this));
         if (Spec.get(s.id).names().contains("rightArm")) addLayer(new ItemInHandLayer<>(this, ctx.getItemInHandRenderer()));
     }
 
@@ -27,7 +28,22 @@ public class HyruleRenderer extends MobRenderer<HyruleBiped, CreatureModel> {
         return new ResourceLocation(HyruleCreatures.ID, "textures/entity/" + species.id + "_" + Species.RANKS[e.rank()] + ".png");
     }
 
-    @Override protected void scale(HyruleBiped e, PoseStack ps, float pt) { float k = species.scale * (e.isMini() ? 0.55f : 1f); ps.scale(k, k, k); }
+    @Override protected void scale(HyruleBiped e, PoseStack ps, float pt) { float rise = e.tickCount < 24 ? 0.4f + 0.6f * (1 - (1 - e.tickCount / 24f) * (1 - e.tickCount / 24f)) : 1f; // summon: grows out of the ground
+        float k = species.scale * (e.isMini() ? 0.55f : 1f) * rise; ps.scale(k, k, k); }
+
+    @Override protected float getWhiteOverlayProgress(HyruleBiped e, float pt) { // flash just before a heavy attack lands
+        AttackKind k = e.atkKind();
+        if (k == null || !(k == AttackKind.SMASH || k == AttackKind.SPIN || k == AttackKind.STOMP || k == AttackKind.AREA || k == AttackKind.BEAM || k == AttackKind.CHARGE || k == AttackKind.LEAP)) return 0;
+        float t = e.atkTick() + pt, w = k.windup;
+        return t >= w - 6 && t <= w + 1 ? 0.55f * Math.min(1f, (t - (w - 6)) / 6f) : 0;
+    }
+
+    @Override protected net.minecraft.client.renderer.RenderType getRenderType(HyruleBiped e, boolean vis, boolean invisToPlayer, boolean glowing) {
+        switch (species) {
+            case CHUCHU, POE, BUBBLE_FIRE, BUBBLE_ICE, BUBBLE_DARK: return net.minecraft.client.renderer.RenderType.entityTranslucent(getTextureLocation(e));
+            default: return super.getRenderType(e, vis, invisToPlayer, glowing);
+        }
+    }
 
     @Override protected void setupRotations(HyruleBiped e, PoseStack ps, float age, float yaw, float pt) {
         super.setupRotations(e, ps, age, yaw, pt);
