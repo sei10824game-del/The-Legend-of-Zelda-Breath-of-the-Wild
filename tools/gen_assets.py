@@ -2,7 +2,7 @@
 """Single source of truth for creature models, textures, weapons, item textures, lang.
 Run: python3 tools/gen_assets.py   (writes into src/main/resources)"""
 import json, os, random, zlib
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFilter
 
 MOD = "hyrulecreatures"
 RES = os.path.join(os.path.dirname(__file__), "..", "src", "main", "resources")
@@ -1302,8 +1302,20 @@ def gen_species():
                     if a_ and not gl2[x, y][3]:  # micro noise + soft vertical shading inside each texel
                         f = 1 + r2.uniform(-0.035, 0.035) + ((y % 2) * 0.012 - 0.006) + ((x % 2) * 0.008 - 0.004)
                         px2[x, y] = (max(0, min(255, int(r_ * f))), max(0, min(255, int(g_ * f))), max(0, min(255, int(b_ * f))), a_)
-            img.save(f"{A}/textures/entity/{sid}_{rname}.png")
-            glow.save(f"{A}/textures/entity/{sid}_{rname}_glow.png")
+            # 3x density for the enlarged creatures: smooth upscale + fine grain / fibre detail
+            big = img.resize((TEX * 3, TEX * 3), Image.BICUBIC).filter(ImageFilter.UnsharpMask(radius=1.2, percent=70, threshold=2))
+            bp = big.load(); r3 = random.Random(zlib.crc32((sid + rname + "3x").encode()))
+            gb = glow.resize((TEX * 3, TEX * 3), Image.BICUBIC); gbp = gb.load(); st3 = STYLE.get(sid, "skin")
+            for _ in range(TEX * TEX * 9 // 40):
+                x, y = r3.randrange(TEX * 3), r3.randrange(TEX * 3); c0 = bp[x, y]
+                if c0[3] < 200 or gbp[x, y][3] > 40: continue
+                f = r3.choice((0.9, 0.94, 1.07, 1.12)); L = r3.randrange(2, 5)
+                for k in range(L):
+                    yy = y + k if st3 in ("fur", "skin", "cloth") else y; xx = x + (k if st3 in ("scale", "metal", "stone", "bone") else 0)
+                    if yy < TEX * 3 and xx < TEX * 3 and bp[xx, yy][3] > 200 and gbp[xx, yy][3] < 40:
+                        r_, g_, b_, a_ = bp[xx, yy]; bp[xx, yy] = (min(255, int(r_ * f)), min(255, int(g_ * f)), min(255, int(b_ * f)), a_)
+            big.save(f"{A}/textures/entity/{sid}_{rname}.png", optimize=True)
+            gb.save(f"{A}/textures/entity/{sid}_{rname}_glow.png", optimize=True)
 
 
 # ---------------------------------------------------------------- weapons
