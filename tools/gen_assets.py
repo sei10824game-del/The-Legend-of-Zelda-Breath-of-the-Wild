@@ -1017,6 +1017,30 @@ def detail_extras(parts):
     return out
 
 
+def refine_geometry(parts):
+    """break up the box silhouette: elbows/knees, shoulder caps, brow ridge, cheeks, chin, chest ridge, spine bumps."""
+    byn = {q["n"]: q for q in parts}; out = []
+    for nm in ("rightArm", "leftArm", "rightLeg", "leftLeg"):
+        a = byn.get(nm)
+        if not a or a["box"][4] < 8: continue
+        x, y, z, w, h, d = a["box"]
+        out.append(P(f"joint{nm[0]}{nm[-3]}", nm, (x - 0.7, y + h * 0.42, z - 0.7, w + 1.4, 3, d + 1.4), (0, 0, 0), c=a["c"]))
+        if "Arm" in nm: out.append(P(f"cap{nm[0]}", nm, (x - 0.9, y - 1.8, z - 0.9, w + 1.8, 3.6, d + 1.8), (0, 0, 0), c=a["c"]))
+    hd = byn.get("head")
+    if hd and hd["box"][3] >= 6:
+        x, y, z, w, h, d = hd["box"]
+        out.append(P("browRidge", "head", (x - 0.4, y + h * 0.18, z - 0.9, w + 0.8, 1.6, 1.8), (0, 0, 0), c="skin2"))
+        out.append(P("cheekL", "head", (x + w - 0.8, y + h * 0.45, z + d * 0.15, 1.6, h * 0.3, d * 0.45), (0, 0, 0), c=hd["c"]))
+        out.append(P("cheekR", "head", (x - 0.8, y + h * 0.45, z + d * 0.15, 1.6, h * 0.3, d * 0.45), (0, 0, 0), c=hd["c"]))
+        out.append(P("chin", "head", (x + w * 0.25, y + h - 1.2, z - 0.6, w * 0.5, 2, 1.6), (0, 0, 0), c="skin2"))
+    bd = byn.get("body")
+    if bd and bd["box"][3] >= 6:
+        x, y, z, w, h, d = bd["box"]
+        out.append(P("chestRidge", "body", (x + w * 0.1, y + 1, z - 0.8, w * 0.8, h * 0.4, 1.6), (0, 0, 0), c="skin2"))
+        for k in range(3): out.append(P(f"spineBump{k}", "body", (x + w / 2 - 0.8, y + h * (0.12 + 0.25 * k), z + d - 0.3, 1.6, 1.8, 1.4), (0, 0, 0), c="horn"))
+    return out
+
+
 def style_pass(img, glowmask, p, sid, rng, palette):
     st = STYLE.get(sid, "skin")
     u, v = p["uv"]
@@ -1272,11 +1296,18 @@ def gen_species():
     gen_damage()
     for sid, sp in SPECIES.items():
         parts = order_parts([dict(q) for q in sp["parts"]])
-        if sid in DETAIL: parts += detail_extras(parts)
+        if sid in DETAIL:
+            parts += detail_extras(parts)
+            parts = order_parts(parts); _ref = refine_geometry(parts)
+            try:
+                pack(order_parts([dict(q) for q in parts + _ref])); parts += _ref
+            except AssertionError: print("refine skipped for", sid)
         parts = order_parts(parts)
         if sid in RANK_EXTRA: parts += rank_extras(parts)
         parts = order_parts(parts)
-        pack(parts)
+        try: pack(parts)
+        except AssertionError:  # too many boxes for the 128px sheet: drop the optional refinement boxes
+            drop = {q["n"] for q in refine_geometry(parts)}; parts = [q for q in parts if q["n"] not in drop]; print("dropped refinement for", sid); pack(parts)
         json.dump(dict(tex=[TEX, TEX], hunch=sp["hunch"], splay=sp.get("splay", 0), crouch=sp.get("crouch", 0), parts=parts),
                   open(f"{A}/specs/{sid}.json", "w"), separators=(",", ":"))
         for ri, rname in enumerate(RANKS):
