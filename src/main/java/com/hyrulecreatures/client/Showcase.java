@@ -108,7 +108,7 @@ public class Showcase {
             if (idx >= SHOTS.size()) { System.out.println("SHOWCASE_DONE"); mc.stop(); return; }
             Shot sh = SHOTS.get(idx);
             HyruleBiped m = ModRegistry.TYPES.get(sh.s).get().create(lv);
-            double dist = 3.5 + sh.s.h * sh.s.scale * 1.1;
+            double dist = 3.5 + sh.s.h * 1.5;
             Vec3 p = mc.player.position();
             mc.player.setYRot(0); mc.player.setXRot(0);
             float yaw = sh.name().endsWith("_side") ? 90 : 180;
@@ -125,7 +125,7 @@ public class Showcase {
                 h.moveTo(p.x + 1.4, p.y, p.z + dist, 0, 0);
                 lv.putNonPlayerEntity(9500 + idx, h); head = h;
             }
-            float mid = sh.s.h * sh.s.scale * 0.5f;
+            float mid = sh.s.h * 0.5f;
             mc.player.setXRot((float) Math.toDegrees(Math.atan((1.62 - mid) / dist)));
             phase = 1; return;
         }

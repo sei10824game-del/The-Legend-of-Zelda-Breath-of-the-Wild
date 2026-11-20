@@ -17,3 +17,6 @@ Remaining creatures (Lynel, Guardian, Chuchu, Wizzrobe, Octorok, Gleeok, Gibdo, 
 
 ## Variants
 Every species has 5 colour ranks (red/blue/black/silver/gold). Creative tab "Hyrule Creatures: Variants" holds one spawn egg per species and rank (e.g. Silver Lynel). Elemental variants (Fire/Ice/Shock Lizalfos, Fire/Ice/Electric Keese) are separate species. `/summon hyrulecreatures:lynel ~ ~ ~ {Rank:3}` also fixes the rank.
+
+## GeckoLib decision
+Not migrated: the current rig (spec JSON + procedural poses) already covers 100 species with keyframed attacks. GeckoLib would require hand-authoring a .geo.json model and .animation.json for every species in Blockbench (~100 files) plus a new dependency. Recommended only for a handful of hero creatures (Lynel, Hinox, Guardian, Gleeok) if hand-made animation is wanted.

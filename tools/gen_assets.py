@@ -938,6 +938,36 @@ def rank_extras(parts):
     return out
 
 
+DETAIL = set("bokoblin moblin lizalfos lizalfos_fire lizalfos_ice lizalfos_elec dark_lizalfos dinolfos hinox lynel gibdo redead horriblin cursed_bokoblin techno_bokoblin bulblin king_bulblin "
+             "stalkoblin stalmoblin stalizalfos stalhinox stalfos stalmaster frox talus yiga_footsoldier phantom_ganon fireblight_ganon waterblight_ganon windblight_ganon thunderblight_ganon "
+             "ganondorf demise zant ghirahim armos dark_nut soldier_construct captain_construct fyrus".split())
+
+
+def detail_extras(parts):
+    """claws on hands, toes on feet, knuckle/forearm bracers, lower tusks: small parts that break up the silhouette."""
+    byn = {q["n"]: q for q in parts}; out = []
+    for nm in ("rightArm", "leftArm"):
+        a = byn.get(nm)
+        if not a: continue
+        x, y, z, w, h, d = a["box"]
+        for k in range(3):  # three claws
+            cx = x + w * (0.2 + 0.3 * k) - 0.4
+            out.append(P(f"claw{nm[0]}{k}", nm, (cx, y + h - 0.2, z - 0.6, 0.8, 2.2, 0.8), (0, 0, 0), c="horn"))
+        out.append(P(f"bracer{nm[0]}", nm, (x - 0.5, y + h * 0.55, z - 0.5, w + 1, 2.2, d + 1), (0, 0, 0), c="cloth", f=["stripes"]))
+    for nm in ("rightLeg", "leftLeg"):
+        l = byn.get(nm)
+        if not l: continue
+        x, y, z, w, h, d = l["box"]
+        for k in range(3):  # toes
+            out.append(P(f"toe{nm[0]}{k}", nm, (x + w * (0.1 + 0.3 * k), y + h - 1.4, z - 1.6, max(0.8, w * 0.25), 1.4, 1.7), (0, 0, 0), c="horn"))
+    sn = byn.get("snout")
+    if sn:
+        x, y, z, w, h, d = sn["box"]
+        out.append(P("lowerTuskL", sn["p"], (x + w - 1.2, y + h - 0.2, z + 0.5, 0.9, 2.4, 0.9), (0, 0, 0), c="bandage"))
+        out.append(P("lowerTuskR", sn["p"], (x + 0.3, y + h - 0.2, z + 0.5, 0.9, 2.4, 0.9), (0, 0, 0), c="bandage"))
+    return out
+
+
 def style_pass(img, glowmask, p, sid, rng, palette):
     st = STYLE.get(sid, "skin")
     u, v = p["uv"]
@@ -1004,6 +1034,8 @@ def gen_species():
     gen_damage()
     for sid, sp in SPECIES.items():
         parts = order_parts([dict(q) for q in sp["parts"]])
+        if sid in DETAIL: parts += detail_extras(parts)
+        parts = order_parts(parts)
         if sid in RANK_EXTRA: parts += rank_extras(parts)
         parts = order_parts(parts)
         pack(parts)
