@@ -1033,6 +1033,98 @@ def gen_damage():
     im.save(f"{A}/textures/entity/damage.png")
 
 
+def _sh(c, f): return tuple(max(0, min(255, int(v * f))) for v in c[:3])
+
+
+def paint2x(img, glow, parts, sid, palette, seed):
+    """hand-painted style details at 2x: shading, ambient occlusion, material strokes, painted faces."""
+    rng = random.Random(seed); st = STYLE.get(sid, "skin")
+    gpx = glow.load()
+    saved = [(x, y, gpx[x, y]) for x in range(img.width) for y in range(img.height) if gpx[x, y][3]]
+    for p in parts:
+        col = hexc(palette[p["c"]]); u, v = p["uv"]; w, h, d = [int(round(t)) * 1 for t in p["box"][3:6]]
+        faces = {"top": (u + d, v, w, d), "bottom": (u + d + w, v, w, d), "right": (u, v + d, d, h), "front": (u + d, v + d, w, h), "left": (u + d + w, v + d, d, h), "back": (u + 2 * d + w, v + d, w, h)}
+        for fname, (fx, fy, fw, fh) in faces.items():
+            fx, fy, fw, fh = fx * 2, fy * 2, fw * 2, fh * 2
+            if fw < 4 or fh < 4: continue
+            tile = Image.new("RGBA", (fw, fh), (0, 0, 0, 0)); dr = ImageDraw.Draw(tile)
+            # light from top-left: soft gradient + ambient occlusion on borders
+            for k in range(min(4, fh // 2)):
+                dr.line([(0, fh - 1 - k), (fw, fh - 1 - k)], fill=(0, 0, 0, 55 - k * 12))
+                dr.line([(0, k), (fw, k)], fill=(255, 255, 255, 26 - k * 6))
+            for k in range(min(3, fw // 2)):
+                dr.line([(k, 0), (k, fh)], fill=(255, 255, 255, 18 - k * 5)); dr.line([(fw - 1 - k, 0), (fw - 1 - k, fh)], fill=(0, 0, 0, 50 - k * 14))
+            area = fw * fh
+            if st == "fur":
+                for _ in range(area // 14):
+                    x, y = rng.randrange(fw), rng.randrange(fh); l = rng.randrange(3, 8); dx = rng.choice((-1, 0, 0, 1))
+                    c = _sh(col, rng.choice((0.78, 0.86, 1.18, 1.26))); dr.line([(x, y), (x + dx * l // 2, y + l)], fill=c + (rng.randrange(60, 120),))
+            elif st == "scale":
+                s_ = 6
+                for gy in range(0, fh, s_):
+                    for gx in range(-(s_ // 2) * ((gy // s_) % 2), fw, s_):
+                        dr.arc([gx, gy, gx + s_, gy + s_ + 2], 0, 180, fill=_sh(col, 0.62) + (150,)); dr.point((gx + 1, gy + 1), fill=_sh(col, 1.35) + (170,))
+            elif st == "bone":
+                for _ in range(max(2, area // 400)):
+                    x, y = rng.randrange(fw), rng.randrange(fh)
+                    for _ in range(rng.randrange(3, 8)):
+                        nx, ny = x + rng.choice((-2, -1, 1, 2)), y + rng.randrange(1, 4); dr.line([(x, y), (nx, ny)], fill=_sh(col, 0.55) + (170,)); x, y = nx, ny
+                for _ in range(area // 120): dr.point((rng.randrange(fw), rng.randrange(fh)), fill=_sh(col, 0.7) + (120,))
+            elif st == "metal":
+                for _ in range(max(1, area // 500)):
+                    if rng.random() < 0.5:
+                        y = rng.randrange(fh); dr.line([(0, y), (fw, y)], fill=_sh(col, 0.55) + (150,)); dr.line([(0, y + 1), (fw, y + 1)], fill=_sh(col, 1.3) + (80,))
+                    else:
+                        x = rng.randrange(fw); dr.line([(x, 0), (x, fh)], fill=_sh(col, 0.55) + (150,)); dr.line([(x + 1, 0), (x + 1, fh)], fill=_sh(col, 1.3) + (80,))
+                for gx in range(3, fw - 2, 10):
+                    for gy in range(3, fh - 2, 10):
+                        if rng.random() < 0.5: dr.ellipse([gx, gy, gx + 2, gy + 2], fill=_sh(col, 1.3) + (170,), outline=_sh(col, 0.5) + (170,))
+                for _ in range(area // 250):
+                    x, y = rng.randrange(fw), rng.randrange(fh); dr.line([(x, y), (x + rng.randrange(2, 6), y + rng.randrange(-2, 3))], fill=(255, 255, 255, 70))
+            elif st == "stone":
+                for _ in range(max(2, area // 300)):
+                    x, y = rng.randrange(fw), rng.randrange(fh)
+                    for _ in range(rng.randrange(3, 7)):
+                        nx, ny = x + rng.choice((-3, -1, 1, 3)), y + rng.randrange(1, 4); dr.line([(x, y), (nx, ny)], fill=(30, 28, 24, 190)); x, y = nx, ny
+                for _ in range(area // 90):
+                    x, y = rng.randrange(fw), rng.randrange(fh); r = rng.randrange(1, 3)
+                    dr.ellipse([x, y, x + r, y + r], fill=(70, 110, 58, 90) if y > fh * 0.55 else _sh(col, 0.8) + (80,))
+            elif st == "cloth":
+                for k in range(-fh, fw, 7): dr.line([(k, 0), (k + fh // 2, fh)], fill=(0, 0, 0, 30), width=2)
+                for xx in range(2, fw - 2, 4): dr.point((xx, 2), fill=_sh(col, 1.4) + (160,)); dr.point((xx, fh - 3), fill=_sh(col, 0.5) + (160,))
+            else:
+                for _ in range(area // 60): dr.point((rng.randrange(fw), rng.randrange(fh)), fill=_sh(col, 0.7) + (70,))
+                for _ in range(max(1, area // 700)):
+                    x, y = rng.randrange(fw), rng.randrange(fh); dr.arc([x, y, x + 6, y + 4], 0, 180, fill=_sh(col, 0.6) + (90,))
+            if st in ("fur", "skin", "scale") and area > 300 and rng.random() < 0.35:  # battle scar
+                x, y = rng.randrange(2, fw - 6), rng.randrange(2, fh - 6); dr.line([(x, y), (x + 5, y + 4)], fill=_sh(col, 1.5) + (200,)); dr.line([(x + 1, y), (x + 6, y + 4)], fill=_sh(col, 0.5) + (160,))
+            gtile = Image.new("RGBA", (fw, fh), (0, 0, 0, 0)); gd = ImageDraw.Draw(gtile)
+            if fname == "front" and "eyes" in p["f"] and fw >= 14:  # painted face
+                eyec = hexc(palette["eye"]); ew = max(3, int(fw * 0.085)); eh = max(2, int(ew * 0.8)); ey = int(fh * 0.34)
+                slit = st in ("scale", "fur") and sid not in ("bokoblin",)
+                for side, ex in ((-1, int(fw * 0.27)), (1, int(fw * 0.73))):
+                    dr.ellipse([ex - ew, ey - eh, ex + ew, ey + eh], fill=(20, 12, 12, 255))
+                    dr.ellipse([ex - ew + 1, ey - eh + 1, ex + ew - 1, ey + eh - 1], fill=eyec + (255,))
+                    gd.ellipse([ex - ew + 1, ey - eh + 1, ex + ew - 1, ey + eh - 1], fill=eyec + (255,))
+                    if slit: dr.ellipse([ex - 1, ey - eh + 1, ex + 1, ey + eh - 1], fill=(8, 4, 4, 255))
+                    else: dr.ellipse([ex - ew // 3, ey - eh // 2, ex + ew // 3, ey + eh // 2], fill=(10, 5, 5, 255))
+                    dr.point((ex - ew // 2, ey - eh // 2), fill=(255, 255, 255, 255))
+                    dr.polygon([(ex - ew - 1, ey - eh - 1 + (3 if side < 0 else 0)), (ex + ew + 1, ey - eh - 1 + (0 if side < 0 else 3)), (ex + ew + 1, ey - eh + 2), (ex - ew - 1, ey - eh + 2)], fill=_sh(col, 0.35) + (230,))  # brow
+                    dr.line([(ex - ew - 2, ey - eh - 2 + (4 if side < 0 else 0)), (ex + ew + 2, ey - eh - 2 + (0 if side < 0 else 4))], fill=_sh(col, 0.3) + (255,), width=2)
+                if fh >= 18:  # mouth with fangs
+                    my = int(fh * 0.84)
+                    dr.line([(int(fw * 0.22), my), (int(fw * 0.78), my)], fill=(25, 10, 10, 255), width=2)
+                    for tx in range(int(fw * 0.25), int(fw * 0.76), 5):
+                        big = tx < int(fw * 0.3) or tx > int(fw * 0.7)
+                        dr.polygon([(tx, my), (tx + 3, my), (tx + 1, my + (5 if big else 3))], fill=(240, 236, 220, 255))
+            if fname == "front" and "nostrils" in p["f"] and fw >= 8:
+                for nx in (int(fw * 0.28), int(fw * 0.72)):
+                    dr.ellipse([nx - 2, fh - 6, nx + 2, fh - 2], fill=_sh(col, 0.25) + (255,)); dr.arc([nx - 3, fh - 7, nx + 3, fh - 1], 200, 340, fill=_sh(col, 1.4) + (200,))
+            img.alpha_composite(tile, (fx, fy)); glow.alpha_composite(gtile, (fx, fy))
+    px = img.load(); gp = glow.load()
+    for x, y, c in saved: px[x, y] = c; gp[x, y] = c  # keep original emissive pixels crisp
+
+
 def gen_species():
     os.makedirs(f"{A}/specs", exist_ok=True)
     os.makedirs(f"{A}/textures/entity", exist_ok=True)
@@ -1061,6 +1153,7 @@ def gen_species():
                         r_, g_, b_, a_ = px[x, y]
                         if a_: px[x, y] = (r_, g_, b_, ALPHA[sid])
             img = img.resize((TEX * 2, TEX * 2), Image.NEAREST); glow = glow.resize((TEX * 2, TEX * 2), Image.NEAREST)
+            paint2x(img, glow, parts, sid, palette, zlib.crc32((sid + rname + "p").encode()))
             px2, gl2 = img.load(), glow.load(); r2 = random.Random(zlib.crc32((sid + rname + "2x").encode()))
             for x in range(TEX * 2):
                 for y in range(TEX * 2):
