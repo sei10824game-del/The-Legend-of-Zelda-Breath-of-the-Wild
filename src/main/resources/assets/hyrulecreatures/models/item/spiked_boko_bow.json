@@ -1,1 +1,1 @@
-{"parent": "minecraft:item/handheld", "textures": {"layer0": "hyrulecreatures:item/spiked_boko_bow"}}
+{"parent": "minecraft:item/handheld", "textures": {"layer0": "hyrulecreatures:item/spiked_boko_bow"}, "overrides": [{"predicate": {"pulling": 1}, "model": "hyrulecreatures:item/spiked_boko_bow_pulling_0"}, {"predicate": {"pulling": 1, "pull": 0.65}, "model": "hyrulecreatures:item/spiked_boko_bow_pulling_1"}, {"predicate": {"pulling": 1, "pull": 0.9}, "model": "hyrulecreatures:item/spiked_boko_bow_pulling_2"}]}

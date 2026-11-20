@@ -110,6 +110,7 @@ public class CreatureModel extends EntityModel<HyruleBiped> implements ArmedMode
         ModelPart head = p.get("head"), body = p.get("body");
         for (var en : minRank.entrySet()) p.get(en.getKey()).visible = e.rank() >= en.getValue(); // rank equipment
         boolean flier = e.species.flies;
+        if (p.get("ribs") != null && (e.species == Species.STALFOS || e.species == Species.STALMASTER)) p.get("ribs").visible = e.getHealth() > e.getMaxHealth() * 0.5f; // ribs crumble with damage
         if (head != null) head.visible = !(e.species.isStal() && e.headless());
         float lean = hunch, twist = 0, dip = 0;
 

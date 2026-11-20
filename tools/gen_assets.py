@@ -1055,6 +1055,14 @@ def gen_species():
                     for y in range(TEX):
                         r_, g_, b_, a_ = px[x, y]
                         if a_: px[x, y] = (r_, g_, b_, ALPHA[sid])
+            img = img.resize((TEX * 2, TEX * 2), Image.NEAREST); glow = glow.resize((TEX * 2, TEX * 2), Image.NEAREST)
+            px2, gl2 = img.load(), glow.load(); r2 = random.Random(zlib.crc32((sid + rname + "2x").encode()))
+            for x in range(TEX * 2):
+                for y in range(TEX * 2):
+                    r_, g_, b_, a_ = px2[x, y]
+                    if a_ and not gl2[x, y][3]:  # micro noise + soft vertical shading inside each texel
+                        f = 1 + r2.uniform(-0.035, 0.035) + ((y % 2) * 0.012 - 0.006) + ((x % 2) * 0.008 - 0.004)
+                        px2[x, y] = (max(0, min(255, int(r_ * f))), max(0, min(255, int(g_ * f))), max(0, min(255, int(b_ * f))), a_)
             img.save(f"{A}/textures/entity/{sid}_{rname}.png")
             glow.save(f"{A}/textures/entity/{sid}_{rname}_glow.png")
 
@@ -1224,8 +1232,20 @@ def gen_weapons():
     wj = []
     for (i, en, ja, kind, dmg, dur, c1, c2) in W:
         enhance(item_tex(kind, c1, c2, i)).save(f"{A}/textures/item/{i}.png")
-        json.dump({"parent": "minecraft:item/handheld", "textures": {"layer0": f"{MOD}:item/{i}"}},
-                  open(f"{A}/models/item/{i}.json", "w"))
+        if kind == "bow":
+            base = item_tex(kind, c1, c2, i)
+            for k in range(3):  # pulling_0..2: arrow nocked, string drawn back
+                im = base.copy(); dd = ImageDraw.Draw(im)
+                dd.line([(7, 1), (7 - k - 1, 7), (7, 14)], fill=(235, 235, 225, 255), width=1)
+                dd.line([(2 + k * 2, 8), (13, 8)], fill=(150, 110, 60, 255), width=1); dd.point((13, 7), fill=(200, 200, 210, 255)); dd.point((13, 9), fill=(200, 200, 210, 255))
+                enhance(im).save(f"{A}/textures/item/{i}_pulling_{k}.png")
+                json.dump({"parent": "minecraft:item/handheld", "textures": {"layer0": f"{MOD}:item/{i}_pulling_{k}"}}, open(f"{A}/models/item/{i}_pulling_{k}.json", "w"))
+            json.dump({"parent": "minecraft:item/handheld", "textures": {"layer0": f"{MOD}:item/{i}"}, "overrides": [
+                {"predicate": {"pulling": 1}, "model": f"{MOD}:item/{i}_pulling_0"},
+                {"predicate": {"pulling": 1, "pull": 0.65}, "model": f"{MOD}:item/{i}_pulling_1"},
+                {"predicate": {"pulling": 1, "pull": 0.9}, "model": f"{MOD}:item/{i}_pulling_2"}]}, open(f"{A}/models/item/{i}.json", "w"))
+        else:
+            json.dump({"parent": "minecraft:item/handheld", "textures": {"layer0": f"{MOD}:item/{i}"}}, open(f"{A}/models/item/{i}.json", "w"))
         wj.append(dict(id=i, kind=kind, dmg=dmg, dur=dur))
     json.dump(wj, open(f"{A}/weapons.json", "w"), separators=(",", ":"))
 
