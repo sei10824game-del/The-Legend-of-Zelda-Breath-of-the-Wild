@@ -263,6 +263,7 @@ setp("lynel", "body", box=(-7, -15, -5, 14, 15, 10)); setp("lynel", "belly", box
 setp("lynel", "rightArm", box=(-5, -2, -3, 6, 15, 6), pose=(-9.5, -6, -2)); setp("lynel", "leftArm", box=(-1, -2, -3, 6, 15, 6), pose=(9.5, -6, -2))
 SPECIES["wizzrobe"].update(hunch=0.0)
 setp("wizzrobe", "body", box=(-6, 0, -4, 12, 14, 8)); setp("wizzrobe", "hem", box=(-8, 12, -5, 16, 3, 10)); setp("wizzrobe", "head", box=(-5, -8, -5, 10, 8, 10))
+setp("wizzrobe", "cone", box=(-4, -5, -4, 8, 5, 8)); setp("wizzrobe", "tip", box=(-1.5, -4, -1.5, 3, 4, 3)); setp("wizzrobe", "body", box=(-7, 0, -5, 14, 14, 10)); setp("wizzrobe", "hem", box=(-10, 12, -6, 20, 3, 12))
 setp("wizzrobe", "rightArm", box=(-3, -2, -3, 6, 12, 6), pose=(-9, 10, 0)); setp("wizzrobe", "leftArm", box=(-3, -2, -3, 6, 12, 6), pose=(9, 10, 0))
 SPECIES["octorok"]["parts"] = [
     P("body", None, (-8, 0, -8, 16, 14, 16), (0, 8, 0), f=["eyes"]),
