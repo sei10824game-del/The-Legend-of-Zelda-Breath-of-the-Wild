@@ -100,9 +100,21 @@ public class HyruleBiped extends HyruleMob {
         });
     }
 
+    private net.minecraft.server.level.ServerBossEvent bar;
+    private void tickBossBar() {
+        if (getMaxHealth() < 300 || !(level() instanceof ServerLevel sl)) return;
+        if (bar == null) bar = new net.minecraft.server.level.ServerBossEvent(getDisplayName(), net.minecraft.world.BossEvent.BossBarColor.RED, net.minecraft.world.BossEvent.BossBarOverlay.PROGRESS);
+        bar.setProgress(Math.max(0f, getHealth() / getMaxHealth()));
+        if (tickCount % 20 == 0) {
+            for (var pl : sl.getPlayers(p -> p.distanceToSqr(this) < 48 * 48)) bar.addPlayer(pl);
+            for (var pl : new java.util.ArrayList<>(bar.getPlayers())) if (pl.distanceToSqr(this) > 56 * 56) bar.removePlayer(pl);
+        }
+    }
+    @Override public void remove(Entity.RemovalReason r) { if (bar != null) bar.removeAllPlayers(); super.remove(r); }
     private boolean enraged;
     @Override public void aiStep() {
         super.aiStep();
+        if (!level().isClientSide) tickBossBar();
         if (!level().isClientSide && tickCount % 5 == 0 && level() instanceof ServerLevel asl && auraParticle() != null)
             asl.sendParticles(auraParticle(), getX(), getY() + getBbHeight() * 0.6, getZ(), 2, getBbWidth() * 0.4, getBbHeight() * 0.3, getBbWidth() * 0.4, 0.01);
         if (!level().isClientSide && !enraged && getMaxHealth() >= 300 && getHealth() < getMaxHealth() * 0.5f) { // boss phase 2
@@ -367,6 +379,7 @@ public class HyruleBiped extends HyruleMob {
         getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(species.dmg * Species.DMG_MUL[rank()]);
         setHealth(getMaxHealth());
         populateDefaultEquipmentSlots(lv.getRandom(), d);
+        if (getBbHeight() >= 5) playSound(SoundEvents.ENDER_DRAGON_GROWL, 3f, 0.7f); // arrival roar
         return g;
     }
 

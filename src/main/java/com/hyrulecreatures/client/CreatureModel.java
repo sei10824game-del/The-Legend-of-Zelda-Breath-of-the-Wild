@@ -133,6 +133,12 @@ public class CreatureModel extends EntityModel<HyruleBiped> implements ArmedMode
         add("earL", 0, 0, Mth.sin(age * .13f) * .08f + amt * .15f);
         add("earR", 0, 0, -Mth.sin(age * .13f + 1) * .08f - amt * .15f);
         add("jaw", Mth.sin(age * .07f) * .03f + 0.02f, 0, 0);
+        for (String jn : new String[]{"cape", "mane", "scarf", "hair", "plume", "knot", "hair2"}) // cloth / hair trail behind movement
+            add(jn, amt * .5f + Mth.sin(age * .11f + jn.length()) * .05f, Mth.sin(age * .07f) * .04f, 0);
+        if (head != null && amt < .05f && e.atkKind() == null && e.downLeft() == 0) { // idle life: slow look-around, breathing
+            head.yRot += Mth.sin(age * .031f) * .35f; head.xRot += Mth.sin(age * .047f + 1f) * .05f;
+            if (body != null) body.yScale = 1f + Mth.sin(age * .09f) * .012f;
+        }
 
         AttackKind k = e.atkKind();
         if (e.species == Species.CHUCHU) { // squash & stretch instead of limbs

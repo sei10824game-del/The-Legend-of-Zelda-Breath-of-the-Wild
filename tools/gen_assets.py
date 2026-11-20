@@ -1041,6 +1041,29 @@ def refine_geometry(parts):
     return out
 
 
+ROUND = {"chuchu": ["body"], "octorok": ["body"], "keese": ["body"], "keese_fire": ["body"], "keese_ice": ["body"], "keese_elec": ["body"], "keese_dark": ["body"],
+         "peahat": ["body"], "bubble_fire": ["body"], "bubble_ice": ["body"], "bubble_dark": ["body"], "tentalus": ["body"], "scaldera": ["body"], "paraspalas": ["body"],
+         "guardian_skywatcher": ["body"], "bulblin": ["belly"], "moblin": ["belly"], "bokoblin": ["belly"], "hinox": ["belly"], "horriblin": [], "poe": ["head"], "shakomite": ["shell"]}
+
+
+def roundify(parts, names):
+    """approximate an ellipsoid with 4 stacked slabs (narrow-wide-wide-narrow); features stay on the widest front slab."""
+    out = []
+    for q in parts:
+        if q["n"] not in names or q["box"][4] < 4: out.append(q); continue
+        x, y, z, w, h, d = q["box"]; sl = h / 4; fac = (0.62, 1.0, 1.0, 0.62)
+        for k in range(4):
+            nw, nd = w * fac[k], d * fac[k]
+            nq = dict(q); nq["n"] = q["n"] if k == 1 else f'{q["n"]}_s{k}'
+            if k != 1: nq["p"] = q["n"]; nq["pose"] = [0, 0, 0]; nq["rot"] = [0, 0, 0]
+            nq["box"] = [x + (w - nw) / 2, y + sl * k, z + (d - nd) / 2, nw, sl, nd]; nq["f"] = q["f"] if k == 1 else []; nq["r"] = q.get("r", 0)
+            out.append(nq)
+        for c in out[-4:]:
+            pass
+    # re-parent children of the original part: they keep pointing at q["n"] which is slab 1 (same name)
+    return out
+
+
 def style_pass(img, glowmask, p, sid, rng, palette):
     st = STYLE.get(sid, "skin")
     u, v = p["uv"]
@@ -1304,6 +1327,10 @@ def gen_species():
             except AssertionError: print("refine skipped for", sid)
         parts = order_parts(parts)
         if sid in RANK_EXTRA: parts += rank_extras(parts)
+        if sid in ROUND and ROUND[sid]:
+            rp = roundify([dict(q) for q in parts], ROUND[sid])
+            try: pack(order_parts([dict(q) for q in rp])); parts = rp
+            except AssertionError: print("round skipped for", sid)
         parts = order_parts(parts)
         try: pack(parts)
         except AssertionError:  # too many boxes for the 128px sheet: drop the optional refinement boxes

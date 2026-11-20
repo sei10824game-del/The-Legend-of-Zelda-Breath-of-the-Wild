@@ -212,6 +212,12 @@ public abstract class HyruleMob extends Monster {
             if (a == AttackKind.BASH || a == AttackKind.CHARGE) { tg.knockback(1.3, getX() - tg.getX(), getZ() - tg.getZ()); tg.hurtMarked = true; }
         }
         playSound(SoundEvents.PLAYER_ATTACK_SWEEP, 1f, 0.8f + random.nextFloat() * 0.4f);
+        if ((a == AttackKind.SMASH || a == AttackKind.STOMP || a == AttackKind.CHARGE || a == AttackKind.LEAP) && level() instanceof net.minecraft.server.level.ServerLevel sl) { // ground impact
+            Vec3 at = position().add(Vec3.directionFromRotation(0, getYRot()).scale(Math.min(r, 3.5) * 0.8));
+            var below = level().getBlockState(net.minecraft.core.BlockPos.containing(at).below());
+            if (!below.isAir()) sl.sendParticles(new net.minecraft.core.particles.BlockParticleOption(net.minecraft.core.particles.ParticleTypes.BLOCK, below),
+                    at.x, at.y + 0.1, at.z, 10 + (int) (getBbHeight() * 4), 0.5 + getBbWidth() * 0.3, 0.1, 0.5 + getBbWidth() * 0.3, 0.15);
+        }
     }
 
     private class AttackGoal extends Goal {
