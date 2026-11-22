@@ -126,6 +126,7 @@ public class CreatureModel extends EntityModel<HyruleBiped> implements ArmedMode
             add("rightArm", 0, 0, splay); add("leftArm", 0, 0, -splay); dip += crouch;
             float g = Mth.cos(c) * amt, g2 = Mth.cos(c + Mth.PI) * amt;
             add("frontLeftLeg", g, 0, 0); add("backRightLeg", g, 0, 0); add("frontRightLeg", g2, 0, 0); add("backLeftLeg", g2, 0, 0);
+            add("frontLeftLegLow", Math.max(0, -g) * 1.2f, 0, 0); add("backRightLegLow", Math.max(0, g) * 1.2f, 0, 0); add("frontRightLegLow", Math.max(0, -g2) * 1.2f, 0, 0); add("backLeftLegLow", Math.max(0, g2) * 1.2f, 0, 0);
             if (e.species == Species.CHUCHU) body.y -= Math.abs(Mth.sin(limb * .4f)) * 3 * amt;
         }
         add("tail1", 0, Mth.sin(age * .1f) * .15f + Mth.sin(limb * .6f) * .35f * amt, 0);

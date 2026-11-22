@@ -1064,12 +1064,12 @@ def roundify(parts, names):
     return out
 
 
-def split_limbs(parts):
+def split_limbs(parts, names=("rightArm", "leftArm", "rightLeg", "leftLeg")):
     """elbow/knee joints: upper + lower segment (children below the joint follow the lower segment)."""
     out = [dict(q) for q in parts]; byn = {q["n"]: q for q in out}; new = []
-    for nm in ("rightArm", "leftArm", "rightLeg", "leftLeg"):
+    for nm in names:
         a = byn.get(nm)
-        if not a or a["box"][4] < 8: continue
+        if not a or a["box"][4] < (5 if "Leg" in nm and "front" in nm or "back" in nm else 8): continue
         x, y, z, w, h, d = a["box"]; cut = y + h * 0.5; lo = nm + "Low"
         a["box"] = [x, y, z, w, cut - y, d]
         new.append(P(lo, nm, (x, 0, z, w, y + h - cut, d), (0, cut, 0), c=a["c"], f=[f for f in a["f"] if f == "hand"]))
@@ -1345,6 +1345,9 @@ def gen_species():
             except AssertionError: print("refine skipped for", sid)
         parts = order_parts(parts)
         if sid in RANK_EXTRA: parts += rank_extras(parts)
+        if sid in ("lynel", "stalhound", "shadow_beast", "dodongo", "helmasaur"):
+            try: _q = split_limbs(parts, ("frontRightLeg", "frontLeftLeg", "backRightLeg", "backLeftLeg")); pack(order_parts([dict(q) for q in _q])); parts = _q
+            except AssertionError: print("quad split skipped for", sid)
         if sid in ROUND and ROUND[sid]:
             rp = roundify([dict(q) for q in parts], ROUND[sid])
             try: pack(order_parts([dict(q) for q in rp])); parts = rp
