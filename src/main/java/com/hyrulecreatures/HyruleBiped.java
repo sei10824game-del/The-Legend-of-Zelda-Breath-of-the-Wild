@@ -414,6 +414,7 @@ public class HyruleBiped extends HyruleMob {
             default -> 8;
         };
     }
+    @Override public float getVoicePitch() { return Math.max(0.5f, Math.min(1.2f, 1.3f - species.scale * 0.1f)) + (random.nextFloat() - random.nextFloat()) * 0.05f; } // bigger = deeper
     @Override protected SoundEvent getAmbientSound() {
         return switch (soundGroup()) { case 0 -> SoundEvents.ZOMBIFIED_PIGLIN_AMBIENT; case 1 -> SoundEvents.ENDERMITE_AMBIENT; case 2 -> SoundEvents.BAT_AMBIENT; case 3 -> SoundEvents.SKELETON_AMBIENT;
             case 4 -> null; case 5 -> SoundEvents.VEX_AMBIENT; case 6 -> SoundEvents.SLIME_SQUISH_SMALL; case 7 -> SoundEvents.ZOMBIE_AMBIENT; default -> SoundEvents.RAVAGER_AMBIENT; };

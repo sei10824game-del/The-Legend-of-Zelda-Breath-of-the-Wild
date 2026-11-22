@@ -30,8 +30,9 @@ public class CreatureModel extends EntityModel<HyruleBiped> implements ArmedMode
     @Override public void translateToHand(HumanoidArm arm, PoseStack ps) {
         p.getOrDefault(arm == HumanoidArm.RIGHT ? "rightArm" : "leftArm", p.get("body")).translateAndRotate(ps);
     }
+    public float tr = 1, tg = 1, tb = 1; // biome tint set by the renderer
     @Override public void renderToBuffer(PoseStack ps, VertexConsumer vc, int light, int overlay, float r, float g, float b, float a) {
-        root.render(ps, vc, light, overlay, r, g, b, a);
+        root.render(ps, vc, light, overlay, r * tr, g * tg, b * tb, a);
     }
 
     private void add(String n, float x, float y, float z) {

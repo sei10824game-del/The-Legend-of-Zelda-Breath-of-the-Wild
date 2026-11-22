@@ -31,6 +31,12 @@ public class HyruleRenderer extends MobRenderer<HyruleBiped, CreatureModel> {
     @Override protected void scale(HyruleBiped e, PoseStack ps, float pt) { float rise = e.tickCount < 24 ? 0.4f + 0.6f * (1 - (1 - e.tickCount / 24f) * (1 - e.tickCount / 24f)) : 1f; // summon: grows out of the ground
         float k = species.scale * (e.isMini() ? 0.55f : 1f) * rise; ps.scale(k, k, k); }
 
+    @Override public void render(HyruleBiped e, float yaw, float pt, PoseStack ps, net.minecraft.client.renderer.MultiBufferSource buf, int light) {
+        float t = e.level().getBiome(e.blockPosition()).value().getBaseTemperature(); // cold = frosted pale, hot = sun-bleached
+        model.tr = t < 0.15f ? 1.12f : t > 1.5f ? 1.1f : 1f; model.tg = t < 0.15f ? 1.12f : t > 1.5f ? 1.0f : 1f; model.tb = t < 0.15f ? 1.2f : t > 1.5f ? 0.84f : 1f;
+        super.render(e, yaw, pt, ps, buf, light);
+    }
+
     @Override protected float getWhiteOverlayProgress(HyruleBiped e, float pt) { // flash just before a heavy attack lands
         AttackKind k = e.atkKind();
         if (k == null || !(k == AttackKind.SMASH || k == AttackKind.SPIN || k == AttackKind.STOMP || k == AttackKind.AREA || k == AttackKind.BEAM || k == AttackKind.CHARGE || k == AttackKind.LEAP)) return 0;
