@@ -141,6 +141,11 @@ public class CreatureModel extends EntityModel<HyruleBiped> implements ArmedMode
             if (body != null) body.yScale = 1f + Mth.sin(age * .09f) * .012f;
         }
 
+        if (!flier) { // resting elbows, walking knees
+            float cc = limb * .6662f;
+            add("rightArmLow", -.3f - Math.abs(Mth.cos(cc)) * amt * .5f, 0, 0); add("leftArmLow", -.3f - Math.abs(Mth.cos(cc + Mth.PI)) * amt * .5f, 0, 0);
+            add("rightLegLow", Math.max(0, -Mth.cos(cc)) * amt * 1.1f + crouch * .12f, 0, 0); add("leftLegLow", Math.max(0, -Mth.cos(cc + Mth.PI)) * amt * 1.1f + crouch * .12f, 0, 0);
+        }
         AttackKind k = e.atkKind();
         if (e.species == Species.CHUCHU) { // squash & stretch instead of limbs
             float sq = 1 + Mth.sin(age * .15f) * .05f, sy = sq, sxz = 2 - sq;
@@ -168,6 +173,11 @@ public class CreatureModel extends EntityModel<HyruleBiped> implements ArmedMode
             lean += key(t, T, c[BX]) * .5f; twist += key(t, T, c[BY]) * dir * .6f; dip += key(t, T, c[DIP]) * .5f;
             if (head != null) { head.xRot += key(t, T, c[HX]); head.yRot += key(t, T, c[HY]) * dir; }
             add("rightLeg", key(t, T, c[RL]), 0, 0); add("leftLeg", key(t, T, c[LL]), 0, 0);
+            if (k != AttackKind.SHOOT && k != AttackKind.BEAM && k != AttackKind.AREA && k != AttackKind.BITE) { // forearms fold back during the wind-up, snap straight on the hit
+                float[] fv = new float[T.length], fv2 = new float[T.length];
+                for (int q = 1; q < T.length - 1; q++) { fv[q] = q == 1 ? -1.2f : -.1f; fv2[q] = fv[q] * .75f; }
+                add("rightArmLow", key(t, T, fv), 0, 0); add("leftArmLow", key(t, T, fv2), 0, 0);
+            }
             if (k == AttackKind.CHARGE && t > k.windup) { // gallop
                 if (p.get("rightLeg") != null) { p.get("rightLeg").xRot = Mth.sin(t * .9f) * 1.2f; p.get("leftLeg").xRot = -Mth.sin(t * .9f) * 1.2f; }
                 add("frontLeftLeg", Mth.sin(t * .9f) * 1.0f, 0, 0); add("backRightLeg", Mth.sin(t * .9f) * 1.0f, 0, 0);

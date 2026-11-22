@@ -1064,6 +1064,22 @@ def roundify(parts, names):
     return out
 
 
+def split_limbs(parts):
+    """elbow/knee joints: upper + lower segment (children below the joint follow the lower segment)."""
+    out = [dict(q) for q in parts]; byn = {q["n"]: q for q in out}; new = []
+    for nm in ("rightArm", "leftArm", "rightLeg", "leftLeg"):
+        a = byn.get(nm)
+        if not a or a["box"][4] < 8: continue
+        x, y, z, w, h, d = a["box"]; cut = y + h * 0.5; lo = nm + "Low"
+        a["box"] = [x, y, z, w, cut - y, d]
+        new.append(P(lo, nm, (x, 0, z, w, y + h - cut, d), (0, cut, 0), c=a["c"], f=[f for f in a["f"] if f == "hand"]))
+        a["f"] = [f for f in a["f"] if f != "hand"]
+        for q in out:
+            if q["p"] == nm and (q["box"][1] + q["box"][4] / 2) >= cut:
+                q["p"] = lo; q["box"][1] -= cut
+    return order_parts(out + new)
+
+
 def style_pass(img, glowmask, p, sid, rng, palette):
     st = STYLE.get(sid, "skin")
     u, v = p["uv"]
@@ -1322,6 +1338,8 @@ def gen_species():
         if sid in DETAIL:
             parts += detail_extras(parts)
             parts = order_parts(parts); _ref = refine_geometry(parts)
+            try: _sp = split_limbs(parts + _ref); pack(order_parts([dict(q) for q in _sp])); parts = [q for q in _sp if q in _sp]; _ref = []
+            except AssertionError: print("limb split skipped for", sid)
             try:
                 pack(order_parts([dict(q) for q in parts + _ref])); parts += _ref
             except AssertionError: print("refine skipped for", sid)
