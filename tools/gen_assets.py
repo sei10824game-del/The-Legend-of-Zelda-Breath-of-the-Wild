@@ -804,6 +804,39 @@ SPECIES["kargarok"] = dict(hunch=0.0, parts=[
     P("wingL", "body", (0, -0.5, -4, 18, 1, 9), (4, -2, 0), c="wing"), P("wingR", "body", (-18, -0.5, -4, 18, 1, 9), (-4, -2, 0), c="wing"),
     P("tail1", "body", (-2, -1, 0, 4, 2, 7), (0, 0, 6), c="wing"), P("footL", "body", (-1, 3, -1, 2, 5, 2), (2, 0, -1), c="horn"), P("footR", "body", (-1, 3, -1, 2, 5, 2), (-2, 0, -1), c="horn")])
 
+# ================= remaining BotW/TotK creatures =================
+SPECIES["molduga"] = dict(hunch=0.0, parts=[
+    P("body", None, (-8, -6, -14, 16, 12, 28), (0, 16, 0), c="skin"),
+    P("back", "body", (-5, -9, -10, 10, 3, 20), (0, 0, 0), c="skin2", f=["stripes"]),
+    P("head", None, (-7, -5, -9, 14, 10, 9), (0, 16, -14), c="skin2", f=["eyes"]),
+    P("jawU", "head", (-6, -8, -16, 12, 4, 10), (0, 0, 0), c="skin"), P("jawL", "head", (-6, 2, -16, 12, 3, 10), (0, 0, 0), c="belly"),
+    P("fangs", "head", (-5, 0, -16, 10, 3, 1), (0, 0, 0), c="bandage"),
+    P("finL", "body", (6, -2, -4, 8, 1, 8), (0, 0, 0), (0, 0, -0.4), c="skin2"), P("finR", "body", (-14, -2, -4, 8, 1, 8), (0, 0, 0), (0, 0, 0.4), c="skin2"),
+    P("tail1", "body", (-5, -4, 0, 10, 8, 8), (0, 0, 14), c="skin"), P("tail2", "tail1", (-3.5, -3, 0, 7, 6, 8), (0, 0, 8), c="skin2"), P("tail3", "tail2", (-1, -5, 0, 2, 10, 6), (0, 0, 8), c="skin"),
+    P("frontRightLeg", None, (-3, 0, -3, 6, 6, 6), (-6, 24, -8), c="skin2"), P("frontLeftLeg", None, (-3, 0, -3, 6, 6, 6), (6, 24, -8), c="skin2"),
+    P("backRightLeg", None, (-3, 0, -3, 6, 6, 6), (-6, 24, 8), c="skin2"), P("backLeftLeg", None, (-3, 0, -3, 6, 6, 6), (6, 24, 8), c="skin2")])
+SPECIES["molduking"] = SPECIES["molduga"]
+SPECIES["gloom_hands"] = _cp2.deepcopy(SPECIES["gumarm"])
+SPECIES["like_like"] = dict(hunch=0.0, parts=[
+    P("body", None, (-7, -14, -7, 14, 18, 14), (0, 20, 0), c="skin", f=["stripes"]),
+    P("belly", "body", (-6, -2, -7.5, 12, 8, 1), (0, 0, 0), c="belly"),
+    P("head", None, (-8, -4, -8, 16, 4, 16), (0, 6, 0), c="skin2"), P("rim", "head", (-9, -3, -9, 18, 2, 18), (0, 0, 0), c="horn"),
+    P("tongue", "head", (-3, -2, -3, 6, 2, 6), (0, 0, 0), c="belly"), P("eyeL", "head", (2, -8, -4, 4, 4, 4), (0, 0, 0), c="horn", f=["bigeye"]), P("eyeR", "head", (-6, -8, -4, 4, 4, 4), (0, 0, 0), c="horn", f=["bigeye"])])
+SPECIES["marbled_gohma"] = _cp2.deepcopy(SPECIES["armogohma"])
+SPECIES["colgera"] = _cp2.deepcopy(SPECIES["argorok"])
+SPECIES["queen_gibdo"] = _cp2.deepcopy(SPECIES["gibdo"])
+SPECIES["queen_gibdo"]["parts"] += [P("wingL", "body", (0, -0.5, -3, 20, 1, 12), (4, 3, 3), c="wing"), P("wingR", "body", (-20, -0.5, -3, 20, 1, 12), (-4, 3, 3), c="wing"),
+    P("crownQ", "head", (-5, -2, -5, 10, 2, 10), (0, -8, 0), c="horn"), P("spikeQ", "head", (-1, -9, -1, 2, 7, 2), (0, -8, 0), c="horn")]
+SPECIES["flux_construct"] = dict(hunch=0.0, parts=[
+    P("body", None, (-8, 0, -6, 16, 12, 12), (0, 4, 0), f=["circuit"]), P("blockA", "body", (-10, 4, -4, 6, 6, 6), (0, 0, 0), c="skin2", f=["circuit"]),
+    P("blockB", "body", (4, -6, -3, 7, 7, 7), (0, 0, 0), c="skin", f=["circuit"]), P("blockC", "body", (-4, 10, 2, 8, 6, 5), (0, 0, 0), c="skin2", f=["circuit"]),
+    P("head", None, (-5, -7, -5, 10, 7, 10), (0, 4, -1), c="skin2", f=["bigeye"]),
+    P("rightArm", None, (-6, -2, -4, 8, 18, 8), (-13, 6, 0), c="skin", f=["circuit"]), P("leftArm", None, (-2, -2, -4, 8, 18, 8), (13, 6, 0), c="skin2", f=["circuit"]),
+    P("rightLeg", None, (-4, 0, -4, 8, 8, 8), (-5, 16, 0), c="skin2"), P("leftLeg", None, (-4, 0, -4, 8, 8, 8), (5, 16, 0), c="skin")])
+SPECIES["seized_construct"] = _cp2.deepcopy(SPECIES["soldier_construct"])
+SPECIES["seized_construct"]["parts"] += [P("gloomA", "body", (-6, -3, -1, 6, 6, 5), (0, 0, 0), c="horn"), P("gloomB", "head", (-3, -10, -2, 5, 4, 5), (0, 0, 0), c="horn")]
+SPECIES["boss_bokoblin"] = _cp2.deepcopy(SPECIES["bokoblin"])
+SPECIES["boss_bokoblin"]["parts"] += [P("armorL", "body", (0, -2, -3.5, 5, 4, 7), (4, 0, 0), c="horn"), P("armorR", "body", (-5, -2, -3.5, 5, 4, 7), (-4, 0, 0), c="horn"), P("helmBoss", "head", (-5.5, -3, -5.5, 11, 3, 11), (0, -6, 0), c="horn")]
 def sp(**k): return pal(**k)
 PAL["stalfos"] = ranks5(pal("#dcd8c4", "#b8b49c", "#e8e4d0", "#6a4a3a", "#8a7a60", eye="#ff4020"))
 PAL["stalmaster"] = ranks5(pal("#d8b840", "#a88820", "#e8d070", "#5a3a6a", "#fff0a0", eye="#ff4020"))
@@ -857,6 +890,18 @@ PAL["aeralfos"] = ranks5(pal("#9a5a3a", "#7a4228", "#e0c890", "#6a4a3a", "#e8dcb
 PAL["dinolfos"] = ranks5(pal("#8a3a2a", "#6a2a1e", "#d8b878", "#4a3a2a", "#d8c070", eye="#ffd030"))
 PAL["kargarok"] = ranks5(pal("#6a4a3a", "#4a3224", "#d8b888", "#000000", "#e8a830", wing="#7a5a40", eye="#ffcc20"))
 for _k in ("bulblin", "king_bulblin", "stalhound", "shadow_beast", "redead", "poe", "tektite", "peahat", "bubble_fire", "bubble_ice", "bubble_dark", "dodongo", "helmasaur", "dark_nut", "death_sword", "zant", "ganondorf", "diababa", "argorok", "fyrus", "armogohma", "aeralfos", "dinolfos", "kargarok"):
+    for _p in PAL[_k]: _p.setdefault("nose", "#e8a0a8"); _p.setdefault("bandage", "#ece8d8"); _p.setdefault("bone", _p["skin2"]); _p.setdefault("joint", _p["horn"])
+PAL["molduga"] = ranks5(pal("#b89a68", "#8a7048", "#e0c898", "#000000", "#e8e0c0", eye="#ff4020"))
+PAL["molduking"] = ranks5(pal("#a8a8a0", "#7a7a72", "#d0d0c8", "#000000", "#c8d8e0", eye="#40d8ff"))
+PAL["gloom_hands"] = ranks5(pal("#3a1a2a", "#241018", "#5a2a3a", "#000000", "#c02a3a", eye="#ff3a4a"))
+PAL["like_like"] = ranks5(pal("#6a5a8a", "#4a3a6a", "#e0a0b0", "#000000", "#e8a030", eye="#ffee40"))
+PAL["marbled_gohma"] = ranks5(pal("#e8e4dc", "#b8b4ac", "#f4f0e8", "#000000", "#60c8ff", eye="#ff5040"))
+PAL["colgera"] = ranks5(pal("#6a8a3a", "#4a6a28", "#e8d890", "#000000", "#e8f0a0", wing="#8aaa48", eye="#ffee55"))
+PAL["queen_gibdo"] = ranks5(pal("#a8a090", "#7a7468", "#c8c0b0", "#8a7a58", "#e8c850", wing="#7a6a50", eye="#ff3030"))
+PAL["flux_construct"] = ranks5(pal("#7a8a7a", "#5a6a5a", "#9aaa9a", "#000000", "#e8a030", eye="#ffcc40"))
+PAL["seized_construct"] = ranks5(pal("#5a6a6a", "#3a4a4a", "#7a8a8a", "#000000", "#c02a4a", eye="#ff3a5a"))
+PAL["boss_bokoblin"] = ranks5(pal("#c8452f", "#a33322", "#e98a63", "#6b4a2b", "#e8dcb8", eye="#46c8ff"))
+for _k in ("molduga", "molduking", "gloom_hands", "like_like", "marbled_gohma", "colgera", "queen_gibdo", "flux_construct", "seized_construct", "boss_bokoblin"):
     for _p in PAL[_k]: _p.setdefault("nose", "#e8a0a8"); _p.setdefault("bandage", "#ece8d8"); _p.setdefault("bone", _p["skin2"]); _p.setdefault("joint", _p["horn"])
 PAL["tentalus"] = ranks5(pal("#4a7a8a", "#345a68", "#8ab8c8", "#000000", "#e8e0a0", eye="#ff4a30"))
 PAL["the_imprisoned"] = ranks5(pal("#6a5a78", "#4a3a58", "#8a7a98", "#000000", "#e8e0d0", eye="#ff4a20"))
@@ -1455,6 +1500,7 @@ W = [
     ("zant_sword", "Zant's Scimitar", "ザントの曲刀", "sword", 14, 200, "#8a8aa0", "#2a2a3a"),
     ("ganon_sword", "Ganondorf's Greatsword", "ガノンドロフの大剣", "claymore", 24, 300, "#4a3a3a", "#d8a020"),
     ("fyrus_blade", "Fyrus Scimitar", "ファイラスの曲刀", "claymore", 22, 250, "#d86a20", "#4a2a1a"),
+    ("boss_bokoblin_club", "Boss Bokoblin Club", "ボスボコブリンの大棍棒", "claymore", 14, 140, "#8a6a40", "#5a3a20"),
     ("lizal_boomerang", "Lizal Boomerang", "リザルブーメラン", "boomerang", 5, 30, "#7a9a3a", "#e0d08a"),
     ("lizal_forked_boomerang", "Lizal Forked Boomerang", "リザルフォーク", "boomerang", 7, 40, "#3a8ac0", "#bfe0ee"),
     ("lizal_tri_boomerang", "Lizal Tri-Boomerang", "リザルトライブーメラン", "boomerang", 10, 60, "#4a4a5a", "#aaaabb"),
@@ -1595,6 +1641,9 @@ NAMES = {"bokoblin": ("Bokoblin", "ボコブリン"), "moblin": ("Moblin", "モ�
          "armos": ("Armos", "アモス"), "beamos": ("Beamos", "ビーモス"), "skulltula": ("Staltula", "スタルチュラ"), "deku_baba": ("Deku Baba", "デクババ"),
          "cursed_bokoblin": ("Rotten Bokoblin", "くされボコブリン"), "ghirahim": ("Ghirahim", "魔族長 ギラヒム"), "demise": ("Demise", "終焉の者"), "moldarach": ("Moldarach", "千年甲殻蟲 モルドガット"),
          "koloktos": ("Koloktos", "魔触神器 ダ・イルオーマ"), "scaldera": ("Scaldera", "獄炎大岩 ベラ・ダーマ"), "the_imprisoned": ("The Imprisoned", "封印されしもの"), "tentalus": ("Tentalus", "古代海獣 ダイダゴス"),
+         "molduga": ("Molduga", "モルドラ"), "molduking": ("Molduking", "モルドラジーク"), "gloom_hands": ("Gloom Hands", "瘴気の手"), "like_like": ("Like Like", "ライクライク"),
+         "marbled_gohma": ("Marbled Gohma", "ボルドゴーマ"), "colgera": ("Colgera", "フリザゲイラ"), "queen_gibdo": ("Queen Gibdo", "クィンギブド"),
+         "flux_construct": ("Flux Construct", "フラックスコンストラクト"), "seized_construct": ("Seized Construct", "瘴気のコンストラクト"), "boss_bokoblin": ("Boss Bokoblin", "ボスボコブリン"),
          "bulblin": ("Bulblin", "ブルブリン"), "king_bulblin": ("King Bulblin", "ブルブリン王"), "stalhound": ("Stalhound", "スタルハウンド"), "shadow_beast": ("Shadow Beast", "影の獣"),
          "redead": ("Redead", "リーデッド"), "poe": ("Poe", "ポウ"), "tektite": ("Tektite", "テクタイト"), "peahat": ("Peahat", "ピーハット"),
          "bubble_fire": ("Fire Bubble", "ファイアバブル"), "bubble_ice": ("Ice Bubble", "アイスバブル"), "bubble_dark": ("Cursed Bubble", "呪いのバブル"),
@@ -1695,7 +1744,7 @@ def gen_data():
     d = os.path.join(RES, "data", MOD, "forge", "biome_modifier")
     os.makedirs(d, exist_ok=True)
     for f in os.listdir(d): os.remove(os.path.join(d, f))  # bosses (gleeok, phantom ganon, captain construct) are spawn-egg/command only
-    spawns = {"bokoblin": (40, 2, 4), "moblin": (20, 1, 2), "lizalfos": (25, 1, 3), "keese": (30, 2, 4), "hinox": (4, 1, 1), "talus": (8, 1, 1), "gibdo": (14, 1, 3), "horriblin": (14, 2, 3), "octorok": (12, 1, 2), "wizzrobe": (6, 1, 1), "blizzrobe": (3, 1, 1), "thunder_wizzrobe": (3, 1, 1), "lynel": (3, 1, 1), "chuchu": (30, 2, 4), "guardian": (3, 1, 1), "decayed_guardian": (4, 1, 1), "stalkoblin": (10, 2, 3), "stalmoblin": (5, 1, 2), "stalizalfos": (6, 1, 2), "yiga_footsoldier": (6, 1, 3), "yiga_blademaster": (2, 1, 1), "soldier_construct": (4, 1, 2), "frox": (2, 1, 1), "stalfos": (6, 1, 2), "dark_lizalfos": (3, 1, 2), "bulblin": (8, 2, 4), "stalhound": (5, 1, 3), "redead": (4, 1, 2), "poe": (4, 1, 2), "tektite": (6, 1, 3), "peahat": (4, 1, 2), "bubble_fire": (3, 1, 2), "bubble_ice": (3, 1, 2), "bubble_dark": (3, 1, 2), "dodongo": (2, 1, 1), "helmasaur": (3, 1, 1), "dark_nut": (1, 1, 1), "aeralfos": (2, 1, 1), "dinolfos": (3, 1, 2), "kargarok": (3, 1, 2), "shadow_beast": (2, 1, 1), "techno_bokoblin": (3, 1, 2), "quadro_baba": (3, 1, 2), "keese_dark": (4, 1, 3), "wall_skulltula": (6, 2, 4), "petit_moldorm": (6, 3, 6), "shakomite": (3, 1, 2), "frog_magma": (3, 1, 1), "frog_elec": (3, 1, 1), "frog_dark": (3, 1, 1), "frog_water": (3, 1, 1), "armos": (2, 1, 1), "skulltula": (8, 1, 3), "deku_baba": (6, 1, 2), "cursed_bokoblin": (4, 1, 2), "lizalfos_fire": (4, 1, 2), "lizalfos_ice": (4, 1, 2), "lizalfos_elec": (4, 1, 2), "keese_fire": (6, 2, 3), "keese_ice": (6, 2, 3), "keese_elec": (6, 2, 3)}
+    spawns = {"bokoblin": (40, 2, 4), "moblin": (20, 1, 2), "lizalfos": (25, 1, 3), "keese": (30, 2, 4), "hinox": (4, 1, 1), "talus": (8, 1, 1), "gibdo": (14, 1, 3), "horriblin": (14, 2, 3), "octorok": (12, 1, 2), "wizzrobe": (6, 1, 1), "blizzrobe": (3, 1, 1), "thunder_wizzrobe": (3, 1, 1), "lynel": (3, 1, 1), "chuchu": (30, 2, 4), "guardian": (3, 1, 1), "decayed_guardian": (4, 1, 1), "stalkoblin": (10, 2, 3), "stalmoblin": (5, 1, 2), "stalizalfos": (6, 1, 2), "yiga_footsoldier": (6, 1, 3), "yiga_blademaster": (2, 1, 1), "soldier_construct": (4, 1, 2), "frox": (2, 1, 1), "stalfos": (6, 1, 2), "dark_lizalfos": (3, 1, 2), "molduga": (1, 1, 1), "like_like": (3, 1, 1), "gloom_hands": (2, 1, 1), "flux_construct": (1, 1, 1), "bulblin": (8, 2, 4), "stalhound": (5, 1, 3), "redead": (4, 1, 2), "poe": (4, 1, 2), "tektite": (6, 1, 3), "peahat": (4, 1, 2), "bubble_fire": (3, 1, 2), "bubble_ice": (3, 1, 2), "bubble_dark": (3, 1, 2), "dodongo": (2, 1, 1), "helmasaur": (3, 1, 1), "dark_nut": (1, 1, 1), "aeralfos": (2, 1, 1), "dinolfos": (3, 1, 2), "kargarok": (3, 1, 2), "shadow_beast": (2, 1, 1), "techno_bokoblin": (3, 1, 2), "quadro_baba": (3, 1, 2), "keese_dark": (4, 1, 3), "wall_skulltula": (6, 2, 4), "petit_moldorm": (6, 3, 6), "shakomite": (3, 1, 2), "frog_magma": (3, 1, 1), "frog_elec": (3, 1, 1), "frog_dark": (3, 1, 1), "frog_water": (3, 1, 1), "armos": (2, 1, 1), "skulltula": (8, 1, 3), "deku_baba": (6, 1, 2), "cursed_bokoblin": (4, 1, 2), "lizalfos_fire": (4, 1, 2), "lizalfos_ice": (4, 1, 2), "lizalfos_elec": (4, 1, 2), "keese_fire": (6, 2, 3), "keese_ice": (6, 2, 3), "keese_elec": (6, 2, 3)}
     for sid, (wt, lo, hi) in spawns.items():
         json.dump({"type": "forge:add_spawns", "biomes": "#minecraft:is_overworld",
                    "spawners": {"type": f"{MOD}:{sid}", "weight": wt, "minCount": lo, "maxCount": hi}},

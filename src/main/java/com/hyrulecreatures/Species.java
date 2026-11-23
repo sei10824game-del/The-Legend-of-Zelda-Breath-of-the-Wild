@@ -123,6 +123,16 @@ public enum Species {
     AERALFOS("aeralfos", 2.02f, 3.37f, 70, 6, 0.3, 0.5, 3.1, 1.77f, AttackKind.SLASH, 0f, true, new String[][]{{"aeralfos_spear"}, {"aeralfos_spear"}, {"aeralfos_spear"}, {"aeralfos_spear"}, {"aeralfos_spear"}}),
     DINOLFOS("dinolfos", 2.03f, 3.38f, 80, 6, 0.34, 0.8, 3.0, 1.69f, AttackKind.SLASH, 0f, false, new String[][]{{"dinolfos_sword"}, {"dinolfos_sword"}, {"dinolfos_sword"}, {"dinolfos_sword"}, {"dinolfos_sword"}}),
     KARGAROK("kargarok", 1.4f, 2.34f, 40, 5, 0.4, 0.3, 2.7, 2.2f, AttackKind.BITE, 0f, true, new String[][]{{}, {}, {}, {}, {}}),
+    MOLDUGA("molduga", 3.2f, 3.6f, 700, 16, 0.26, 3.0, 5.0, 2.6f, AttackKind.SMASH, 0.0f, false, new String[][]{{}, {}, {}, {}, {}}),
+    MOLDUKING("molduking", 4.4f, 5.0f, 1400, 22, 0.26, 3.5, 6.0, 3.6f, AttackKind.SMASH, 0.0f, false, new String[][]{{}, {}, {}, {}, {}}),
+    GLOOM_HANDS("gloom_hands", 2.0f, 1.2f, 160, 10, 0.3, 1.5, 3.6, 2.0f, AttackKind.SMASH, 0.0f, false, new String[][]{{}, {}, {}, {}, {}}),
+    LIKE_LIKE("like_like", 1.6f, 2.6f, 90, 6, 0.12, 0.5, 2.0, 1.6f, AttackKind.BITE, 0.0f, false, new String[][]{{}, {}, {}, {}, {}}),
+    MARBLED_GOHMA("marbled_gohma", 2.4f, 2.6f, 1000, 16, 0.22, 2.5, 16, 2.2f, AttackKind.SHOOT, 0.0f, false, new String[][]{{}, {}, {}, {}, {}}),
+    COLGERA("colgera", 2.4f, 3.0f, 1200, 16, 0.3, 2.0, 16, 2.6f, AttackKind.SHOOT, 0.0f, true, new String[][]{{}, {}, {}, {}, {}}),
+    QUEEN_GIBDO("queen_gibdo", 1.2f, 3.4f, 800, 12, 0.28, 1.5, 2.8, 1.8f, AttackKind.SLASH, 0.0f, true, new String[][]{{}, {}, {}, {}, {}}),
+    FLUX_CONSTRUCT("flux_construct", 2.0f, 4.4f, 500, 14, 0.2, 2.5, 3.6, 2.4f, AttackKind.SMASH, 0.2f, false, new String[][]{{}, {}, {}, {}, {}}),
+    SEIZED_CONSTRUCT("seized_construct", 1.2f, 3.4f, 220, 12, 0.24, 1.5, 3.0, 1.8f, AttackKind.SLASH, 0.0f, false, new String[][]{{"royal_broadsword"}, {"royal_broadsword"}, {"royal_broadsword"}, {"royal_broadsword"}, {"royal_broadsword"}}),
+    BOSS_BOKOBLIN("boss_bokoblin", 1.4f, 3.2f, 250, 10, 0.26, 1.8, 3.0, 1.6f, AttackKind.SMASH, 0.2f, false, new String[][]{{"boss_bokoblin_club"}, {"boss_bokoblin_club"}, {"boss_bokoblin_club"}, {"boss_bokoblin_club"}, {"boss_bokoblin_club"}}),
     HORRIBLIN("horriblin", 1.79f, 2.99f, 30, 3, 0.3, 0.4, 2.7, 1.44f, AttackKind.SLASH, 0f, false, new String[][]{
         {"boko_club", "boko_spear"}, {"spiked_boko_club", "spiked_boko_spear"}, {"dragonbone_boko_club"}, {"dragonbone_boko_spear"}, {"dragonbone_boko_club"}});
 

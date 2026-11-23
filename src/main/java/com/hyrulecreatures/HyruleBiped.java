@@ -54,10 +54,10 @@ public class HyruleBiped extends HyruleMob {
     @Override public AttackKind defaultAttack() { return species.attack; }
     @Override public double reach() { return species.reach + (getMainHandItem().getItem() instanceof HyruleWeaponItem w && w.style == HyruleWeaponItem.Style.SPEAR ? 0.6 : 0); }
     @Override protected double stompChance() {
-        return switch (species) { case KING_BULBLIN, FYRUS, DODONGO, DARK_NUT, GUMARM, STALMASTER, KOLOKTOS, MOLDARACH, DEMISE, THE_IMPRISONED, HINOX, TALUS, GUARDIAN, STALHINOX, CALAMITY_GANON, THUNDERBLIGHT_GANON -> 0.3; case GUARDIAN_SCOUT_4 -> 0.2; case FROX -> 0.35; case CAPTAIN_CONSTRUCT -> 0.2; case MOBLIN -> 0.1; default -> 0; };
+        return switch (species) { case GLOOM_HANDS, FLUX_CONSTRUCT, MOLDUGA, MOLDUKING, KING_BULBLIN, FYRUS, DODONGO, DARK_NUT, GUMARM, STALMASTER, KOLOKTOS, MOLDARACH, DEMISE, THE_IMPRISONED, HINOX, TALUS, GUARDIAN, STALHINOX, CALAMITY_GANON, THUNDERBLIGHT_GANON -> 0.3; case GUARDIAN_SCOUT_4 -> 0.2; case FROX -> 0.35; case CAPTAIN_CONSTRUCT -> 0.2; case MOBLIN -> 0.1; default -> 0; };
     }
     @Override protected boolean canCharge() {
-        return switch (species) { case HELMASAUR, DODONGO, SHAKOMITE, ARMOS, CURSED_BOKOBLIN, TECHNO_BOKOBLIN, BOKOBLIN, HORRIBLIN, STALKOBLIN, MOBLIN, STALMOBLIN, LYNEL, THUNDERBLIGHT_GANON, FIREBLIGHT_GANON, MASTER_KOHGA -> true; default -> false; };
+        return switch (species) { case MOLDUGA, MOLDUKING, HELMASAUR, DODONGO, SHAKOMITE, ARMOS, CURSED_BOKOBLIN, TECHNO_BOKOBLIN, BOKOBLIN, HORRIBLIN, STALKOBLIN, MOBLIN, STALMOBLIN, LYNEL, THUNDERBLIGHT_GANON, FIREBLIGHT_GANON, MASTER_KOHGA -> true; default -> false; };
     }
     // ---------------------------------------------------------------- Stal creatures: 1 HP, head pops off, body keeps fighting
     private java.util.UUID headId;
@@ -129,7 +129,7 @@ public class HyruleBiped extends HyruleMob {
 
     // ---------------------------------------------------------------- guardians: 8 legs with own HP, beam
     public boolean isLegged() { return species == Species.GUARDIAN || species == Species.DECAYED_GUARDIAN || species == Species.CALAMITY_GANON; }
-    private boolean longShooter() { return switch (species) { case ZANT, GANONDORF, DODONGO, DIABABA, ARMOGOHMA, ARGOROK, LYNEL, HINOX, TALUS, FROX, STALHINOX, SCALDERA, THE_IMPRISONED, DEMISE, KOLOKTOS, LIZALFOS_FIRE, LIZALFOS_ICE, LIZALFOS_ELEC, MASTER_KOHGA, FIREBLIGHT_GANON, WATERBLIGHT_GANON, WINDBLIGHT_GANON, THUNDERBLIGHT_GANON -> true; default -> false; }; }
+    private boolean longShooter() { return switch (species) { case MARBLED_GOHMA, COLGERA, ZANT, GANONDORF, DODONGO, DIABABA, ARMOGOHMA, ARGOROK, LYNEL, HINOX, TALUS, FROX, STALHINOX, SCALDERA, THE_IMPRISONED, DEMISE, KOLOKTOS, LIZALFOS_FIRE, LIZALFOS_ICE, LIZALFOS_ELEC, MASTER_KOHGA, FIREBLIGHT_GANON, WATERBLIGHT_GANON, WINDBLIGHT_GANON, THUNDERBLIGHT_GANON -> true; default -> false; }; }
     private boolean pureBeamer() { return switch (species) { case GUARDIAN, DECAYED_GUARDIAN, GUARDIAN_TURRET, GUARDIAN_SKYWATCHER, CALAMITY_GANON, BEAMOS -> true; default -> false; }; }
     private float[] legHp;
 
@@ -180,9 +180,9 @@ public class HyruleBiped extends HyruleMob {
     private boolean isBlight() { return switch (species) { case FIREBLIGHT_GANON, WATERBLIGHT_GANON, WINDBLIGHT_GANON, THUNDERBLIGHT_GANON -> true; default -> false; }; }
     /** element of the ground-targeted magic: 1 fire, 2 water, 3 lightning, 4 wind */
     private int areaElement() {
-        return switch (species) { case REDEAD -> 8; case ZANT -> 4; case GANONDORF -> 3; case TENTALUS -> 2; case GHIRAHIM -> 4; case DEMISE -> 3; case BLIZZROBE -> 5; case THUNDER_WIZZROBE -> 3; case WATERBLIGHT_GANON -> 2; case THUNDERBLIGHT_GANON -> 3; case WINDBLIGHT_GANON -> 4; default -> 1; };
+        return switch (species) { case QUEEN_GIBDO -> 8; case COLGERA, MOLDUGA, MOLDUKING -> 4; case REDEAD -> 8; case ZANT -> 4; case GANONDORF -> 3; case TENTALUS -> 2; case GHIRAHIM -> 4; case DEMISE -> 3; case BLIZZROBE -> 5; case THUNDER_WIZZROBE -> 3; case WATERBLIGHT_GANON -> 2; case THUNDERBLIGHT_GANON -> 3; case WINDBLIGHT_GANON -> 4; default -> 1; };
     }
-    private boolean areaUser() { return isBlight() || species == Species.ZANT || species == Species.GANONDORF || species == Species.FYRUS || species == Species.ARGOROK || species == Species.REDEAD || species == Species.TENTALUS || species == Species.GHIRAHIM || species == Species.DEMISE || species == Species.SCALDERA || species == Species.THE_IMPRISONED || species == Species.BLIZZROBE || species == Species.THUNDER_WIZZROBE || (species == Species.WIZZROBE && rank() == 3) || species == Species.CALAMITY_GANON || species == Species.MASTER_KOHGA; }
+    private boolean areaUser() { return isBlight() || species == Species.QUEEN_GIBDO || species == Species.COLGERA || species == Species.MOLDUGA || species == Species.MOLDUKING || species == Species.ZANT || species == Species.GANONDORF || species == Species.FYRUS || species == Species.ARGOROK || species == Species.REDEAD || species == Species.TENTALUS || species == Species.GHIRAHIM || species == Species.DEMISE || species == Species.SCALDERA || species == Species.THE_IMPRISONED || species == Species.BLIZZROBE || species == Species.THUNDER_WIZZROBE || (species == Species.WIZZROBE && rank() == 3) || species == Species.CALAMITY_GANON || species == Species.MASTER_KOHGA; }
 
     private void fireSea(Vec3 center, int r) {
         if (!level().getGameRules().getBoolean(net.minecraft.world.level.GameRules.RULE_MOBGRIEFING)) return;
@@ -361,7 +361,7 @@ public class HyruleBiped extends HyruleMob {
                 }
         } else {
             boolean boom = isBoomerang(h);
-            int ty = boom ? 4 : species == Species.FIREBLIGHT_GANON || species == Species.MASTER_KOHGA || species == Species.LIZALFOS_FIRE || species == Species.DODONGO || species == Species.ARGOROK || species == Species.POE || species == Species.SCALDERA || species == Species.THE_IMPRISONED || species == Species.FROG_MAGMA ? 1 : species == Species.FROG_WATER ? 2 : species == Species.PARASPALAS || species == Species.FROG_ELEC || species == Species.FROG_DARK ? 3 : species == Species.DEMISE || species == Species.ZANT || species == Species.GANONDORF || species == Species.ARMOGOHMA ? 3 : species == Species.DIABABA ? 0 : species == Species.KOLOKTOS ? 0 : species == Species.LIZALFOS_ICE || species == Species.BLIZZROBE ? 2 : species == Species.THUNDER_WIZZROBE ? 3 : species == Species.LIZALFOS_ELEC ? 3 : species == Species.WATERBLIGHT_GANON ? 2 : species == Species.WINDBLIGHT_GANON || species == Species.THUNDERBLIGHT_GANON ? 3 : species == Species.OCTOROK || species == Species.HINOX || species == Species.STALHINOX || species == Species.TALUS || species == Species.FROX ? 0 :  new int[]{1, 2, 3, 1, 3}[rank()];
+            int ty = boom ? 4 : species == Species.FIREBLIGHT_GANON || species == Species.MASTER_KOHGA || species == Species.LIZALFOS_FIRE || species == Species.DODONGO || species == Species.ARGOROK || species == Species.POE || species == Species.SCALDERA || species == Species.THE_IMPRISONED || species == Species.FROG_MAGMA ? 1 : species == Species.FROG_WATER ? 2 : species == Species.PARASPALAS || species == Species.FROG_ELEC || species == Species.FROG_DARK ? 3 : species == Species.MARBLED_GOHMA || species == Species.COLGERA || species == Species.DEMISE || species == Species.ZANT || species == Species.GANONDORF || species == Species.ARMOGOHMA ? 3 : species == Species.DIABABA ? 0 : species == Species.KOLOKTOS ? 0 : species == Species.LIZALFOS_ICE || species == Species.BLIZZROBE ? 2 : species == Species.THUNDER_WIZZROBE ? 3 : species == Species.LIZALFOS_ELEC ? 3 : species == Species.WATERBLIGHT_GANON ? 2 : species == Species.WINDBLIGHT_GANON || species == Species.THUNDERBLIGHT_GANON ? 3 : species == Species.OCTOROK || species == Species.HINOX || species == Species.STALHINOX || species == Species.TALUS || species == Species.FROX ? 0 :  new int[]{1, 2, 3, 1, 3}[rank()];
             Shot s = new Shot(level(), this, ty, boom ? h.copy() : new ItemStack(ModRegistry.shotItem(ty)), dmg);
             s.shoot(dx, dy + h2 * (ty == 0 ? 0.05 : 0), dz, boom ? 1.1f : 1.2f, 1f);
             level().addFreshEntity(s);
@@ -467,7 +467,7 @@ public class HyruleBiped extends HyruleMob {
     @Override public boolean doHurtTarget(Entity t) {
         boolean ok = super.doHurtTarget(t);
         if (ok && t instanceof LivingEntity e) {
-            int el = switch (species) { case BUBBLE_FIRE -> 1; case BUBBLE_ICE -> 2; case BUBBLE_DARK -> 7; case REDEAD -> 9; case DARK_LIZALFOS, KEESE_DARK -> 7; case TECHNO_BOKOBLIN, SHAKOMITE -> 3; case MOLDARACH -> 6; case KEESE_FIRE -> 1; case KEESE_ICE -> 2; case KEESE_ELEC -> 3; case CHUCHU -> rank() >= 1 && rank() <= 3 ? rank() : 0; default -> 0; };
+            int el = switch (species) { case LIKE_LIKE, GLOOM_HANDS, SEIZED_CONSTRUCT -> 7; case BUBBLE_FIRE -> 1; case BUBBLE_ICE -> 2; case BUBBLE_DARK -> 7; case REDEAD -> 9; case DARK_LIZALFOS, KEESE_DARK -> 7; case TECHNO_BOKOBLIN, SHAKOMITE -> 3; case MOLDARACH -> 6; case KEESE_FIRE -> 1; case KEESE_ICE -> 2; case KEESE_ELEC -> 3; case CHUCHU -> rank() >= 1 && rank() <= 3 ? rank() : 0; default -> 0; };
             switch (el) {
                 case 1 -> e.setSecondsOnFire(4);
                 case 2 -> { e.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.MOVEMENT_SLOWDOWN, 100, 2)); e.setTicksFrozen(e.getTicksRequiredToFreeze() + 80); }
