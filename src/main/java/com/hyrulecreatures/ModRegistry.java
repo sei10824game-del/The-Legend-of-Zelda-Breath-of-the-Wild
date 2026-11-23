@@ -36,17 +36,19 @@ public final class ModRegistry {
                 "/assets/" + HyruleCreatures.ID + "/weapons.json")), JsonObject[].class);
         for (JsonObject w : ws) {
             String kind = w.get("kind").getAsString();
+            int el = w.has("el") ? w.get("el").getAsInt() : 0;
+            if (kind.equals("arrow")) { ITEMS.register(w.get("id").getAsString(), () -> new HyruleArrowItem(el)); continue; }
             if (kind.equals("shield")) { int su = w.get("dur").getAsInt(); ITEMS.register(w.get("id").getAsString(), () -> new ShieldItem(new Item.Properties().durability(su))); continue; }
             if (kind.equals("bow")) { int bd = w.get("dmg").getAsInt(), bu = w.get("dur").getAsInt();
                 ITEMS.register(w.get("id").getAsString(), () -> new HyruleBowItem(bu, bd)); continue; }
-            AttackKind ak = switch (kind) { case "club", "claymore" -> AttackKind.SMASH; case "spear", "halberd" -> AttackKind.THRUST; default -> AttackKind.SLASH; };
-            float speed = switch (kind) { case "club" -> -3.0f; case "claymore" -> -3.2f; case "spear" -> -2.7f; case "halberd" -> -3.0f; default -> -2.4f; };
+            AttackKind ak = switch (kind) { case "club", "claymore", "hammer" -> AttackKind.SMASH; case "axe" -> AttackKind.CHOP; case "spear", "halberd" -> AttackKind.THRUST; default -> AttackKind.SLASH; };
+            float speed = switch (kind) { case "club", "axe" -> -3.0f; case "hammer" -> -3.3f; case "rod" -> -2.2f; case "claymore" -> -3.2f; case "spear" -> -2.7f; case "halberd" -> -3.0f; default -> -2.4f; };
             int dmg = w.get("dmg").getAsInt(), dur = w.get("dur").getAsInt();
             String wid = w.get("id").getAsString();
-            HyruleWeaponItem.Style st = switch (kind) { case "spear", "halberd" -> HyruleWeaponItem.Style.SPEAR; case "claymore" -> HyruleWeaponItem.Style.TWO;
+            HyruleWeaponItem.Style st = switch (kind) { case "spear", "halberd" -> HyruleWeaponItem.Style.SPEAR; case "claymore", "hammer" -> HyruleWeaponItem.Style.TWO;
                 case "club" -> wid.contains("moblin_club") || wid.contains("crusher") ? HyruleWeaponItem.Style.TWO : HyruleWeaponItem.Style.ONE;
                 default -> HyruleWeaponItem.Style.ONE; };
-            ITEMS.register(wid, () -> new HyruleWeaponItem(dmg, dur, speed, ak, st));
+            ITEMS.register(wid, () -> new HyruleWeaponItem(dmg, dur, speed, ak, st, el));
         }
     }
 

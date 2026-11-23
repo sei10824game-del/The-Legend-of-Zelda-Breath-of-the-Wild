@@ -1501,6 +1501,35 @@ W = [
     ("ganon_sword", "Ganondorf's Greatsword", "ガノンドロフの大剣", "claymore", 24, 300, "#4a3a3a", "#d8a020"),
     ("fyrus_blade", "Fyrus Scimitar", "ファイラスの曲刀", "claymore", 22, 250, "#d86a20", "#4a2a1a"),
     ("boss_bokoblin_club", "Boss Bokoblin Club", "ボスボコブリンの大棍棒", "claymore", 14, 140, "#8a6a40", "#5a3a20"),
+    ("woodcutters_axe", "Woodcutter's Axe", "木こりの斧", "axe", 4, 50, "#9a9aa4", "#7a5a35", 0),
+    ("lumberjacks_axe", "Lumberjack's Axe", "樵の斧", "axe", 8, 80, "#b8b8c4", "#6a4a2a", 0),
+    ("stone_smasher", "Stone Smasher", "岩砕き", "hammer", 12, 90, "#8a8a82", "#6a4a2a", 0),
+    ("iron_sledgehammer", "Iron Sledgehammer", "鉄の大槌", "hammer", 16, 120, "#6a6a72", "#5a3a20", 0),
+    ("boulder_breaker", "Boulder Breaker", "大岩砕き", "hammer", 22, 160, "#4a4a52", "#c8a850", 0),
+    ("flameblade", "Flameblade", "炎の剣", "sword", 9, 90, "#ff7a20", "#8a2a10", 1),
+    ("great_flameblade", "Great Flameblade", "炎の大剣", "claymore", 15, 110, "#ff7a20", "#8a2a10", 1),
+    ("flamespear", "Flamespear", "炎の槍", "spear", 10, 90, "#ff7a20", "#8a5a2a", 1),
+    ("frostblade", "Frostblade", "氷の剣", "sword", 9, 90, "#80d8ff", "#2a5a8a", 2),
+    ("great_frostblade", "Great Frostblade", "氷の大剣", "claymore", 15, 110, "#80d8ff", "#2a5a8a", 2),
+    ("frostspear", "Frostspear", "氷の槍", "spear", 10, 90, "#80d8ff", "#5a7a9a", 2),
+    ("thunderblade", "Thunderblade", "雷の剣", "sword", 9, 90, "#ffee44", "#8a7a10", 3),
+    ("great_thunderblade", "Great Thunderblade", "雷の大剣", "claymore", 15, 110, "#ffee44", "#8a7a10", 3),
+    ("thunderspear", "Thunderspear", "雷の槍", "spear", 10, 90, "#ffee44", "#7a6a2a", 3),
+    ("fire_rod", "Fire Rod", "ほのおのロッド", "rod", 3, 40, "#ff7a20", "#6a4a2a", 1),
+    ("ice_rod", "Ice Rod", "こおりのロッド", "rod", 3, 40, "#80d8ff", "#6a4a2a", 2),
+    ("lightning_rod", "Lightning Rod", "かみなりのロッド", "rod", 3, 40, "#ffee44", "#6a4a2a", 3),
+    ("moonlight_scimitar", "Moonlight Scimitar", "月光の曲刀", "sword", 10, 80, "#e0e8f8", "#4a5aa8", 0),
+    ("scimitar_seven", "Scimitar of the Seven", "七人の曲刀", "sword", 17, 150, "#f0e8c8", "#c8a020", 0),
+    ("lightscale_trident", "Lightscale Trident", "光鱗の槍", "spear", 15, 150, "#9ad0e8", "#e8f4fa", 0),
+    ("golden_claymore", "Golden Claymore", "黄金の大剣", "claymore", 19, 180, "#f0d048", "#b89020", 0),
+    ("biggoron_sword", "Biggoron's Sword", "ビゴロンの大剣", "claymore", 24, 200, "#c8c8d0", "#8a6a3a", 0),
+    ("great_eagle_bow", "Great Eagle Bow", "大鷹の弓", "bow", 14, 160, "#d8b050", "#f0f0e0", 0),
+    ("swallow_bow", "Swallow Bow", "燕の弓", "bow", 8, 120, "#6a9ad0", "#f0f0e0", 0),
+    ("falcon_bow", "Falcon Bow", "隼の弓", "bow", 11, 140, "#c85a3a", "#f0f0e0", 0),
+    ("phrenic_bow", "Phrenic Bow", "魔力の弓", "bow", 9, 120, "#a060e0", "#e8d0ff", 0),
+    ("fire_arrow", "Fire Arrow", "炎の矢", "arrow", 0, 0, "#ff7a20", "#8a5a2a", 1),
+    ("ice_arrow", "Ice Arrow", "氷の矢", "arrow", 0, 0, "#80d8ff", "#8a5a2a", 2),
+    ("shock_arrow", "Shock Arrow", "雷の矢", "arrow", 0, 0, "#ffee44", "#8a5a2a", 3),
     ("lizal_boomerang", "Lizal Boomerang", "リザルブーメラン", "boomerang", 5, 30, "#7a9a3a", "#e0d08a"),
     ("lizal_forked_boomerang", "Lizal Forked Boomerang", "リザルフォーク", "boomerang", 7, 40, "#3a8ac0", "#bfe0ee"),
     ("lizal_tri_boomerang", "Lizal Tri-Boomerang", "リザルトライブーメラン", "boomerang", 10, 60, "#4a4a5a", "#aaaabb"),
@@ -1567,6 +1596,14 @@ def item_tex(kind, c1, c2, name):
         d.arc([-6, 1, 13, 20], 270, 90, fill=a, width=2)
         line(d, (7, 1), (7, 14), b, 1)
         d.point((8, 7), fill=dk)
+    elif kind == "axe":
+        line(d, (3, 14), (11, 4), b, 2); d.polygon([(9, 2), (14, 4), (13, 9), (10, 7)], fill=a, outline=dk)
+    elif kind == "hammer":
+        line(d, (2, 14), (10, 6), b, 2); d.rectangle([8, 1, 14, 7], fill=a, outline=dk); d.line([(9, 2), (13, 2)], fill=shade(hexc(c1), 1.3) + (255,))
+    elif kind == "rod":
+        line(d, (3, 13), (11, 5), b, 2); d.ellipse([9, 1, 14, 6], fill=a, outline=dk); d.point((10, 2), fill=(255, 255, 255, 255))
+    elif kind == "arrow":
+        line(d, (2, 13), (12, 3), b, 1); d.polygon([(11, 1), (15, 1), (14, 5)], fill=a, outline=dk); d.polygon([(1, 12), (4, 15), (1, 15)], fill=a)
     elif kind == "boomerang":
         d.arc([2, 2, 14, 14], 200, 340, fill=a, width=3)
         d.arc([2, 2, 14, 14], 190, 350, fill=b, width=1)
@@ -1606,7 +1643,7 @@ def gen_weapons():
     os.makedirs(f"{A}/textures/item", exist_ok=True)
     os.makedirs(f"{A}/models/item", exist_ok=True)
     wj = []
-    for (i, en, ja, kind, dmg, dur, c1, c2) in W:
+    for (i, en, ja, kind, dmg, dur, c1, c2, *_el) in W:
         enhance(item_tex(kind, c1, c2, i)).save(f"{A}/textures/item/{i}.png")
         if kind == "bow":
             base = item_tex(kind, c1, c2, i)
@@ -1630,7 +1667,7 @@ def gen_weapons():
                       open(f"{A}/models/item/{i}_blocking.json", "w"))
         else:
             json.dump({"parent": "minecraft:item/handheld", "textures": {"layer0": f"{MOD}:item/{i}"}}, open(f"{A}/models/item/{i}.json", "w"))
-        wj.append(dict(id=i, kind=kind, dmg=dmg, dur=dur))
+        wj.append(dict(id=i, kind=kind, dmg=dmg, dur=dur, el=(_el[0] if _el else 0)))
     json.dump(wj, open(f"{A}/weapons.json", "w"), separators=(",", ":"))
 
 
