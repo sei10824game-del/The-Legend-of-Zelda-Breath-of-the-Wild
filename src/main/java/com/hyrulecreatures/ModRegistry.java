@@ -48,7 +48,8 @@ public final class ModRegistry {
             HyruleWeaponItem.Style st = switch (kind) { case "spear", "halberd" -> HyruleWeaponItem.Style.SPEAR; case "claymore", "hammer" -> HyruleWeaponItem.Style.TWO;
                 case "club" -> wid.contains("moblin_club") || wid.contains("crusher") ? HyruleWeaponItem.Style.TWO : HyruleWeaponItem.Style.ONE;
                 default -> HyruleWeaponItem.Style.ONE; };
-            ITEMS.register(wid, () -> new HyruleWeaponItem(dmg, dur, speed, ak, st, el));
+            if (kind.equals("rod")) ITEMS.register(wid, () -> new HyruleRodItem(dmg, dur, speed, el));
+            else ITEMS.register(wid, () -> new HyruleWeaponItem(dmg, dur, speed, ak, st, el));
         }
     }
 

@@ -39,7 +39,7 @@ public class Shot extends ThrowableItemProjectile {
     }
 
     @Override protected void onHitEntity(EntityHitResult r) {
-        if (!(r.getEntity() instanceof LivingEntity e) || e == getOwner() || e instanceof HyruleMob) return;
+        if (!(r.getEntity() instanceof LivingEntity e) || e == getOwner() || (e instanceof HyruleMob && !(getOwner() instanceof net.minecraft.world.entity.player.Player))) return;
         int type = entityData.get(TYPE);
         e.hurt(damageSources().thrown(this, getOwner()), damage);
         switch (type) {
