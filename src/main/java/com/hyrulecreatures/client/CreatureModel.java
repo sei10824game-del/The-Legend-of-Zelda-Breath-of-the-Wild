@@ -186,7 +186,7 @@ public class CreatureModel extends EntityModel<HyruleBiped> implements ArmedMode
             }
             if (k == AttackKind.STOMP && e.species == Species.LYNEL) { // rear up on hind legs, forelegs pawing
                 float up = key(t, T, new float[]{0, 1, .2f, 0});
-                lean -= up * .9f; add("frontLeftLeg", -up * 1.6f, 0, 0); add("frontRightLeg", -up * 1.6f, 0, 0);
+                lean -= up * .9f; add("frontLeftLeg", -up * 2.4f, 0, 0); add("frontRightLeg", -up * 2.4f, 0, 0); add("frontLeftLegLow", -up * 1.0f, 0, 0); add("frontRightLegLow", -up * 1.0f, 0, 0);
             }
             if (k == AttackKind.STOMP && (e.species == Species.HINOX || e.species == Species.STALHINOX || e.species == Species.TALUS || e.species == Species.FROX)) { // both fists overhead, then slam
                 float up = key(t, T, new float[]{0, 1, 0, 0});
