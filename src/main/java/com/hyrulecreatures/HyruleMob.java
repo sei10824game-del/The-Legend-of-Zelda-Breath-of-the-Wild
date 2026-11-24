@@ -160,7 +160,7 @@ public abstract class HyruleMob extends Monster {
         if (a == null) return;
         int t = atkTick() + 1;
         LivingEntity tg = getTarget();
-        if (tg != null && t <= a.hit && a != AttackKind.CHARGE || a == AttackKind.CHARGE && t < a.windup) { getLookControl().setLookAt(tg, 60, 60); faceTarget(tg); }
+        if (tg != null && (t <= a.hit && a != AttackKind.CHARGE || a == AttackKind.CHARGE && t < a.windup)) { getLookControl().setLookAt(tg, 60, 60); faceTarget(tg); }
         if (a == AttackKind.THRUST && t == a.windup && tg != null) lunge(0.55);
         if (a == AttackKind.BITE && t == a.windup && tg != null)
             setDeltaMovement(tg.getEyePosition().subtract(position()).normalize().scale(0.75));
