@@ -844,7 +844,7 @@ SPECIES["boss_bokoblin"]["parts"] += [
     P("necklace", "body", (-6.5, -1, -4.5, 13, 3, 9), (0, -2, 0), c="horn", f=["stripes"]),
     P("skullMask", "head", (-4.5, -9, -5.5, 9, 6, 2), (0, 0, 0), c="horn"), P("helmBoss", "head", (-5.5, -3, -5.5, 11, 3, 11), (0, -6, 0), c="horn"),
     P("crest", "head", (-1, -13, -2, 2, 6, 4), (0, 0, 0), c="horn"), P("spikeSL", "body", (4, -4, -1.5, 3, 5, 3), (3, -3, 0), (0, 0, -0.5), c="horn"), P("spikeSR", "body", (-7, -4, -1.5, 3, 5, 3), (-3, -3, 0), (0, 0, 0.5), c="horn"),
-    P("tuskL", "head", (2, 1, -6.5, 1.5, 3, 1.5), (0, 0, 0), c="horn"), P("tuskR", "head", (-3.5, 1, -6.5, 1.5, 3, 1.5), (0, 0, 0), c="horn"),
+    P("bossTuskL", "head", (2, 1, -6.5, 1.5, 3, 1.5), (0, 0, 0), c="horn"), P("bossTuskR", "head", (-3.5, 1, -6.5, 1.5, 3, 1.5), (0, 0, 0), c="horn"),
     P("skullBelt", "body", (-2, 9, -4.8, 4, 4, 1.5), (0, 0, 0), c="horn"), P("brow", "head", (-4.5, -4.5, -5.8, 9, 1.5, 1.5), (0, 0, 0), c="skin2"),
     P("paintL", "body", (3, -8, -4.5, 3, 12, 1), (0, 0, 0), c="cloth"), P("paintR", "body", (-6, -8, -4.5, 3, 12, 1), (0, 0, 0), c="cloth")]
 def sp(**k): return pal(**k)
@@ -1001,6 +1001,7 @@ def paint_box(img, p, col, rng, palette):
 
 def order_parts(parts):
     done, out = set(), []
+    assert len({q["n"] for q in parts}) == len(parts), "duplicate part name"
     while len(out) < len(parts):
         for q in parts:
             if q["n"] not in done and (q["p"] is None or q["p"] in done): out.append(q); done.add(q["n"])
@@ -1552,6 +1553,27 @@ W = [
     ("knights_broadsword", "Knight's Broadsword", "騎士の剣", "sword", 8, 70, "#e0e4ec", "#4a6aa8"),
     ("royal_broadsword", "Royal Broadsword", "王家の剣", "sword", 11, 90, "#f0f2f8", "#d8b43a"),
     ("royal_guards_sword", "Royal Guard's Sword", "王家の近衛の剣", "sword", 13, 100, "#f4f6fa", "#2a4a9a"),
+    ("zonaite_sword", "Zonaite Sword", "ゾナウ鋼の剣", "sword", 14, 120, "#7ad8c8", "#2a3a44"),
+    ("zonaite_longsword", "Zonaite Longsword", "ゾナウ鋼の大剣", "claymore", 20, 120, "#7ad8c8", "#2a3a44"),
+    ("zonaite_spear", "Zonaite Spear", "ゾナウ鋼の槍", "spear", 15, 120, "#7ad8c8", "#2a3a44"),
+    ("zonaite_shield", "Zonaite Shield", "ゾナウ鋼の盾", "shield", 0, 220, "#7ad8c8", "#2a3a44"),
+    ("zonaite_bow", "Zonaite Bow", "ゾナウ鋼の弓", "bow", 14, 140, "#7ad8c8", "#2a3a44"),
+    ("zonai_axe", "Zonai Axe", "ゾナウの斧", "club", 12, 100, "#5ac0b0", "#3a4a54"),
+    ("sword_of_the_hero", "Sword of the Hero", "勇者の剣", "sword", 18, 200, "#3a6ad8", "#e8e0c0"),
+    ("rusty_broadsword", "Rusty Broadsword", "さびた剣", "sword", 6, 40, "#8a6a4a", "#5a3a2a"),
+    ("rusty_claymore", "Rusty Claymore", "さびた大剣", "claymore", 10, 45, "#8a6a4a", "#5a3a2a"),
+    ("rusty_halberd", "Rusty Halberd", "さびた槍", "spear", 8, 45, "#8a6a4a", "#5a3a2a"),
+    ("rusty_shield", "Rusty Shield", "さびた盾", "shield", 0, 60, "#8a6a4a", "#5a3a2a"),
+    ("gibdo_bone", "Gibdo Bone", "ギブドの骨", "club", 7, 40, "#e8e0c8", "#b8a888"),
+    ("gibdo_bow", "Gibdo Bow", "ギブドの弓", "bow", 7, 90, "#e8e0c8", "#b8a888"),
+    ("eightfold_blade", "Eightfold Blade", "八刃の剣", "sword", 12, 90, "#c8c8d0", "#6a4a2a"),
+    ("royal_guards_claymore", "Royal Guard's Claymore", "近衛兵の大剣", "claymore", 22, 160, "#d8b43a", "#f0f2f8"),
+    ("royal_guards_spear", "Royal Guard's Spear", "近衛兵の槍", "spear", 18, 160, "#d8b43a", "#f0f2f8"),
+    ("thunderstorm_rod", "Thunderstorm Rod", "雷雨のロッド", "rod", 5, 60, "#f8e848", "#4a4a6a", 3),
+    ("meteor_rod", "Meteor Rod", "隕石のロッド", "rod", 5, 60, "#ff5a20", "#4a2a2a", 1),
+    ("blizzard_rod", "Blizzard Rod", "吹雪のロッド", "rod", 5, 60, "#a8e8ff", "#4a5a6a", 2),
+    ("bomb_arrow", "Bomb Arrow", "爆弾矢", "arrow", 0, 0, "#3a3a3a", "#8a5a2a"),
+    ("ancient_arrow", "Ancient Arrow", "古代の矢", "arrow", 0, 0, "#40d8e8", "#8a5a2a"),
     ("zora_sword", "Zora Sword", "ゾーラの剣", "sword", 5, 45, "#9ad0e8", "#e8f4fa"),
     ("gerudo_scimitar", "Gerudo Scimitar", "ゲルド族のシミター", "sword", 8, 60, "#d8c078", "#a8782a"),
     ("lynel_sword", "Lynel Sword", "ライネルの剣", "sword", 12, 80, "#8a4a3a", "#d8a85a"),
