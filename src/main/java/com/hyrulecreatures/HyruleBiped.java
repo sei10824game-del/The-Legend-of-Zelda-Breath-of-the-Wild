@@ -345,6 +345,10 @@ public class HyruleBiped extends HyruleMob {
         if (areaUser() && d > 4 && d < 22 && random.nextFloat() < (species == Species.CALAMITY_GANON ? 0.03f : 0.02f) * (enraged ? 2.5f : 1f)) return AttackKind.AREA;
         if ((species == Species.LIZALFOS || species == Species.DARK_LIZALFOS || species == Species.LIZALFOS_FIRE || species == Species.LIZALFOS_ICE || species == Species.LIZALFOS_ELEC) // tail sweep
                 && d <= reach() + 0.4 && getMainHandItem().isEmpty() && random.nextFloat() < 0.15f) return AttackKind.SPIN;
+        if (species == Species.LYNEL) { // gallop charge from mid range, rear-up stomp up close (BotW/TotK Lynel moves)
+            if (d > 5 && d < 14 && random.nextFloat() < 0.04f * (enraged ? 2f : 1f)) return AttackKind.CHARGE;
+            if (d <= 4 && random.nextFloat() < 0.12f) return AttackKind.STOMP;
+        }
         if (species.attack == AttackKind.SHOOT && !(h.getItem() instanceof HyruleBowItem) && !pureBeamer()) return d <= reach() + 0.4 ? AttackKind.SHOOT : null;
         if (pureBeamer()) return d > 5 ? AttackKind.BEAM : isLegged() && random.nextFloat() < 0.4f ? AttackKind.STOMP : null;
         if (longShooter() && !(h.getItem() instanceof HyruleBowItem) && d > 6 && d < 18 && random.nextFloat() < 0.06f) return AttackKind.SHOOT;
