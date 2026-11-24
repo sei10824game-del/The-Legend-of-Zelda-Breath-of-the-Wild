@@ -348,6 +348,9 @@ public class HyruleBiped extends HyruleMob {
         if ((species == Species.HINOX || species == Species.STALHINOX) && d <= 5 && random.nextFloat() < 0.1f) return AttackKind.STOMP; // ground pound
         if ((species == Species.LIZALFOS || species == Species.LIZALFOS_FIRE || species == Species.LIZALFOS_ICE || species == Species.LIZALFOS_ELEC || species == Species.DARK_LIZALFOS)
                 && d > 3 && d < 9 && random.nextFloat() < 0.04f) return AttackKind.LEAP; // lunging jump
+        if ((species == Species.MOBLIN || species == Species.STALMOBLIN || species == Species.BOSS_BOKOBLIN) && d > 4 && d < 10 && random.nextFloat() < 0.03f) return AttackKind.CHARGE; // shoulder rush
+        if ((species == Species.TALUS || species == Species.FROX) && d <= 5 && random.nextFloat() < 0.08f) return AttackKind.STOMP;
+        if ((species == Species.GIBDO || species == Species.REDEAD) && d > 2 && d < 6 && random.nextFloat() < 0.05f) return AttackKind.LEAP; // lunge-and-grab
         if (species == Species.LYNEL) { // gallop charge from mid range, rear-up stomp up close (BotW/TotK Lynel moves)
             if (d > 5 && d < 14 && random.nextFloat() < 0.04f * (enraged ? 2f : 1f)) return AttackKind.CHARGE;
             if (d <= 4 && random.nextFloat() < 0.12f) return AttackKind.STOMP;
