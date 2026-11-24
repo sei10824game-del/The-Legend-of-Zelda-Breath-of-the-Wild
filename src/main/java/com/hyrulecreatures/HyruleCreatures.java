@@ -28,5 +28,6 @@ public class HyruleCreatures {
                 s.flies ? Heightmap.Types.MOTION_BLOCKING : Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                 Monster::checkMonsterSpawnRules, SpawnPlacementRegisterEvent.Operation.OR)));
         net.minecraftforge.common.MinecraftForge.EVENT_BUS.register(new FactionEvents());
+        net.minecraftforge.common.MinecraftForge.EVENT_BUS.register(new FusionEvents());
     }
 }

@@ -20,3 +20,6 @@ Every species has 5 colour ranks (red/blue/black/silver/gold). Creative tab "Hyr
 
 ## GeckoLib decision
 Not migrated: the current rig (spec JSON + procedural poses) already covers 100 species with keyframed attacks. GeckoLib would require hand-authoring a .geo.json model and .animation.json for every species in Blockbench (~100 files) plus a new dependency. Recommended only for a handful of hero creatures (Lynel, Hinox, Guardian, Gleeok) if hand-made animation is wanted.
+
+## Fusion
+Hold a Hyrule weapon, put any material in the off-hand, sneak + right-click: the material is consumed, the weapon gains attack (monster horn +4, fang +3, guts +2, blaze rod/diamond +4, other items +2), an element if the material is elemental (fire/ice/shock), and recovers some durability. One fusion per weapon.
