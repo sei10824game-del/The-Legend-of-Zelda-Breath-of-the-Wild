@@ -737,10 +737,10 @@ SPECIES["king_bulblin"]["parts"] += [P("crown", "head", (-5, -3, -5.5, 10, 3, 10
 SPECIES["stalhound"] = dict(hunch=0.0, parts=quad((-4, -4, -8, 8, 8, 16), ((-3.5, -3.5, -6, 7, 7, 6), (0, 13, -9)), 14, 3, 6, -5, 6, 3.5, [
     P("snout", "head", (-1.5, 0, -9, 3, 2, 3), (0, 0, 0), c="skin2"), P("earL", "head", (1.5, -6, 0, 2, 3, 1), (0, 0, 0), c="skin"), P("earR", "head", (-3.5, -6, 0, 2, 3, 1), (0, 0, 0), c="skin"),
     P("ribs", "body", (-4.5, -3, -6, 9, 7, 10), (0, 0, 0), c="belly", f=["stripes"]), P("tail1", "body", (-1, -1, 0, 2, 2, 8), (0, -2, 8), (-0.5, 0, 0), c="skin2")]))
-SPECIES["stalhorse"] = dict(hunch=0.0, parts=quad((-4, -5, -10, 8, 9, 20), ((-3.5, -3.5, -6, 7, 7, 6), (0, 13, -9)), 14, 3, 6, -5, 6, 3.5, [
-    P("snout", "head", (-2, 0, -10, 4, 3, 5), (0, 0, 0), c="skin2"), P("earL", "head", (1.5, -6, 0, 2, 3, 1), (0, 0, 0), c="skin"), P("earR", "head", (-3.5, -6, 0, 2, 3, 1), (0, 0, 0), c="skin"),
-    P("ribs", "body", (-4.5, -3, -6, 9, 7, 10), (0, 0, 0), c="belly", f=["stripes"]), P("tail1", "body", (-1, -1, 0, 2, 2, 8), (0, -2, 8), (-0.5, 0, 0), c="skin2")]))
-SPECIES["stalhorse"]["parts"] += [P("mane", "head", (-0.5, -7, 1, 1, 6, 3), (0, 0, 0), c="horn")]
+SPECIES["stalhorse"] = dict(hunch=0.0, parts=quad((-4, -5, -11, 8, 9, 22), ((-2.5, -2.5, -9, 5, 5, 10), (0, 1, -14)), 8, 2.5, 12, -5, 7, 3, [
+    P("snout", "head", (-2, 0, -13, 4, 3, 4), (0, 0, 0), c="skin2"), P("earL", "head", (0.5, -5, -1, 2, 3, 1), (0, 0, 0), c="skin"), P("earR", "head", (-2.5, -5, -1, 2, 3, 1), (0, 0, 0), c="skin"),
+    P("neck", "body", (-2, -12, -2, 4, 14, 4), (0, -4, -9), (0.6, 0, 0), c="skin"), P("mane", "body", (-0.5, -13, 1.5, 1, 14, 3), (0, -4, -9), (0.6, 0, 0), c="horn"),
+    P("ribs", "body", (-4.5, -3, -7, 9, 8, 13), (0, 0, 0), c="belly", f=["stripes"]), P("tail1", "body", (-1, -1, 0, 2, 2, 12), (0, -3, 11), (-0.4, 0, 0), c="skin2")]))
 SPECIES["shadow_beast"] = dict(hunch=0.0, parts=quad((-5, -5, -9, 10, 10, 18), ((-4.5, -4.5, -7, 9, 9, 7), (0, 12, -10)), 14, 4, 6, -6, 7, 4, [
     P("spikeA", "body", (-1.5, -9, -6, 3, 5, 3), (0, 0, 0), c="horn"), P("spikeB", "body", (-1.5, -9, -1, 3, 6, 3), (0, 0, 0), c="horn"), P("spikeC", "body", (-1.5, -9, 4, 3, 5, 3), (0, 0, 0), c="horn"),
     P("hornL", "head", (1, -8, -2, 2, 5, 2), (0, 0, 0), c="horn"), P("hornR", "head", (-3, -8, -2, 2, 5, 2), (0, 0, 0), c="horn"), P("snout", "head", (-2, 0, -10, 4, 3, 3), (0, 0, 0), c="skin2")]))
@@ -839,8 +839,11 @@ SPECIES["flux_construct"] = dict(hunch=0.0, parts=[
     P("rightLeg", None, (-4, 0, -4, 8, 8, 8), (-5, 16, 0), c="skin2"), P("leftLeg", None, (-4, 0, -4, 8, 8, 8), (5, 16, 0), c="skin")])
 SPECIES["seized_construct"] = _cp2.deepcopy(SPECIES["soldier_construct"])
 SPECIES["seized_construct"]["parts"] += [P("gloomA", "body", (-6, -3, -1, 6, 6, 5), (0, 0, 0), c="horn"), P("gloomB", "head", (-3, -10, -2, 5, 4, 5), (0, 0, 0), c="horn")]
-SPECIES["boss_bokoblin"] = _cp2.deepcopy(SPECIES["bokoblin"])
-SPECIES["boss_bokoblin"]["parts"] += [P("armorL", "body", (0, -2, -3.5, 5, 4, 7), (4, 0, 0), c="horn"), P("armorR", "body", (-5, -2, -3.5, 5, 4, 7), (-4, 0, 0), c="horn"), P("helmBoss", "head", (-5.5, -3, -5.5, 11, 3, 11), (0, -6, 0), c="horn")]
+SPECIES["boss_bokoblin"] = _cp2.deepcopy(SPECIES["moblin"]); SPECIES["boss_bokoblin"].update(hunch=0.8, splay=0.5, crouch=3)
+SPECIES["boss_bokoblin"]["parts"] += [
+    P("necklace", "body", (-6.5, -1, -4.5, 13, 3, 9), (0, -2, 0), c="horn", f=["stripes"]),
+    P("skullMask", "head", (-4.5, -9, -5.5, 9, 6, 2), (0, 0, 0), c="horn"), P("helmBoss", "head", (-5.5, -3, -5.5, 11, 3, 11), (0, -6, 0), c="horn"),
+    P("crest", "head", (-1, -13, -2, 2, 6, 4), (0, 0, 0), c="horn"), P("paintL", "body", (3, -8, -4.5, 3, 12, 1), (0, 0, 0), c="cloth"), P("paintR", "body", (-6, -8, -4.5, 3, 12, 1), (0, 0, 0), c="cloth")]
 def sp(**k): return pal(**k)
 PAL["stalfos"] = ranks5(pal("#dcd8c4", "#b8b49c", "#e8e4d0", "#6a4a3a", "#8a7a60", eye="#ff4020"))
 PAL["stalmaster"] = ranks5(pal("#d8b840", "#a88820", "#e8d070", "#5a3a6a", "#fff0a0", eye="#ff4020"))
@@ -904,7 +907,7 @@ PAL["colgera"] = ranks5(pal("#6a8a3a", "#4a6a28", "#e8d890", "#000000", "#e8f0a0
 PAL["queen_gibdo"] = ranks5(pal("#a8a090", "#7a7468", "#c8c0b0", "#8a7a58", "#e8c850", wing="#7a6a50", eye="#ff3030"))
 PAL["flux_construct"] = ranks5(pal("#7a8a7a", "#5a6a5a", "#9aaa9a", "#000000", "#e8a030", eye="#ffcc40"))
 PAL["seized_construct"] = ranks5(pal("#5a6a6a", "#3a4a4a", "#7a8a8a", "#000000", "#c02a4a", eye="#ff3a5a"))
-PAL["boss_bokoblin"] = ranks5(pal("#c8452f", "#a33322", "#e98a63", "#6b4a2b", "#e8dcb8", eye="#46c8ff"))
+PAL["boss_bokoblin"] = ranks5(pal("#3c7c84", "#2a5c66", "#b8b878", "#d8832a", "#e8dcb8", eye="#ff3820"))
 for _k in ("molduga", "molduking", "gloom_hands", "like_like", "marbled_gohma", "colgera", "queen_gibdo", "flux_construct", "seized_construct", "boss_bokoblin"):
     for _p in PAL[_k]: _p.setdefault("nose", "#e8a0a8"); _p.setdefault("bandage", "#ece8d8"); _p.setdefault("bone", _p["skin2"]); _p.setdefault("joint", _p["horn"])
 PAL["tentalus"] = ranks5(pal("#4a7a8a", "#345a68", "#8ab8c8", "#000000", "#e8e0a0", eye="#ff4a30"))
