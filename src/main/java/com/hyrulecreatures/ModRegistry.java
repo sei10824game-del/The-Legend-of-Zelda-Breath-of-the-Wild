@@ -30,7 +30,7 @@ public final class ModRegistry {
                 case GIBDO -> new int[]{0xb8a888, 0xff3030}; case HORRIBLIN -> new int[]{0x8a9a78, 0xff3030}; default -> new int[]{0x3a3040, 0xff4040}; };
             for (String suf : new String[]{"horn", "fang", "guts"}) ITEMS.register(s.id + "_" + suf, () -> new Item(new Item.Properties()));
             ITEMS.register(s.id + "_spawn_egg", () -> new ForgeSpawnEggItem(TYPES.get(s), 0xFFFFFF, 0xFFFFFF, new Item.Properties()));
-            for (int r = 0; r < 5; r++) { int rr = r; ITEMS.register(s.id + "_" + Species.RANKS[r] + "_spawn_egg", () -> new VariantEgg(TYPES.get(s), rr)); }
+            if (s.hasRanks()) for (int r = 0; r < 5; r++) { int rr = r; ITEMS.register(s.id + "_" + Species.RANKS[r] + "_spawn_egg", () -> new VariantEgg(TYPES.get(s), rr)); }
         }
         JsonObject[] ws = new Gson().fromJson(new InputStreamReader(ModRegistry.class.getResourceAsStream(
                 "/assets/" + HyruleCreatures.ID + "/weapons.json")), JsonObject[].class);

@@ -1374,6 +1374,9 @@ def paint2x(img, glow, parts, sid, palette, seed):
     for x, y, c in saved: px[x, y] = c; gp[x, y] = c  # keep original emissive pixels crisp
 
 
+RANKED = set("bokoblin moblin lizalfos lynel hinox keese octorok wizzrobe chuchu talus gleeok soldier_construct captain_construct".split())
+
+
 def gen_species():
     os.makedirs(f"{A}/specs", exist_ok=True)
     os.makedirs(f"{A}/textures/entity", exist_ok=True)
@@ -1404,6 +1407,7 @@ def gen_species():
         json.dump(dict(tex=[TEX, TEX], hunch=sp["hunch"], splay=sp.get("splay", 0), crouch=sp.get("crouch", 0), parts=parts),
                   open(f"{A}/specs/{sid}.json", "w"), separators=(",", ":"))
         for ri, rname in enumerate(RANKS):
+            if sid not in RANKED and ri > 0: continue
             palette = PAL[sid][ri]
             img = Image.new("RGBA", (TEX, TEX), (0, 0, 0, 0)); glow = Image.new("RGBA", (TEX, TEX), (0, 0, 0, 0))
             rng = random.Random(zlib.crc32((sid + rname).encode()))
@@ -1726,6 +1730,7 @@ def gen_lang():
         L[f"entity.{MOD}.stal_head"] = ("Stal Skull", "スタルの頭")[idx]
         for sid, n in NAMES.items():
             for r, rn in enumerate(RANKS):
+                if sid not in RANKED: continue
                 L[f"item.{MOD}.{sid}_{rn}_spawn_egg"] = (f"{RANK_EN[r]} {n[0]} Spawn Egg" if idx == 0 else f"{RANK_JA[r]}の{n[1]}のスポーンエッグ")
         for w in W:
             L[f"item.{MOD}.{w[0]}"] = w[1 + idx]
@@ -1762,6 +1767,7 @@ def gen_eggs():
         hp = next((q for q in parts if q["n"] == "head"), None) or next(q for q in parts if q["n"] == "body")
         u, v = hp["uv"]; w, h, d = [int(round(t)) for t in hp["box"][3:6]]
         for r, rn in enumerate(RANKS):
+            if sid not in RANKED and r > 0: continue
             tex = I.open(f"{A}/textures/entity/{sid}_{rn}.png").convert("RGBA")
             face = tex.crop((u + d, v + d, u + d + w, v + d + h)).resize((10, 10), I.NEAREST)
             base = hexc(PAL[sid][r]["skin"])

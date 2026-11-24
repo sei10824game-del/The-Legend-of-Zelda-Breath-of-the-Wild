@@ -1,6 +1,7 @@
 package com.hyrulecreatures;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.*;
@@ -51,6 +52,7 @@ public class HyruleBiped extends HyruleMob {
                 .add(Attributes.FOLLOW_RANGE, 28).add(Attributes.FLYING_SPEED, s.speed).add(Attributes.KNOCKBACK_RESISTANCE, s.scale > 1.2 ? 0.5 : 0);
     }
 
+    @Override protected Component getTypeName() { return species.hasRanks() ? super.getTypeName() : Component.translatable(getType().getDescriptionId()); }
     @Override public AttackKind defaultAttack() { return species.attack; }
     @Override public double reach() { return species.reach + (getMainHandItem().getItem() instanceof HyruleWeaponItem w && w.style == HyruleWeaponItem.Style.SPEAR ? 0.6 : 0); }
     @Override protected double stompChance() {
@@ -111,10 +113,19 @@ public class HyruleBiped extends HyruleMob {
         }
     }
     @Override public void remove(Entity.RemovalReason r) { if (bar != null) bar.removeAllPlayers(); super.remove(r); }
+    private ItemStack altWeapon = ItemStack.EMPTY; // Yiga carry a blade AND a bow and swap by distance
+    private boolean dualBow() { return species == Species.YIGA_FOOTSOLDIER || species == Species.YIGA_BLADEMASTER || species == Species.MASTER_KOHGA; }
+    private void swapWeapons() { ItemStack m = getMainHandItem(); setItemSlot(EquipmentSlot.MAINHAND, altWeapon); altWeapon = m; }
     private boolean enraged;
     @Override public void aiStep() {
         super.aiStep();
         if (!level().isClientSide) tickBossBar();
+        if (!level().isClientSide && !species.hasRanks() && rank() != 0) setRank(0);
+        if (!level().isClientSide && dualBow() && !altWeapon.isEmpty() && tickCount % 10 == 0 && atkKind() == null && getTarget() != null) {
+            double dd = distanceTo(getTarget()); boolean bow = getMainHandItem().getItem() instanceof HyruleBowItem;
+            if (!bow && dd > 9 && altWeapon.getItem() instanceof HyruleBowItem) swapWeapons();
+            else if (bow && dd < 5 && !(altWeapon.getItem() instanceof HyruleBowItem)) swapWeapons();
+        }
         if (!level().isClientSide && tickCount % 5 == 0 && level() instanceof ServerLevel asl && auraParticle() != null)
             asl.sendParticles(auraParticle(), getX(), getY() + getBbHeight() * 0.6, getZ(), 2, getBbWidth() * 0.4, getBbHeight() * 0.3, getBbWidth() * 0.4, 0.01);
         if (!level().isClientSide && !enraged && getMaxHealth() >= 300 && getHealth() < getMaxHealth() * 0.5f) { // boss phase 2
@@ -310,6 +321,8 @@ public class HyruleBiped extends HyruleMob {
             for (int i = 0; i < 8; i++) if (randomTeleport(getX() + (random.nextDouble() - .5) * 16, getY() + random.nextInt(3), getZ() + (random.nextDouble() - .5) * 16, true)) break;
         return r;
     }
+    @Override public void addAdditionalSaveData(net.minecraft.nbt.CompoundTag t) { super.addAdditionalSaveData(t); if (!altWeapon.isEmpty()) t.put("Alt", altWeapon.save(new net.minecraft.nbt.CompoundTag())); }
+    @Override public void readAdditionalSaveData(net.minecraft.nbt.CompoundTag t) { super.readAdditionalSaveData(t); if (t.contains("Alt")) altWeapon = ItemStack.of(t.getCompound("Alt")); }
     @Override protected float spinChance() { return species.spin; }
 
     private static boolean isBoomerang(ItemStack s) { return ForgeRegistries.ITEMS.getKey(s.getItem()).getPath().contains("boomerang"); }
@@ -375,7 +388,7 @@ public class HyruleBiped extends HyruleMob {
         g = super.finalizeSpawn(lv, d, r, g, tag);
         int roll = random.nextInt(100), rank = 0;
         for (int i = 0; i < 5 && roll >= RANK_WEIGHT[i]; i++) { roll -= RANK_WEIGHT[i]; rank = i + 1; }
-        if (!rankFixed) setRank(Math.min(rank, 4));
+        if (!rankFixed && species.hasRanks()) setRank(Math.min(rank, 4)); else if (!species.hasRanks()) setRank(0);
         getAttribute(Attributes.MAX_HEALTH).setBaseValue(species.isStal() ? 1 : species.hp * Species.HP_MUL[rank()]);
         getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(species.dmg * Species.DMG_MUL[rank()]);
         setHealth(getMaxHealth());
@@ -390,6 +403,12 @@ public class HyruleBiped extends HyruleMob {
         var item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(HyruleCreatures.ID, pool[r.nextInt(pool.length)]));
         ItemStack s = new ItemStack(item);
         s.setDamageValue(r.nextInt(Math.max(1, s.getMaxDamage() / 2)));
+        if (dualBow()) { // sword in hand, bow on the back
+            setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(ForgeRegistries.ITEMS.getValue(new ResourceLocation(HyruleCreatures.ID, "yiga_blade"))));
+            altWeapon = new ItemStack(ForgeRegistries.ITEMS.getValue(new ResourceLocation(HyruleCreatures.ID, new String[]{"yiga_bow", "soldiers_bow", "knights_bow", "royal_bow", "royal_bow"}[rank()])));
+            if (species == Species.MASTER_KOHGA) altWeapon = new ItemStack(ForgeRegistries.ITEMS.getValue(new ResourceLocation(HyruleCreatures.ID, "royal_bow")));
+            setDropChance(EquipmentSlot.MAINHAND, 0.2f); return;
+        }
         setItemSlot(EquipmentSlot.MAINHAND, s);
         setDropChance(EquipmentSlot.MAINHAND, 0.2f);
         String[] sh = SHIELDS.get(species);

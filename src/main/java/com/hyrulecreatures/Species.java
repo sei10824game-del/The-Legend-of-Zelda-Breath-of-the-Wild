@@ -146,6 +146,10 @@ public enum Species {
         this.reach = reach; this.scale = scale; this.attack = attack; this.spin = spin; this.flies = flies; this.weapons = weapons;
     }
 
+    /** colour/tier variants exist in the original games only for these species */
+    public boolean hasRanks() {
+        return switch (this) { case BOKOBLIN, MOBLIN, LIZALFOS, LYNEL, HINOX, KEESE, OCTOROK, WIZZROBE, CHUCHU, TALUS, GLEEOK, SOLDIER_CONSTRUCT, CAPTAIN_CONSTRUCT -> true; default -> false; };
+    }
     public boolean isStal() { return this == STALKOBLIN || this == STALMOBLIN || this == STALIZALFOS; }
     public boolean teleports() {
         return switch (this) { case ZANT, GHIRAHIM, WIZZROBE, BLIZZROBE, THUNDER_WIZZROBE, FIREBLIGHT_GANON, WATERBLIGHT_GANON, WINDBLIGHT_GANON, THUNDERBLIGHT_GANON, PHANTOM_GANON, MASTER_KOHGA, YIGA_FOOTSOLDIER, YIGA_BLADEMASTER -> true; default -> false; };
