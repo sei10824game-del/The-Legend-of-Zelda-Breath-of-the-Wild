@@ -118,9 +118,10 @@ SPECIES = {
         P("belly", "body", (-3, 1, -3.5, 6, 10, 1), (0, 0, 0), c="belly"),
         P("spine", "body", (-0.5, 0, 0, 1, 11, 3), (0, 0, 2), c="horn"),
         P("vest", "body", (-4.5, 1, -3.5, 9, 7, 7), (0, 0, 0), c="cloth"),
-        P("head", None, (-3, -6, -3, 6, 6, 6), (0, 0, -1), f=["eyes_side"]),
+        P("head", None, (-3, -6, -3, 6, 6, 6), (0, 0, -1), f=["eyes", "eyes_side"]),
         P("snout", "head", (-2, -3, -8, 4, 3, 5), (0, 0, 0), c="skin2", f=["nostrils"]),
         P("jaw", "head", (-1.5, 0, -7, 3, 1, 4), (0, -0.5, 0), c="belly"),
+        P("eyeL", "head", (0.9, -4.6, -3.5, 1.6, 1.2, 0.8), (0, 0, 0), c="eye"), P("eyeR", "head", (-2.5, -4.6, -3.5, 1.6, 1.2, 0.8), (0, 0, 0), c="eye"),
         P("hornL", "head", (0, -1.5, -1, 2, 3, 8), (3, -5, 1), (0.1, 0.5, -0.2), c="horn"),
         P("hornR", "head", (-2, -1.5, -1, 2, 3, 8), (-3, -5, 1), (0.1, -0.5, 0.2), c="horn"),
         P("frillL", "head", (0, -2, -0.5, 4, 4, 1), (3, -3, 2), (0, 0.5, -0.3), c="horn"),
@@ -1085,7 +1086,7 @@ def refine_geometry(parts):
     hd = byn.get("head")
     if hd and hd["box"][3] >= 6:
         x, y, z, w, h, d = hd["box"]
-        out.append(P("browRidge", "head", (x - 0.4, y + h * 0.18, z - 0.9, w + 0.8, 1.6, 1.8), (0, 0, 0), c="skin2"))
+        out.append(P("browRidge", "head", (x - 0.4, y + h * (0.04 if w < 7 else 0.18), z - 0.9, w + 0.8, 1.6, 1.8), (0, 0, 0), c="skin2"))  # narrow (reptile) heads: brow sits above the eyes
         out.append(P("cheekL", "head", (x + w - 0.8, y + h * 0.45, z + d * 0.15, 1.6, h * 0.3, d * 0.45), (0, 0, 0), c=hd["c"]))
         out.append(P("cheekR", "head", (x - 0.8, y + h * 0.45, z + d * 0.15, 1.6, h * 0.3, d * 0.45), (0, 0, 0), c=hd["c"]))
         out.append(P("chin", "head", (x + w * 0.25, y + h - 1.2, z - 0.6, w * 0.5, 2, 1.6), (0, 0, 0), c="skin2"))

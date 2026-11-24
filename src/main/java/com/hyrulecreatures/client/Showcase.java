@@ -137,7 +137,7 @@ public class Showcase {
                 h.moveTo(p.x + 1.4, p.y, p.z + dist, 0, 0);
                 lv.putNonPlayerEntity(9500 + idx, h); head = h;
             }
-            float mid = face ? cur.getBbHeight() * 0.58f : sh.s.h * 0.5f;
+            float mid = face ? cur.getBbHeight() * (sh.s == Species.LIZALFOS ? 0.36f : 0.58f) : sh.s.h * 0.5f;
             mc.player.setXRot((float) Math.toDegrees(Math.atan((1.62 - mid) / dist)));
             phase = 1; return;
         }
