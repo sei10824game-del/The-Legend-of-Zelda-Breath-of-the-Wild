@@ -98,6 +98,7 @@ public enum Species {
     PARASPALAS("paraspalas", 3.3f, 5.5f, 900, 12, 0.22, 1.5, 16.0, 4.4f, AttackKind.SHOOT, 0f, true, new String[][]{{}, {}, {}, {}, {}}),
     BULBLIN("bulblin", 0.91f, 2.6f, 40, 5, 0.28, 0.6, 2.9, 1.56f, AttackKind.SLASH, 0f, false, new String[][]{{"bulblin_club", "bulblin_spear", "bulblin_bow", "woodcutters_axe"}, {"bulblin_club", "bulblin_spear", "bulblin_bow", "woodcutters_axe"}, {"bulblin_club", "bulblin_spear", "bulblin_bow", "woodcutters_axe"}, {"bulblin_club", "bulblin_spear", "bulblin_bow", "woodcutters_axe"}, {"bulblin_club", "bulblin_spear", "bulblin_bow", "woodcutters_axe"}}),
     KING_BULBLIN("king_bulblin", 1.62f, 4.75f, 500, 14, 0.24, 2.5, 4.5, 2.62f, AttackKind.SMASH, 0.25f, false, new String[][]{{"king_bulblin_club"}, {"king_bulblin_club"}, {"king_bulblin_club"}, {"king_bulblin_club"}, {"king_bulblin_club"}}),
+    STALHORSE("stalhorse", 1.5f, 2.2f, 40, 6, 0.5, 0.8, 3.4, 2.1f, AttackKind.CHARGE, 0f, false, new String[][]{{}, {}, {}, {}, {}}),
     STALHOUND("stalhound", 1.25f, 2.08f, 30, 5, 0.42, 0.5, 3.2, 1.96f, AttackKind.SLASH, 0f, false, new String[][]{{}, {}, {}, {}, {}}),
     SHADOW_BEAST("shadow_beast", 2.18f, 3.64f, 120, 9, 0.4, 1.2, 4.3, 2.91f, AttackKind.SLASH, 0f, false, new String[][]{{}, {}, {}, {}, {}}),
     REDEAD("redead", 1.0f, 2.86f, 50, 3, 0.2, 0.2, 2.5, 1.43f, AttackKind.SLASH, 0f, false, new String[][]{{}, {}, {}, {}, {}}),
