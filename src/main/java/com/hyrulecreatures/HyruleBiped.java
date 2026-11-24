@@ -58,6 +58,9 @@ public class HyruleBiped extends HyruleMob {
     @Override protected double stompChance() {
         return switch (species) { case GLOOM_HANDS, FLUX_CONSTRUCT, MOLDUGA, MOLDUKING, KING_BULBLIN, FYRUS, DODONGO, DARK_NUT, GUMARM, STALMASTER, KOLOKTOS, MOLDARACH, DEMISE, THE_IMPRISONED, HINOX, TALUS, GUARDIAN, STALHINOX, CALAMITY_GANON, THUNDERBLIGHT_GANON -> 0.3; case GUARDIAN_SCOUT_4 -> 0.2; case FROX -> 0.35; case CAPTAIN_CONSTRUCT -> 0.2; case MOBLIN -> 0.1; default -> 0; };
     }
+    private boolean gapCloser() { return switch (species) { case LYNEL, MOBLIN, STALMOBLIN, BOSS_BOKOBLIN, LIZALFOS, LIZALFOS_FIRE, LIZALFOS_ICE, LIZALFOS_ELEC, DARK_LIZALFOS, GIBDO, REDEAD -> true; default -> false; }; }
+    private boolean isLizalfos() { return switch (species) { case LIZALFOS, LIZALFOS_FIRE, LIZALFOS_ICE, LIZALFOS_ELEC, DARK_LIZALFOS -> true; default -> false; }; }
+    private boolean isGiant() { return switch (species) { case HINOX, STALHINOX, TALUS, FROX, MOLDUGA, MOLDUKING, DODONGO -> true; default -> false; }; }
     @Override protected boolean canCharge() {
         return switch (species) { case MOLDUGA, MOLDUKING, HELMASAUR, DODONGO, SHAKOMITE, ARMOS, CURSED_BOKOBLIN, TECHNO_BOKOBLIN, BOKOBLIN, HORRIBLIN, STALKOBLIN, MOBLIN, STALMOBLIN, LYNEL, THUNDERBLIGHT_GANON, FIREBLIGHT_GANON, MASTER_KOHGA -> true; default -> false; };
     }
@@ -272,6 +275,7 @@ public class HyruleBiped extends HyruleMob {
     }
 
     @Override protected void tickAttack(AttackKind a, int t, LivingEntity tg) {
+        speciesMoves(a, t, tg);
         if (a == AttackKind.AREA && level() instanceof ServerLevel asl) {
             if (t <= a.windup && tg != null) aim = Vec3.atBottomCenterOf(BlockPos.containing(tg.position())); // tracks the target's feet, then locks
             areaTick(asl, a, t);
@@ -334,7 +338,7 @@ public class HyruleBiped extends HyruleMob {
         if (h.getItem() instanceof HyruleBowItem) return 14;
         if (isBoomerang(h)) return 9;
         double r = reach();
-        if (canCharge()) r = Math.max(r, 12);
+        if (canCharge() || gapCloser()) r = Math.max(r, 12);
         boolean oneHand = h.getItem() instanceof HyruleWeaponItem w ? w.style == HyruleWeaponItem.Style.ONE : defaultAttack() == AttackKind.SLASH;
         return oneHand ? Math.max(r, 6.5) : r;
     }
@@ -362,6 +366,35 @@ public class HyruleBiped extends HyruleMob {
         if (h.getItem() instanceof HyruleBowItem) return d <= reach() + 0.3 ? AttackKind.SLASH : AttackKind.SHOOT;
         if (isBoomerang(h)) return d > 4 ? (random.nextFloat() < 0.6f ? AttackKind.SHOOT : null) : d <= reach() + 0.5 ? AttackKind.SLASH : null;
         return super.chooseAttack();
+    }
+
+    /** Per-species hit behaviour layered on the generic attack kinds. */
+    private void speciesMoves(AttackKind a, int t, LivingEntity tg) {
+        if (!(level() instanceof ServerLevel sl)) return;
+        if (species == Species.LYNEL && a == AttackKind.CHARGE && t >= a.windup && t < a.windup + 20) { // trample everything on the path
+            for (LivingEntity e : sl.getEntitiesOfClass(LivingEntity.class, getBoundingBox().inflate(0.6), HyruleMob::isFoe)) if (e.invulnerableTime <= 0) {
+                e.hurt(damageSources().mobAttack(this), (float) getAttributeValue(Attributes.ATTACK_DAMAGE) * 0.6f);
+                e.knockback(1.0, getX() - e.getX(), getZ() - e.getZ()); e.hurtMarked = true;
+            }
+            sl.sendParticles(net.minecraft.core.particles.ParticleTypes.CLOUD, getX(), getY() + 0.1, getZ(), 3, 0.4, 0.05, 0.4, 0.02);
+        }
+        if (a.hitsAt(t) && a == AttackKind.STOMP && isGiant()) { // expanding shockwave ring
+            for (int ring = 1; ring <= 4; ring++) for (int i = 0; i < 16; i++) {
+                double ang = i * Math.PI / 8, r = ring * 1.2;
+                var bs = sl.getBlockState(BlockPos.containing(getX() + Math.cos(ang) * r, getY() - 0.5, getZ() + Math.sin(ang) * r));
+                if (!bs.isAir()) sl.sendParticles(new net.minecraft.core.particles.BlockParticleOption(net.minecraft.core.particles.ParticleTypes.BLOCK, bs), getX() + Math.cos(ang) * r, getY() + 0.2, getZ() + Math.sin(ang) * r, 2, 0.1, 0.1, 0.1, 0.05);
+            }
+            for (LivingEntity e : sl.getEntitiesOfClass(LivingEntity.class, getBoundingBox().inflate(5.5, 1.5, 5.5), HyruleMob::isFoe)) if (e.onGround()) { e.setDeltaMovement(e.getDeltaMovement().add(0, 0.6, 0)); e.hurtMarked = true; }
+        }
+        if (a.hitsAt(t) && tg != null && distanceTo(tg) < reach() + 2.2) {
+            if ((species == Species.MOBLIN || species == Species.STALMOBLIN || species == Species.BOSS_BOKOBLIN) && a == AttackKind.CHARGE) // rush slams you off your feet
+                tg.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.MOVEMENT_SLOWDOWN, 40, 2));
+            if ((species == Species.GIBDO || species == Species.REDEAD) && a == AttackKind.LEAP) { // grab: held in place and drained
+                tg.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.MOVEMENT_SLOWDOWN, 50, 4));
+                tg.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.WEAKNESS, 80, 0));
+            }
+            if (isLizalfos() && a == AttackKind.LEAP) { tg.setDeltaMovement(tg.getDeltaMovement().add(0, 0.4, 0)); tg.hurtMarked = true; } // tail flick launches you
+        }
     }
 
     @Override protected void shoot(LivingEntity t) {

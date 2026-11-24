@@ -184,6 +184,18 @@ public class CreatureModel extends EntityModel<HyruleBiped> implements ArmedMode
                 add("frontLeftLeg", Mth.sin(t * .9f) * 1.0f, 0, 0); add("backRightLeg", Mth.sin(t * .9f) * 1.0f, 0, 0);
                 add("frontRightLeg", -Mth.sin(t * .9f) * 1.0f, 0, 0); add("backLeftLeg", -Mth.sin(t * .9f) * 1.0f, 0, 0);
             }
+            if (k == AttackKind.STOMP && e.species == Species.LYNEL) { // rear up on hind legs, forelegs pawing
+                float up = key(t, T, new float[]{0, 1, .2f, 0});
+                lean -= up * .9f; add("frontLeftLeg", -up * 1.6f, 0, 0); add("frontRightLeg", -up * 1.6f, 0, 0);
+            }
+            if (k == AttackKind.STOMP && (e.species == Species.HINOX || e.species == Species.STALHINOX || e.species == Species.TALUS || e.species == Species.FROX)) { // both fists overhead, then slam
+                float up = key(t, T, new float[]{0, 1, 0, 0});
+                add("rightArm", -up * 1.4f, 0, 0); add("leftArm", -up * 1.4f, 0, 0); dip += up * 1.5f;
+            }
+            if (k == AttackKind.LEAP && (e.species == Species.GIBDO || e.species == Species.REDEAD)) { // arms reaching out to grab
+                float g = key(t, T, new float[]{0, .8f, 1, 0});
+                add("rightArm", -g * 1.5f, 0, 0); add("leftArm", -g * 1.5f, 0, 0);
+            }
             if (k == AttackKind.BITE) { flap = 1.6f; add("jaw", key(t, T, new float[]{0, .7f, 0, 0}), 0, 0); }
             if (k == AttackKind.SLASH || k == AttackKind.SMASH || k == AttackKind.CHOP || k == AttackKind.CHARGE)
                 add("jaw", key(t, T, new float[]{0, .6f, .1f, 0}), 0, 0);
