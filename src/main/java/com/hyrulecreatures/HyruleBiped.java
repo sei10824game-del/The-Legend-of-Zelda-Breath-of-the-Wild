@@ -371,6 +371,10 @@ public class HyruleBiped extends HyruleMob {
     /** Per-species hit behaviour layered on the generic attack kinds. */
     private void speciesMoves(AttackKind a, int t, LivingEntity tg) {
         if (!(level() instanceof ServerLevel sl)) return;
+        if (t == 1 && (a == AttackKind.CHARGE || a == AttackKind.STOMP || a == AttackKind.LEAP) && (species == Species.LYNEL || isGiant() || isLizalfos() || species == Species.MOBLIN || species == Species.BOSS_BOKOBLIN)) { // telegraph: roar + angry puff
+            playSound(net.minecraft.sounds.SoundEvents.RAVAGER_ROAR, 1.2f, Math.max(0.5f, 1.6f - getBbHeight() * 0.15f));
+            sl.sendParticles(net.minecraft.core.particles.ParticleTypes.ANGRY_VILLAGER, getX(), getY() + getBbHeight() * 0.9, getZ(), 4, 0.3, 0.2, 0.3, 0);
+        }
         if (species == Species.LYNEL && a == AttackKind.CHARGE && t >= a.windup && t < a.windup + 20) { // trample everything on the path
             for (LivingEntity e : sl.getEntitiesOfClass(LivingEntity.class, getBoundingBox().inflate(0.6), HyruleMob::isFoe)) if (e.invulnerableTime <= 0) {
                 e.hurt(damageSources().mobAttack(this), (float) getAttributeValue(Attributes.ATTACK_DAMAGE) * 0.6f);
