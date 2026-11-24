@@ -176,7 +176,7 @@ SPECIES = {
         P("hem", "body", (-5, 12, -4, 10, 3, 8), (0, 0, 0), c="cloth"),
         P("trim", "body", (-4.5, 6, -3.5, 9, 2, 7), (0, 0, 0), c="hair"),
         P("head", None, (-4, -8, -4, 8, 8, 8), (0, 8, 0), c="hair"),
-        P("face", "head", (-3, -6, -4.5, 6, 5, 1), (0, 0, 0), c="belly", f=["eyes"]),
+        P("face", "head", (-3, -6, -5.8, 6, 5, 1.2), (0, 0, 0), c="belly", f=["eyes"]),
         P("cone", "head", (-3, -7, -3, 6, 7, 6), (0, -8, 0), c="hair"),
         P("tip", "head", (-1.5, -5, -1.5, 3, 5, 3), (0, -15, 0), (0.3, 0, 0), c="hair"),
         P("rightArm", None, (-3, -2, -2, 4, 10, 4), (-6, 10, 0), c="cloth", f=["hand"]),
@@ -842,10 +842,10 @@ SPECIES["seized_construct"]["parts"] += [P("gloomA", "body", (-6, -3, -1, 6, 6, 
 SPECIES["boss_bokoblin"] = _cp2.deepcopy(SPECIES["moblin"]); SPECIES["boss_bokoblin"].update(hunch=0.8, splay=0.5, crouch=3)
 SPECIES["boss_bokoblin"]["parts"] += [
     P("necklace", "body", (-6.5, -1, -4.5, 13, 3, 9), (0, -2, 0), c="horn", f=["stripes"]),
-    P("skullMask", "head", (-4.5, -9, -5.5, 9, 6, 2), (0, 0, 0), c="horn"), P("helmBoss", "head", (-5.5, -3, -5.5, 11, 3, 11), (0, -6, 0), c="horn"),
+    P("skullMask", "head", (-4.5, -12, -5.5, 9, 4, 2), (0, 0, 0), c="horn"), P("helmBoss", "head", (-5.5, -3, -5.5, 11, 3, 11), (0, -6, 0), c="horn"),
     P("crest", "head", (-1, -13, -2, 2, 6, 4), (0, 0, 0), c="horn"), P("spikeSL", "body", (4, -4, -1.5, 3, 5, 3), (3, -3, 0), (0, 0, -0.5), c="horn"), P("spikeSR", "body", (-7, -4, -1.5, 3, 5, 3), (-3, -3, 0), (0, 0, 0.5), c="horn"),
     P("bossTuskL", "head", (2, 1, -6.5, 1.5, 3, 1.5), (0, 0, 0), c="horn"), P("bossTuskR", "head", (-3.5, 1, -6.5, 1.5, 3, 1.5), (0, 0, 0), c="horn"),
-    P("skullBelt", "body", (-2, 9, -4.8, 4, 4, 1.5), (0, 0, 0), c="horn"), P("brow", "head", (-4.5, -4.5, -5.8, 9, 1.5, 1.5), (0, 0, 0), c="skin2"),
+    P("skullBelt", "body", (-2, 9, -4.8, 4, 4, 1.5), (0, 0, 0), c="horn"),
     P("paintL", "body", (3, -8, -4.5, 3, 12, 1), (0, 0, 0), c="cloth"), P("paintR", "body", (-6, -8, -4.5, 3, 12, 1), (0, 0, 0), c="cloth")]
 def sp(**k): return pal(**k)
 PAL["stalfos"] = ranks5(pal("#dcd8c4", "#b8b49c", "#e8e4d0", "#6a4a3a", "#8a7a60", eye="#ff4020"))

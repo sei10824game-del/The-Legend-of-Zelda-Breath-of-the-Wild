@@ -55,6 +55,8 @@ public class Showcase {
         SHOTS.add(new Shot("lynel_CHARGE", Species.LYNEL, 0, "lynel_crusher", null, AttackKind.CHARGE, 22, 0, false, 0));
         SHOTS.add(new Shot("gibdo_LEAP", Species.GIBDO, 0, null, null, AttackKind.LEAP, 14, 0, false, 0));
         SHOTS.add(new Shot("talus_STOMP", Species.TALUS, 0, null, null, AttackKind.STOMP, 14, 0, false, 0));
+        for (Species f : new Species[]{Species.BOKOBLIN, Species.MOBLIN, Species.LIZALFOS, Species.LYNEL, Species.HINOX, Species.BOSS_BOKOBLIN, Species.GIBDO, Species.WIZZROBE, Species.KEESE, Species.OCTOROK, Species.TALUS, Species.STALKOBLIN})
+            SHOTS.add(new Shot(f.id + "_face", f, 0, null, null, null, 0, 0, false, 0));
         SHOTS.add(new Shot("lynel_STOMP_side", Species.LYNEL, 0, "lynel_crusher", null, AttackKind.STOMP, 14, 0, false, 0));
         SHOTS.add(new Shot("lynel_CHARGE_side", Species.LYNEL, 0, "lynel_crusher", null, AttackKind.CHARGE, 22, 0, false, 0));
         SHOTS.add(new Shot("gibdo_LEAP_side", Species.GIBDO, 0, null, null, AttackKind.LEAP, 14, 0, false, 0));
@@ -117,7 +119,8 @@ public class Showcase {
             if (idx >= SHOTS.size()) { System.out.println("SHOWCASE_DONE"); mc.stop(); return; }
             Shot sh = SHOTS.get(idx);
             HyruleBiped m = ModRegistry.TYPES.get(sh.s).get().create(lv);
-            double dist = 3.5 + sh.s.h * 1.5;
+            boolean face = sh.name().endsWith("_face");
+            double dist = face ? 1.6 + sh.s.h * 0.55 : 3.5 + sh.s.h * 1.5;
             Vec3 p = mc.player.position();
             mc.player.setYRot(0); mc.player.setXRot(0);
             float yaw = sh.name().endsWith("_side") ? 90 : 180;
@@ -134,7 +137,7 @@ public class Showcase {
                 h.moveTo(p.x + 1.4, p.y, p.z + dist, 0, 0);
                 lv.putNonPlayerEntity(9500 + idx, h); head = h;
             }
-            float mid = sh.s.h * 0.5f;
+            float mid = face ? cur.getBbHeight() * 0.58f : sh.s.h * 0.5f;
             mc.player.setXRot((float) Math.toDegrees(Math.atan((1.62 - mid) / dist)));
             phase = 1; return;
         }
