@@ -130,7 +130,7 @@ public enum Species {
     QUEEN_GIBDO("queen_gibdo", 1.2f, 3.4f, 800, 12, 0.28, 1.5, 2.8, 1.8f, AttackKind.SLASH, 0.0f, true, new String[][]{{}, {}, {}, {}, {}}),
     FLUX_CONSTRUCT("flux_construct", 2.0f, 4.4f, 500, 14, 0.2, 2.5, 3.6, 2.4f, AttackKind.SMASH, 0.2f, false, new String[][]{{}, {}, {}, {}, {}}),
     SEIZED_CONSTRUCT("seized_construct", 1.2f, 3.4f, 220, 12, 0.24, 1.5, 3.0, 1.8f, AttackKind.SLASH, 0.0f, false, new String[][]{{"royal_broadsword"}, {"royal_broadsword"}, {"royal_broadsword"}, {"royal_broadsword"}, {"royal_broadsword"}}),
-    BOSS_BOKOBLIN("boss_bokoblin", 1.7f, 3.8f, 250, 10, 0.26, 1.8, 3.4, 2.0f, AttackKind.SMASH, 0.2f, false, new String[][]{{"boss_bokoblin_club"}, {"boss_bokoblin_club"}, {"boss_bokoblin_club"}, {"boss_bokoblin_club"}, {"boss_bokoblin_club"}}),
+    BOSS_BOKOBLIN("boss_bokoblin", 1.9f, 4.2f, 250, 10, 0.26, 1.8, 3.6, 2.3f, AttackKind.SMASH, 0.2f, false, new String[][]{{"boss_bokoblin_club"}, {"boss_bokoblin_club"}, {"boss_bokoblin_club"}, {"boss_bokoblin_club"}, {"boss_bokoblin_club"}}),
     HORRIBLIN("horriblin", 1.79f, 2.99f, 30, 3, 0.3, 0.4, 2.7, 1.44f, AttackKind.SLASH, 0f, false, new String[][]{
         {"boko_club", "boko_spear"}, {"spiked_boko_club", "spiked_boko_spear"}, {"dragonbone_boko_club"}, {"dragonbone_boko_spear"}, {"dragonbone_boko_club"}});
 
