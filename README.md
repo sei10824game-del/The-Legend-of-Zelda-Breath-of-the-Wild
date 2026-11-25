@@ -9,9 +9,13 @@ BotW + TotK creatures & weapons. TotK variants take priority over BotW.
 
 ## Done
 Bokoblin, Moblin, Lizalfos, Keese, Hinox (rock throw), Talus (rock throw), Gibdo, Horriblin, Octorok, Wizzrobe (Blizzrobe, Thunder), Lynel, Chuchu, Guardian Stalker, Stalkoblin, Stalmoblin, Stalizalfos, Yiga Footsoldier, Blademaster, Soldier/Captain Construct, Frox, Stalhinox, Master Kohga, 4 Blight Ganons, Calamity Ganon, Phantom Ganon, Gleeok; Molduga, Molduking, Gloom Hands, Like Like, Marbled Gohma, Colgera, Queen Gibdo, Flux/Seized Construct, Boss Bokoblin; Twilight Princess: Bulblin (+King), Stalhound, Shadow Beast, Redead, Poe, Tektite, Peahat, Bubbles, Dodongo, Helmasaur, Dark Nut, Death Sword, Zant, Ganondorf, Diababa, Fyrus, Armogohma, Argorok, Aeralfos, Dinolfos, Kargarok; Skyward Sword: Stalfos, Stalmaster, Dinolfos, Aeralfos, Armos, Beamos, Skulltula, Deku Baba, Cursed Bokoblin, Ghirahim, Demise, Moldarach, Koloktos, Scaldera, The Imprisoned (3 heads, elemental breath); 57 weapons (melee, bows, shields; mobs block with shields); monster-part drops (horn/fang/guts per species); ranged system (SHOOT: arrows, rocks, fire/ice/spark balls, returning boomerang).
-## TODO: Gleeok, Molduga, Frox, Gloom Hands, Phantom Ganon, Calamity Ganon, Demise etc.; hand-polished models; in-client visual check.
-Remaining creatures (Lynel, Guardian, Chuchu, Wizzrobe, Octorok, Gleeok, Gibdo, Horriblin, Construct, Phantom Ganon, bosses...), elemental variants, loot tables, hand-polished models.
-
+## Status
+- 109 species (BotW, TotK, Skyward Sword, Twilight Princess) incl. Stalhorse, Boss Bokoblin (own model); 134 weapons/bows/shields/rods/arrows (incl. Zonaite, rusty, Royal Guard sets).
+- Colour ranks only for species that have them in the games. Yiga carry blade and bow and swap by distance.
+- Per-species moves: Lynel gallop trample / rear-up, giant stomp shockwave, Moblin rush slow, Gibdo grab, Lizalfos tail launch; roar telegraph.
+- Visual check: `-Pshowcase` writes poses, face close-ups (`*_face.png`) and side shots into `run/screenshots`.
+## TODO
+Hand-painted textures, dedicated sounds, 3D weapon models, Zonai weapon effects, gameplay balance pass.
 ## Visual check (dev)
 `./gradlew runClient -Pshowcase` (needs a world copied to `run/saves/showcase`, e.g. from `runServer`) screenshots every creature/pose to `run/screenshots` (client-side only, no server mobs). Under Xvfb: `Xvfb :99 &; DISPLAY=:99 LIBGL_ALWAYS_SOFTWARE=1 ...`.
 
