@@ -55,8 +55,8 @@ public class Showcase {
         SHOTS.add(new Shot("lynel_CHARGE", Species.LYNEL, 0, "lynel_crusher", null, AttackKind.CHARGE, 22, 0, false, 0));
         SHOTS.add(new Shot("gibdo_LEAP", Species.GIBDO, 0, null, null, AttackKind.LEAP, 14, 0, false, 0));
         SHOTS.add(new Shot("talus_STOMP", Species.TALUS, 0, null, null, AttackKind.STOMP, 14, 0, false, 0));
-        for (Species f : new Species[]{Species.BOKOBLIN, Species.MOBLIN, Species.LIZALFOS, Species.LYNEL, Species.HINOX, Species.BOSS_BOKOBLIN, Species.GIBDO, Species.WIZZROBE, Species.KEESE, Species.OCTOROK, Species.TALUS, Species.STALKOBLIN})
-            SHOTS.add(new Shot(f.id + "_face", f, 0, null, null, null, 0, 0, false, 0));
+        for (Species f : Species.values())
+            { if (!f.flies && !f.id.startsWith("guardian")) SHOTS.add(new Shot(f.id + "_face", f, 0, null, null, null, 0, 0, false, 0)); }
         SHOTS.add(new Shot("lynel_STOMP_side", Species.LYNEL, 0, "lynel_crusher", null, AttackKind.STOMP, 14, 0, false, 0));
         SHOTS.add(new Shot("lynel_CHARGE_side", Species.LYNEL, 0, "lynel_crusher", null, AttackKind.CHARGE, 22, 0, false, 0));
         SHOTS.add(new Shot("gibdo_LEAP_side", Species.GIBDO, 0, null, null, AttackKind.LEAP, 14, 0, false, 0));
