@@ -57,6 +57,8 @@ public class Showcase {
         SHOTS.add(new Shot("talus_STOMP", Species.TALUS, 0, null, null, AttackKind.STOMP, 14, 0, false, 0));
         for (Species f : Species.values())
             { if (f.flies || f.id.startsWith("guardian")) SHOTS.add(new Shot(f.id + "_face", f, 0, null, null, null, 0, 0, false, 0)); }
+        for (Species f : new Species[]{Species.BOKOBLIN, Species.MOBLIN, Species.LIZALFOS, Species.LYNEL, Species.HINOX, Species.BOSS_BOKOBLIN, Species.GIBDO, Species.STALHORSE, Species.OCTOROK, Species.KEESE})
+            SHOTS.add(new Shot(f.id + "_face_side", f, 0, null, null, null, 0, 0, false, 0));
         SHOTS.add(new Shot("lynel_STOMP_side", Species.LYNEL, 0, "lynel_crusher", null, AttackKind.STOMP, 14, 0, false, 0));
         SHOTS.add(new Shot("lynel_CHARGE_side", Species.LYNEL, 0, "lynel_crusher", null, AttackKind.CHARGE, 22, 0, false, 0));
         SHOTS.add(new Shot("gibdo_LEAP_side", Species.GIBDO, 0, null, null, AttackKind.LEAP, 14, 0, false, 0));
@@ -90,7 +92,7 @@ public class Showcase {
         mc.options.hideGui = true;
         if (btick == 100) srv.execute(() -> {
             var src = srv.createCommandSourceStack().withSuppressedOutput();
-            for (String c : new String[]{"gamemode survival @a", "effect give @a minecraft:resistance 999 255 true", "time set day", "gamerule doMobGriefing true",
+            for (String c : new String[]{"gamemode survival @a", "effect give @a minecraft:resistance 999 255 true", "time set day", "weather clear", "gamerule doMobGriefing true",
                     spawnCmd()})
                 srv.getCommands().performPrefixedCommand(src, c);
         });
@@ -121,7 +123,7 @@ public class Showcase {
             if (idx >= SHOTS.size()) { System.out.println("SHOWCASE_DONE"); mc.stop(); return; }
             Shot sh = SHOTS.get(idx);
             HyruleBiped m = ModRegistry.TYPES.get(sh.s).get().create(lv);
-            boolean face = sh.name().endsWith("_face");
+            boolean face = sh.name().contains("_face");
             double dm = face ? faceDist(sh.s) : 1;
             double dist = face ? (1.6 + sh.s.h * 0.55) * dm : 3.5 + sh.s.h * 1.5;
             Vec3 p = mc.player.position();
@@ -140,7 +142,7 @@ public class Showcase {
                 h.moveTo(p.x + 1.4, p.y, p.z + dist, 0, 0);
                 lv.putNonPlayerEntity(9500 + idx, h); head = h;
             }
-            float mid = face ? cur.getBbHeight() * faceAim(sh.s) + (sh.s.flies ? 1.2f : 0f) : sh.s.h * 0.5f;
+            float mid = face ? cur.getBbHeight() * (sh.name().endsWith("_side") && sh.s != Species.STALHORSE ? faceAim(sh.s) * 0.7f : faceAim(sh.s)) + (sh.s.flies ? 1.2f : 0f) : sh.s.h * 0.5f;
             mc.player.setXRot((float) Math.toDegrees(Math.atan((1.62 - mid) / dist)));
             phase = 1; return;
         }
