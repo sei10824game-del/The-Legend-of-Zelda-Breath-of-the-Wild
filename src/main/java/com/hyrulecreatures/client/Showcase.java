@@ -56,7 +56,7 @@ public class Showcase {
         SHOTS.add(new Shot("gibdo_LEAP", Species.GIBDO, 0, null, null, AttackKind.LEAP, 14, 0, false, 0));
         SHOTS.add(new Shot("talus_STOMP", Species.TALUS, 0, null, null, AttackKind.STOMP, 14, 0, false, 0));
         for (Species f : Species.values())
-            { if (!f.flies && !f.id.startsWith("guardian")) SHOTS.add(new Shot(f.id + "_face", f, 0, null, null, null, 0, 0, false, 0)); }
+            { if (f.flies || f.id.startsWith("guardian")) SHOTS.add(new Shot(f.id + "_face", f, 0, null, null, null, 0, 0, false, 0)); }
         SHOTS.add(new Shot("lynel_STOMP_side", Species.LYNEL, 0, "lynel_crusher", null, AttackKind.STOMP, 14, 0, false, 0));
         SHOTS.add(new Shot("lynel_CHARGE_side", Species.LYNEL, 0, "lynel_crusher", null, AttackKind.CHARGE, 22, 0, false, 0));
         SHOTS.add(new Shot("gibdo_LEAP_side", Species.GIBDO, 0, null, null, AttackKind.LEAP, 14, 0, false, 0));
@@ -64,8 +64,8 @@ public class Showcase {
         SHOTS.add(new Shot("lynel_SMASH", Species.LYNEL, 0, "lynel_crusher", null, AttackKind.SMASH, 17, 0, false, 0));
     }
 
-    static float faceAim(Species s) { return switch (s) { case LIZALFOS -> 0.36f; case FROX -> 0.8f; case GLOOM_HANDS -> 0.7f; case MOLDUGA -> 0.5f; case MOLDUKING -> 0.6f; case TENTALUS -> 0.7f; case DODONGO -> 0.55f; case DON_GERAR -> 0.65f; case STALHORSE -> 0.85f; default -> 0.58f; }; }
-    static double faceDist(Species s) { return switch (s) { case FROX, GLOOM_HANDS, TENTALUS -> 1.8; case MOLDUGA, MOLDUKING, DODONGO, DON_GERAR -> 1.5; case STALHORSE -> 1.4; default -> 1; }; }
+    static float faceAim(Species s) { return switch (s) { case LIZALFOS -> 0.36f; case FROX -> 0.8f; case GLOOM_HANDS -> 0.7f; case MOLDUGA -> 0.5f; case MOLDUKING -> 0.6f; case TENTALUS -> 0.7f; case DODONGO -> 0.55f; case DON_GERAR -> 0.65f; case STALHORSE -> 0.85f; case GLEEOK, ARGOROK -> 0.95f; default -> 0.58f; }; }
+    static double faceDist(Species s) { return switch (s) { case FROX, GLOOM_HANDS, TENTALUS -> 1.8; case MOLDUGA, MOLDUKING, DODONGO, DON_GERAR -> 1.5; case STALHORSE -> 1.4; case GLEEOK, ARGOROK, AERALFOS -> 0.55; default -> 1; }; }
     static int tick = 0, idx = -1, phase = 0;
     static HyruleBiped cur;
     static com.hyrulecreatures.StalHead head;
@@ -140,7 +140,7 @@ public class Showcase {
                 h.moveTo(p.x + 1.4, p.y, p.z + dist, 0, 0);
                 lv.putNonPlayerEntity(9500 + idx, h); head = h;
             }
-            float mid = face ? cur.getBbHeight() * faceAim(sh.s) : sh.s.h * 0.5f;
+            float mid = face ? cur.getBbHeight() * faceAim(sh.s) + (sh.s.flies ? 1.2f : 0f) : sh.s.h * 0.5f;
             mc.player.setXRot((float) Math.toDegrees(Math.atan((1.62 - mid) / dist)));
             phase = 1; return;
         }
