@@ -58,7 +58,7 @@ public class HyruleBiped extends HyruleMob {
     @Override protected double stompChance() {
         return switch (species) { case GLOOM_HANDS, FLUX_CONSTRUCT, MOLDUGA, MOLDUKING, KING_BULBLIN, FYRUS, DODONGO, DARK_NUT, GUMARM, STALMASTER, KOLOKTOS, MOLDARACH, DEMISE, THE_IMPRISONED, HINOX, TALUS, GUARDIAN, STALHINOX, CALAMITY_GANON, THUNDERBLIGHT_GANON -> 0.3; case GUARDIAN_SCOUT_4 -> 0.2; case FROX -> 0.35; case CAPTAIN_CONSTRUCT -> 0.2; case MOBLIN -> 0.1; default -> 0; };
     }
-    private boolean gapCloser() { return switch (species) { case LYNEL, MOBLIN, STALMOBLIN, BOSS_BOKOBLIN, LIZALFOS, LIZALFOS_FIRE, LIZALFOS_ICE, LIZALFOS_ELEC, DARK_LIZALFOS, GIBDO, REDEAD -> true; default -> false; }; }
+    private boolean gapCloser() { return switch (species) { case LYNEL, MOBLIN, STALMOBLIN, BOSS_BOKOBLIN, HINOX, FROX, LIZALFOS, LIZALFOS_FIRE, LIZALFOS_ICE, LIZALFOS_ELEC, DARK_LIZALFOS, GIBDO, REDEAD -> true; default -> false; }; }
     private boolean isLizalfos() { return switch (species) { case LIZALFOS, LIZALFOS_FIRE, LIZALFOS_ICE, LIZALFOS_ELEC, DARK_LIZALFOS -> true; default -> false; }; }
     private boolean isGiant() { return switch (species) { case HINOX, STALHINOX, TALUS, FROX, MOLDUGA, MOLDUKING, DODONGO -> true; default -> false; }; }
     @Override protected boolean canCharge() {
@@ -121,6 +121,7 @@ public class HyruleBiped extends HyruleMob {
     private void swapWeapons() { ItemStack m = getMainHandItem(); setItemSlot(EquipmentSlot.MAINHAND, altWeapon); altWeapon = m; }
     private boolean enraged;
     @Override public void aiStep() {
+        if (species == Species.FROX && !level().isClientSide) tickVortex();
         super.aiStep();
         if (!level().isClientSide) tickBossBar();
         if (!level().isClientSide && !species.hasRanks() && rank() != 0) setRank(0);
@@ -350,6 +351,15 @@ public class HyruleBiped extends HyruleMob {
         if ((species == Species.LIZALFOS || species == Species.DARK_LIZALFOS || species == Species.LIZALFOS_FIRE || species == Species.LIZALFOS_ICE || species == Species.LIZALFOS_ELEC) // tail sweep
                 && d <= reach() + 0.4 && getMainHandItem().isEmpty() && random.nextFloat() < 0.15f) return AttackKind.SPIN;
         if ((species == Species.HINOX || species == Species.STALHINOX) && d <= 5 && random.nextFloat() < 0.1f) return AttackKind.STOMP; // ground pound
+        if (species == Species.HINOX && d <= 6 && random.nextFloat() < 0.07f) return AttackKind.LEAP; // butt slam
+        if (species == Species.HINOX && d <= reach() + 0.4 && random.nextFloat() < 0.1f) return AttackKind.BITE; // headbutt
+        if (species == Species.FROX && vortex <= 0 && d > 3 && d < 12) {
+            float r = random.nextFloat();
+            if (r < 0.015f) { vortex = 60; getNavigation().stop(); return null; } // inhale
+            if (r < 0.035f) return AttackKind.LEAP; // body slam
+            if (r < 0.05f) return AttackKind.CHARGE;
+        }
+
         if ((species == Species.LIZALFOS || species == Species.LIZALFOS_FIRE || species == Species.LIZALFOS_ICE || species == Species.LIZALFOS_ELEC || species == Species.DARK_LIZALFOS)
                 && d > 3 && d < 9 && random.nextFloat() < 0.04f) return AttackKind.LEAP; // lunging jump
         if ((species == Species.MOBLIN || species == Species.STALMOBLIN || species == Species.BOSS_BOKOBLIN) && d > 4 && d < 10 && random.nextFloat() < 0.03f) return AttackKind.CHARGE; // shoulder rush
@@ -369,10 +379,28 @@ public class HyruleBiped extends HyruleMob {
         return super.chooseAttack();
     }
 
+    @Override protected boolean weakPoint(net.minecraft.world.damagesource.DamageSource src) { // Hinox: a projectile in the eye knocks it down
+        var d = src.getDirectEntity();
+        return species == Species.HINOX && d instanceof net.minecraft.world.entity.projectile.Projectile && d.getY() > getY() + getBbHeight() * 0.72;
+    }
+    // ---- Frox inhale vortex: pulls you toward its mouth, swallows and chews
+    private int vortex;
+    private void tickVortex() {
+        if (vortex <= 0) return;
+        vortex--;
+        Vec3 mouth = position().add(Vec3.directionFromRotation(0, getYRot()).scale(1.4)).add(0, getBbHeight() * 0.3, 0);
+        for (LivingEntity e : level().getEntitiesOfClass(LivingEntity.class, getBoundingBox().inflate(12, 3, 12), HyruleMob::isFoe)) {
+            Vec3 to = mouth.subtract(e.position()); double dist = to.length(); if (dist < 0.5) continue;
+            e.setDeltaMovement(e.getDeltaMovement().add(to.scale(0.07 / dist * 3))); e.hurtMarked = true;
+            if (dist < 2.2 && vortex % 10 == 0) { e.hurt(damageSources().mobAttack(this), (float) getAttributeValue(Attributes.ATTACK_DAMAGE) * 0.5f); e.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.MOVEMENT_SLOWDOWN, 30, 5)); }
+        }
+        if (level() instanceof ServerLevel sl) sl.sendParticles(net.minecraft.core.particles.ParticleTypes.CLOUD, mouth.x, mouth.y, mouth.z, 3, 0.8, 0.5, 0.8, -0.05);
+    }
     // ---- Lynel: fast, mounted-combat style combos
     @Override protected int atkSpeed() { return species == Species.LYNEL ? 2 : 1; }
     @Override protected int cooldownBase() { return species == Species.LYNEL ? 8 : 20; }
     @Override protected AttackKind comboNext(AttackKind a, int c, LivingEntity tg) {
+        if (species == Species.LYNEL && c >= 3 && random.nextFloat() < 0.3f) { slump(50); return null; } // tires out after a long combo (mountable in the games)
         if (species != Species.LYNEL || tg == null || !tg.isAlive() || c >= 4 || distanceTo(tg) > reach() + 2.5) return null;
         return switch (a) {
             case SLASH -> c < 3 ? AttackKind.SLASH : AttackKind.SPIN; // slash, slash, slash, whirl
@@ -414,6 +442,13 @@ public class HyruleBiped extends HyruleMob {
                 if (!bs.isAir()) sl.sendParticles(new net.minecraft.core.particles.BlockParticleOption(net.minecraft.core.particles.ParticleTypes.BLOCK, bs), getX() + Math.cos(ang) * r, getY() + 0.2, getZ() + Math.sin(ang) * r, 2, 0.1, 0.1, 0.1, 0.05);
             }
             for (LivingEntity e : sl.getEntitiesOfClass(LivingEntity.class, getBoundingBox().inflate(5.5, 1.5, 5.5), HyruleMob::isFoe)) if (e.onGround()) { e.setDeltaMovement(e.getDeltaMovement().add(0, 0.6, 0)); e.hurtMarked = true; }
+        }
+        if (a.hitsAt(t) && a == AttackKind.LEAP && (isGiant() || species == Species.LYNEL)) { // body slam / jump smash: wide shockwave
+            for (LivingEntity e : sl.getEntitiesOfClass(LivingEntity.class, getBoundingBox().inflate(4.5, 1.5, 4.5), HyruleMob::isFoe)) {
+                e.hurt(damageSources().mobAttack(this), (float) getAttributeValue(Attributes.ATTACK_DAMAGE) * 0.7f);
+                e.knockback(1.0, getX() - e.getX(), getZ() - e.getZ()); e.hurtMarked = true;
+            }
+            sl.sendParticles(net.minecraft.core.particles.ParticleTypes.EXPLOSION, getX(), getY() + 0.2, getZ(), 2, 1.5, 0.1, 1.5, 0);
         }
         if (a.hitsAt(t) && tg != null && distanceTo(tg) < reach() + 2.2) {
             if (species == Species.LIKE_LIKE && a == AttackKind.BITE) { // swallow: drag in, hold, lock the shield

@@ -95,6 +95,8 @@ public abstract class HyruleMob extends Monster {
         if (level().isClientSide) return super.hurt(s, a);
         boolean down = isDown();
         if (down) a *= 1.5f;
+        boolean weak = !down && weakPoint(s);
+        if (weak) { a *= 2f; stagger += getMaxHealth(); }
         else if (getOffhandItem().getItem() instanceof net.minecraft.world.item.ShieldItem && atkKind() == null
                 && s.getDirectEntity() != null && random.nextFloat() < (isGuard() ? 0.85f : 0.25f)
                 && getViewVector(1).dot(s.getDirectEntity().position().subtract(position()).normalize()) > 0.4) {
@@ -110,6 +112,9 @@ public abstract class HyruleMob extends Monster {
         }
         return r;
     }
+
+    protected void slump(int ticks) { entityData.set(DOWN, ticks); entityData.set(ATK, -1); getNavigation().stop(); } // exhausted: open for a while
+    protected boolean weakPoint(DamageSource s) { return false; }
 
     private void knockDown(Entity src) {
         entityData.set(DOWN, DOWN_TIME); entityData.set(ATK, -1);
