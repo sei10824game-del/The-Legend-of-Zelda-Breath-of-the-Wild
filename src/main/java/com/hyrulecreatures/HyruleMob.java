@@ -158,6 +158,15 @@ public abstract class HyruleMob extends Monster {
                 && getTarget() != null && distanceTo(getTarget()) < 10);
         AttackKind a = atkKind();
         if (a == null) return;
+        stepAttack(a);
+        for (int extra = 1; extra < atkSpeed() && atkKind() != null; extra++) stepAttack(atkKind()); // fast attackers run the state machine several times a tick
+    }
+
+    protected int atkSpeed() { return 1; }
+    protected int cooldownBase() { return 20; }
+    protected AttackKind comboNext(AttackKind a, int c, LivingEntity tg) { return null; }
+
+    private void stepAttack(AttackKind a) {
         int t = atkTick() + 1;
         LivingEntity tg = getTarget();
         if (tg != null && (t <= a.hit && a != AttackKind.CHARGE || a == AttackKind.CHARGE && t < a.windup)) { getLookControl().setLookAt(tg, 60, 60); faceTarget(tg); }
@@ -181,10 +190,12 @@ public abstract class HyruleMob extends Monster {
         }
         if (t >= a.total) {
             int c = combo();
+            AttackKind nx = comboNext(a, c, tg);
+            if (nx != null) { entityData.set(COMBO, c + 1); startAttack(nx); return; }
             if (a == AttackKind.SLASH && tg != null && c < 2 && distanceTo(tg) < reach() + 0.8) {
                 entityData.set(COMBO, c + 1); startAttack(AttackKind.SLASH); return;
             }
-            entityData.set(COMBO, 0); entityData.set(ATK, -1); cooldown = (a == AttackKind.BEAM || a == AttackKind.AREA ? 90 : 20) + random.nextInt(12);
+            entityData.set(COMBO, 0); entityData.set(ATK, -1); cooldown = (a == AttackKind.BEAM || a == AttackKind.AREA ? 90 : cooldownBase()) + random.nextInt(Math.max(2, cooldownBase() * 3 / 5));
         } else entityData.set(ATK_T, t);
     }
 

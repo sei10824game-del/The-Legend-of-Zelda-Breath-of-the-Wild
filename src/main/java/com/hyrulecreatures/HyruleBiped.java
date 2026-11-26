@@ -355,6 +355,7 @@ public class HyruleBiped extends HyruleMob {
         if ((species == Species.MOBLIN || species == Species.STALMOBLIN || species == Species.BOSS_BOKOBLIN) && d > 4 && d < 10 && random.nextFloat() < 0.03f) return AttackKind.CHARGE; // shoulder rush
         if ((species == Species.TALUS || species == Species.FROX) && d <= 5 && random.nextFloat() < 0.08f) return AttackKind.STOMP;
         if ((species == Species.GIBDO || species == Species.REDEAD) && d > 2 && d < 6 && random.nextFloat() < 0.05f) return AttackKind.LEAP; // lunge-and-grab
+        if (species == Species.LYNEL && d > reach() + 0.4 && d < 8 && random.nextFloat() < 0.12f) return AttackKind.SLASH; // ride-by slash
         if (species == Species.LYNEL) { // gallop charge from mid range, rear-up stomp up close (BotW/TotK Lynel moves)
             if (d > 5 && d < 14 && random.nextFloat() < 0.04f * (enraged ? 2f : 1f)) return AttackKind.CHARGE;
             if (d <= 4 && random.nextFloat() < 0.12f) return AttackKind.STOMP;
@@ -368,6 +369,29 @@ public class HyruleBiped extends HyruleMob {
         return super.chooseAttack();
     }
 
+    // ---- Lynel: fast, mounted-combat style combos
+    @Override protected int atkSpeed() { return species == Species.LYNEL ? 2 : 1; }
+    @Override protected int cooldownBase() { return species == Species.LYNEL ? 8 : 20; }
+    @Override protected AttackKind comboNext(AttackKind a, int c, LivingEntity tg) {
+        if (species != Species.LYNEL || tg == null || !tg.isAlive() || c >= 4 || distanceTo(tg) > reach() + 2.5) return null;
+        return switch (a) {
+            case SLASH -> c < 3 ? AttackKind.SLASH : AttackKind.SPIN; // slash, slash, slash, whirl
+            case CHOP -> AttackKind.SLASH;
+            case SMASH -> random.nextBoolean() ? AttackKind.CHOP : AttackKind.SLASH;
+            case THRUST -> AttackKind.MULTI;
+            case MULTI -> AttackKind.SLASH;
+            default -> null;
+        };
+    }
+    private void mountedStrafe(AttackKind a, int t, LivingEntity tg) { // ride past the target while swinging
+        if (tg == null || t < 1 || t > a.hit + 2 || (a != AttackKind.SLASH && a != AttackKind.CHOP && a != AttackKind.THRUST && a != AttackKind.SMASH && a != AttackKind.MULTI)) return;
+        Vec3 to = tg.position().subtract(position()).multiply(1, 0, 1); double dist = to.length(); if (dist < 0.01) return;
+        Vec3 n = to.scale(1 / dist), tan = new Vec3(-n.z, 0, n.x).scale(combo() % 2 == 0 ? 1 : -1);
+        double fwd = dist > reach() * 0.7 ? 0.22 : -0.04;
+        Vec3 v = n.scale(fwd).add(tan.scale(0.26));
+        setDeltaMovement(v.x, getDeltaMovement().y, v.z); hurtMarked = true;
+    }
+
     /** Per-species hit behaviour layered on the generic attack kinds. */
     private void speciesMoves(AttackKind a, int t, LivingEntity tg) {
         if (!(level() instanceof ServerLevel sl)) return;
@@ -375,6 +399,7 @@ public class HyruleBiped extends HyruleMob {
             playSound(net.minecraft.sounds.SoundEvents.RAVAGER_ROAR, 1.2f, Math.max(0.5f, 1.6f - getBbHeight() * 0.15f));
             sl.sendParticles(net.minecraft.core.particles.ParticleTypes.ANGRY_VILLAGER, getX(), getY() + getBbHeight() * 0.9, getZ(), 4, 0.3, 0.2, 0.3, 0);
         }
+        if (species == Species.LYNEL) mountedStrafe(a, t, tg);
         if (species == Species.LYNEL && a == AttackKind.CHARGE && t >= a.windup && t < a.windup + 20) { // trample everything on the path
             for (LivingEntity e : sl.getEntitiesOfClass(LivingEntity.class, getBoundingBox().inflate(0.6), HyruleMob::isFoe)) if (e.invulnerableTime <= 0) {
                 e.hurt(damageSources().mobAttack(this), (float) getAttributeValue(Attributes.ATTACK_DAMAGE) * 0.6f);
