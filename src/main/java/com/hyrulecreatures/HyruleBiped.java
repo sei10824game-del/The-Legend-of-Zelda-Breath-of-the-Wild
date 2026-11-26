@@ -122,6 +122,7 @@ public class HyruleBiped extends HyruleMob {
     private boolean enraged;
     @Override public void aiStep() {
         if (species == Species.FROX && !level().isClientSide) tickVortex();
+        if (minions > 0 && tickCount % 400 == 0) minions--;
         super.aiStep();
         if (!level().isClientSide) tickBossBar();
         if (!level().isClientSide && !species.hasRanks() && rank() != 0) setRank(0);
@@ -365,6 +366,12 @@ public class HyruleBiped extends HyruleMob {
         if ((species == Species.MOBLIN || species == Species.STALMOBLIN || species == Species.BOSS_BOKOBLIN) && d > 4 && d < 10 && random.nextFloat() < 0.03f) return AttackKind.CHARGE; // shoulder rush
         if ((species == Species.TALUS || species == Species.FROX) && d <= 5 && random.nextFloat() < 0.08f) return AttackKind.STOMP;
         if ((species == Species.GIBDO || species == Species.REDEAD) && d > 2 && d < 6 && random.nextFloat() < 0.05f) return AttackKind.LEAP; // lunge-and-grab
+        if (isWizzrobe() && d < 20 && random.nextFloat() < 0.35f && level() instanceof ServerLevel sl && minions < 3) { // summon an elemental Keese
+            Species ms = species == Species.BLIZZROBE ? Species.KEESE_ICE : species == Species.THUNDER_WIZZROBE ? Species.KEESE_ELEC : rank() == 1 ? Species.KEESE_ICE : rank() == 2 ? Species.KEESE_ELEC : Species.KEESE_FIRE;
+            HyruleBiped m = ModRegistry.TYPES.get(ms).get().create(sl);
+            if (m != null) { m.moveTo(getX() + random.nextGaussian() * 2, getY() + 1, getZ() + random.nextGaussian() * 2); m.setTarget(t); sl.addFreshEntity(m); minions++;
+                sl.sendParticles(net.minecraft.core.particles.ParticleTypes.POOF, m.getX(), m.getY(), m.getZ(), 12, 0.4, 0.4, 0.4, 0.05); playSound(net.minecraft.sounds.SoundEvents.EVOKER_CAST_SPELL, 1f, 1f); }
+        }
         if (species == Species.LYNEL && d > reach() + 0.4 && d < 8 && random.nextFloat() < 0.12f) return AttackKind.SLASH; // ride-by slash
         if (species == Species.LYNEL) { // gallop charge from mid range, rear-up stomp up close (BotW/TotK Lynel moves)
             if (d > 5 && d < 14 && random.nextFloat() < 0.04f * (enraged ? 2f : 1f)) return AttackKind.CHARGE;
@@ -384,7 +391,8 @@ public class HyruleBiped extends HyruleMob {
         return species == Species.HINOX && d instanceof net.minecraft.world.entity.projectile.Projectile && d.getY() > getY() + getBbHeight() * 0.72;
     }
     // ---- Frox inhale vortex: pulls you toward its mouth, swallows and chews
-    private int vortex;
+    private int vortex, minions;
+    private boolean isWizzrobe() { return species == Species.WIZZROBE || species == Species.BLIZZROBE || species == Species.THUNDER_WIZZROBE; }
     private void tickVortex() {
         if (vortex <= 0) return;
         vortex--;
@@ -497,6 +505,11 @@ public class HyruleBiped extends HyruleMob {
             Shot s = new Shot(level(), this, ty, boom ? h.copy() : new ItemStack(ModRegistry.shotItem(ty)), dmg);
             s.shoot(dx, dy + h2 * (ty == 0 ? 0.05 : 0), dz, boom ? 1.1f : 1.2f, 1f);
             level().addFreshEntity(s);
+            if (species == Species.TALUS) for (int i = -1; i <= 1; i += 2) { // detaches and hurls its arms in succession
+                Shot x = new Shot(level(), this, ty, new ItemStack(ModRegistry.shotItem(ty)), dmg);
+                double ang = i * 0.22, cs = Math.cos(ang), sn = Math.sin(ang);
+                x.shoot(dx * cs - dz * sn, dy + h2 * 0.05, dx * sn + dz * cs, 1.0f, 1f); level().addFreshEntity(x);
+            }
         }
         playSound(net.minecraft.sounds.SoundEvents.ARROW_SHOOT, 1f, 0.8f + random.nextFloat() * 0.4f);
     }
