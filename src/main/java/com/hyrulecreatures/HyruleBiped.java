@@ -143,7 +143,7 @@ public class HyruleBiped extends HyruleMob {
 
     // ---------------------------------------------------------------- guardians: 8 legs with own HP, beam
     public boolean isLegged() { return species == Species.GUARDIAN || species == Species.DECAYED_GUARDIAN || species == Species.CALAMITY_GANON; }
-    private boolean longShooter() { return switch (species) { case MARBLED_GOHMA, COLGERA, ZANT, GANONDORF, DODONGO, DIABABA, ARMOGOHMA, ARGOROK, LYNEL, HINOX, TALUS, FROX, STALHINOX, SCALDERA, THE_IMPRISONED, DEMISE, KOLOKTOS, LIZALFOS_FIRE, LIZALFOS_ICE, LIZALFOS_ELEC, MASTER_KOHGA, FIREBLIGHT_GANON, WATERBLIGHT_GANON, WINDBLIGHT_GANON, THUNDERBLIGHT_GANON -> true; default -> false; }; }
+    private boolean longShooter() { return switch (species) { case MARBLED_GOHMA, COLGERA, ZANT, GANONDORF, PHANTOM_GANON, DODONGO, DIABABA, ARMOGOHMA, ARGOROK, LYNEL, HINOX, TALUS, FROX, STALHINOX, SCALDERA, THE_IMPRISONED, DEMISE, KOLOKTOS, LIZALFOS_FIRE, LIZALFOS_ICE, LIZALFOS_ELEC, MASTER_KOHGA, FIREBLIGHT_GANON, WATERBLIGHT_GANON, WINDBLIGHT_GANON, THUNDERBLIGHT_GANON -> true; default -> false; }; }
     private boolean pureBeamer() { return switch (species) { case GUARDIAN, DECAYED_GUARDIAN, GUARDIAN_TURRET, GUARDIAN_SKYWATCHER, CALAMITY_GANON, BEAMOS -> true; default -> false; }; }
     private float[] legHp;
 
@@ -416,6 +416,17 @@ public class HyruleBiped extends HyruleMob {
             for (LivingEntity e : sl.getEntitiesOfClass(LivingEntity.class, getBoundingBox().inflate(5.5, 1.5, 5.5), HyruleMob::isFoe)) if (e.onGround()) { e.setDeltaMovement(e.getDeltaMovement().add(0, 0.6, 0)); e.hurtMarked = true; }
         }
         if (a.hitsAt(t) && tg != null && distanceTo(tg) < reach() + 2.2) {
+            if (species == Species.LIKE_LIKE && a == AttackKind.BITE) { // swallow: drag in, hold, lock the shield
+                Vec3 in = position().subtract(tg.position()).multiply(1, 0, 1).normalize().scale(0.6);
+                tg.setDeltaMovement(in.x, 0.1, in.z); tg.hurtMarked = true;
+                tg.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.MOVEMENT_SLOWDOWN, 60, 6));
+                if (tg instanceof net.minecraft.world.entity.player.Player pl) pl.getCooldowns().addCooldown(net.minecraft.world.item.Items.SHIELD, 100);
+            }
+            if ((species == Species.HINOX || species == Species.STALHINOX) && a == AttackKind.SMASH && random.nextFloat() < 0.25f) { // grab and hurl
+                Vec3 f = Vec3.directionFromRotation(0, getYRot()).scale(1.6);
+                tg.setDeltaMovement(f.x, 0.9, f.z); tg.hurtMarked = true;
+                playSound(net.minecraft.sounds.SoundEvents.RAVAGER_ATTACK, 1.2f, 0.6f);
+            }
             if ((species == Species.MOBLIN || species == Species.STALMOBLIN || species == Species.BOSS_BOKOBLIN) && a == AttackKind.CHARGE) // rush slams you off your feet
                 tg.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.MOVEMENT_SLOWDOWN, 40, 2));
             if ((species == Species.GIBDO || species == Species.REDEAD) && a == AttackKind.LEAP) { // grab: held in place and drained
@@ -437,7 +448,7 @@ public class HyruleBiped extends HyruleMob {
             a.pickup = net.minecraft.world.entity.projectile.AbstractArrow.Pickup.DISALLOWED;
             a.shoot(dx, dy + h2 * 0.2, dz, 1.6f, 3f);
             level().addFreshEntity(a);
-            if (isBlight() || species == Species.MASTER_KOHGA || species == Species.YIGA_BLADEMASTER) // boss volley: 2 extra arrows fanned out
+            if (isBlight() || species == Species.MASTER_KOHGA || species == Species.YIGA_BLADEMASTER || species == Species.LYNEL) // boss volley: 2 extra arrows fanned out
                 for (int i = -1; i <= 1; i += 2) {
                     net.minecraft.world.entity.projectile.Arrow x = new net.minecraft.world.entity.projectile.Arrow(level(), this);
                     x.setBaseDamage(b.dmg * 0.4 + dmg * 0.3); x.pickup = net.minecraft.world.entity.projectile.AbstractArrow.Pickup.DISALLOWED;
