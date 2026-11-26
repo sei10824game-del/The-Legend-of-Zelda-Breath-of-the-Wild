@@ -303,6 +303,8 @@ public class HyruleBiped extends HyruleMob {
         Vec3 eye = beamEye(), dir = aim.subtract(eye).normalize();
         impact = level().clip(new net.minecraft.world.level.ClipContext(eye, eye.add(dir.scale(48)), net.minecraft.world.level.ClipContext.Block.COLLIDER,
                 net.minecraft.world.level.ClipContext.Fluid.NONE, this)).getLocation();
+        var eh = net.minecraft.world.entity.projectile.ProjectileUtil.getEntityHitResult(level(), this, eye, impact, new AABB(eye, impact).inflate(1.5), e -> e instanceof LivingEntity le && HyruleMob.isFoe(le) && le.isAlive());
+        if (eh != null) impact = eh.getLocation(); // the beam stops at the first enemy it meets instead of passing through
         playSound(SoundEvents.LIGHTNING_BOLT_THUNDER, 2f, 1.8f);
         sl.explode(this, impact.x, impact.y, impact.z, 3.2f, false, Level.ExplosionInteraction.MOB);
         float dmg = (float) getAttributeValue(Attributes.ATTACK_DAMAGE);
