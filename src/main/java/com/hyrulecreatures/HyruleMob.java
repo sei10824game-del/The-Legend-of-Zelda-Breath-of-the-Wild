@@ -228,6 +228,11 @@ public abstract class HyruleMob extends Monster {
             if (a == AttackKind.BASH || a == AttackKind.CHARGE) { tg.knockback(1.3, getX() - tg.getX(), getZ() - tg.getZ()); tg.hurtMarked = true; }
         }
         playSound(SoundEvents.PLAYER_ATTACK_SWEEP, 1f, 0.8f + random.nextFloat() * 0.4f);
+        if (level() instanceof net.minecraft.server.level.ServerLevel fx) { // slash arc / thrust spark in front of the swing
+            Vec3 f = Vec3.directionFromRotation(0, getYRot()), at = position().add(f.scale(Math.min(r, 3.2) * 0.75)).add(0, getBbHeight() * 0.55, 0);
+            var pt = a == AttackKind.THRUST || a == AttackKind.MULTI ? net.minecraft.core.particles.ParticleTypes.CRIT : net.minecraft.core.particles.ParticleTypes.SWEEP_ATTACK;
+            if (a != AttackKind.BITE) fx.sendParticles(pt, at.x, at.y, at.z, pt == net.minecraft.core.particles.ParticleTypes.CRIT ? 6 : 1, 0.2, 0.2, 0.2, 0);
+        }
         if ((a == AttackKind.SMASH || a == AttackKind.STOMP || a == AttackKind.CHARGE || a == AttackKind.LEAP) && level() instanceof net.minecraft.server.level.ServerLevel sl) { // ground impact
             Vec3 at = position().add(Vec3.directionFromRotation(0, getYRot()).scale(Math.min(r, 3.5) * 0.8));
             var below = level().getBlockState(net.minecraft.core.BlockPos.containing(at).below());

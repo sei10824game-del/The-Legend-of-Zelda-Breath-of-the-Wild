@@ -164,7 +164,12 @@ public class CreatureModel extends EntityModel<HyruleBiped> implements ArmedMode
             add("leftArm", -1.2f, .55f, -.35f); lean += .1f; dip += 1f;
         }
         if (k != null) {
-            float t = e.atkTick() + pt;
+            float t = e.atkTick() + pt, raw = t;
+            boolean melee = k.hits.length == 1 && k != AttackKind.SHOOT && k != AttackKind.BEAM && k != AttackKind.AREA && k != AttackKind.CHARGE && k != AttackKind.LEAP && k != AttackKind.BITE;
+            if (melee && t > k.hit) { // hit-stop: freeze on impact for 2 ticks, then run the recovery a touch faster so it still ends on time
+                float d = t - k.hit, span = k.total - k.hit;
+                t = d < 2 ? k.hit : k.hit + (d - 2) * span / Math.max(1, span - 2);
+            }
             int[] T = k.keys();
             Item held = e.getMainHandItem().getItem();
             float[][] c = k == AttackKind.AREA ? CAST : k != AttackKind.SHOOT ? KF.get(k) : held instanceof HyruleBowItem ? BOW : held != Items.AIR ? THROW : CAST;
@@ -174,6 +179,15 @@ public class CreatureModel extends EntityModel<HyruleBiped> implements ArmedMode
             lean += key(t, T, c[BX]) * .5f; twist += key(t, T, c[BY]) * dir * .6f; dip += key(t, T, c[DIP]) * .5f;
             if (head != null) { head.xRot += key(t, T, c[HX]); head.yRot += key(t, T, c[HY]) * dir; }
             add("rightLeg", key(t, T, c[RL]), 0, 0); add("leftLeg", key(t, T, c[LL]), 0, 0);
+            if (melee) { // planted stance, then the front leg drives forward through the hit; damped follow-through on arms and a jolt through the body
+                float load = Mth.clamp(raw / Math.max(1, k.windup), 0, 1), drive = raw < k.hit ? 0 : Math.max(0, 1 - (raw - k.hit) / 8f);
+                add("rightLeg", .35f * load * (1 - drive) - .5f * drive, 0, 0); add("leftLeg", -.3f * load * (1 - drive) + .35f * drive, 0, 0);
+                if (raw > k.hit) {
+                    float dd = raw - k.hit, damp = (float) Math.exp(-dd * .28), osc = Mth.sin(dd * 1.2f) * damp;
+                    add("rightArm", .35f * osc, 0, .1f * osc); add("leftArm", .25f * osc, 0, -.08f * osc);
+                    lean += .14f * damp; if (head != null) head.xRot += .12f * osc;
+                }
+            }
             if (k != AttackKind.SHOOT && k != AttackKind.BEAM && k != AttackKind.AREA && k != AttackKind.BITE) { // forearms fold back during the wind-up, snap straight on the hit
                 float[] fv = new float[T.length], fv2 = new float[T.length];
                 for (int q = 1; q < T.length - 1; q++) { fv[q] = q == 1 ? -1.2f : -.1f; fv2[q] = fv[q] * .75f; }
