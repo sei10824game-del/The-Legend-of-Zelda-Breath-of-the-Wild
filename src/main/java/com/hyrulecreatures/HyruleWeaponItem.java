@@ -30,6 +30,11 @@ public class HyruleWeaponItem extends SwordItem {
             case 3 -> target.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.WEAKNESS, 100, 1));
             default -> {}
         }
+        var key = net.minecraftforge.registries.ForgeRegistries.ITEMS.getKey(this);
+        if (key != null && key.getPath().startsWith("zonai") && !target.level().isClientSide) { // Zonai tech: armour-piercing pulse
+            target.hurt(target.damageSources().magic(), 2f); target.invulnerableTime = 0;
+            ((net.minecraft.server.level.ServerLevel) target.level()).sendParticles(net.minecraft.core.particles.ParticleTypes.ELECTRIC_SPARK, target.getX(), target.getY() + target.getBbHeight() * 0.6, target.getZ(), 8, 0.3, 0.3, 0.3, 0.1);
+        }
         return super.hurtEnemy(st, target, user);
     }
 }
